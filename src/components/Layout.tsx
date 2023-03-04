@@ -4,8 +4,10 @@ import Navbar from "@/components/Navbar";
 const Layout = ({ children }: PropsWithChildren) => {
 	return (
 		<>
-			<Navbar />
-			{children}
+			<div className="bg-black w-screen h-screen">
+				<Navbar />
+				{children}
+			</div>
 		</>
 	);
 };

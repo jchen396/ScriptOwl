@@ -5,7 +5,7 @@ export default function Home() {
 	return (
 		<>
 			<Layout>
-				<div className="bg-slate-900 w-screen h-screen"></div>
+				<div className=""></div>
 			</Layout>
 		</>
 	);
