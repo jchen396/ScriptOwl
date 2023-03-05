@@ -8,14 +8,17 @@ import {
 	GraphQLSchema,
 	GraphQLList,
 	GraphQLString,
+	GraphQLNonNull,
 } from "graphql";
+import { graphql } from "graphql";
 // Client Type
 const UserType = new GraphQLObjectType({
 	name: "User",
 	fields: () => ({
 		id: { type: GraphQLID },
-		username: { type: GraphQLID },
+		username: { type: GraphQLString },
 		password: { type: GraphQLID },
+		email: { type: GraphQLID },
 		points: { type: GraphQLInt },
 	}),
 });
@@ -23,13 +26,15 @@ const UserType = new GraphQLObjectType({
 const PostType = new GraphQLObjectType({
 	name: "Post",
 	fields: () => ({
-		postId: { type: GraphQLID },
+		id: { type: GraphQLID },
 		videoId: { type: GraphQLID },
+		description: { type: GraphQLString },
 		title: { type: GraphQLString },
+		likes: { type: GraphQLInt },
 		publisher: {
 			type: UserType,
 			resolve(parent, args) {
-				return User.findById(parent.publisherId);
+				return User.findById(parent.publisher);
 			},
 		},
 	}),
@@ -67,6 +72,72 @@ const RootQuery = new GraphQLObjectType({
 	},
 });
 
+//Mutations
+const mutation = new GraphQLObjectType({
+	name: "Mutation",
+	fields: {
+		// Create a user
+		addUser: {
+			type: UserType,
+			args: {
+				username: { type: GraphQLNonNull(GraphQLString) },
+				password: { type: GraphQLNonNull(GraphQLID) },
+				email: { type: GraphQLNonNull(GraphQLID) },
+			},
+			resolve(parent, args) {
+				const user = new User({
+					username: args.username,
+					password: args.password,
+					email: args.email,
+				});
+				return user.save();
+			},
+		},
+		// Remove user by ID
+		deleteUser: {
+			type: UserType,
+			args: {
+				id: { type: GraphQLNonNull(GraphQLID) },
+			},
+			resolve(parent, args) {
+				return User.findByIdAndRemove(args.id);
+			},
+		},
+		// Add a post
+		addPost: {
+			type: PostType,
+			args: {
+				videoId: { type: GraphQLNonNull(GraphQLID) },
+				title: { type: GraphQLNonNull(GraphQLString) },
+				description: { type: GraphQLString },
+				publisher: { type: GraphQLNonNull(GraphQLID) },
+				likes: { type: GraphQLNonNull(GraphQLInt) },
+			},
+			resolve(parent, args) {
+				const post = new Post({
+					videoId: args.videoId,
+					title: args.title,
+					description: args.description,
+					publisher: args.publisher,
+					likes: args.likes,
+				});
+				return post.save();
+			},
+		},
+		// Remove post by ID
+		deletePost: {
+			type: PostType,
+			args: {
+				id: { type: GraphQLID },
+			},
+			resolve(parent, args) {
+				return Post.findByIdAndRemove(args.id);
+			},
+		},
+	},
+});
+
 module.exports = new GraphQLSchema({
 	query: RootQuery,
+	mutation,
 });

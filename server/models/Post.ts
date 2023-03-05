@@ -1,17 +1,19 @@
 import { Schema, model, Types } from "mongoose";
 // 1. Create an interface representing a document in MongoDB.
 interface IPost {
-	id: string;
+	title: string;
 	videoId: string;
-	publisherId: Types.ObjectId;
+	description: string;
+	publisher: Types.ObjectId;
 	likes: number;
 }
 
 // 2. Create a Schema corresponding to the document interface.
 const postSchema = new Schema<IPost>({
-	id: { type: String, required: true },
+	title: { type: String, required: true },
 	videoId: { type: String, required: true },
-	publisherId: { type: Schema.Types.ObjectId, required: true, ref: "User" },
+	description: { type: String },
+	publisher: { type: Schema.Types.ObjectId, required: true, ref: "User" },
 	likes: { type: Number, required: true },
 });
 
