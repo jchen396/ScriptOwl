@@ -1,8 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { FunctionComponent, useState } from "react";
 
-const Navbar = () => {
+interface Props {}
+
+const Navbar: FunctionComponent<Props> = () => {
 	const [navToggle, setNavToggle] = useState<Boolean>(false);
 	const [profToggle, setProfToggle] = useState<Boolean>(false);
 	return (
@@ -43,7 +45,7 @@ const Navbar = () => {
 						</li>
 						<li>
 							<Link
-								href="#"
+								href="/about"
 								className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
 							>
 								About
@@ -51,7 +53,7 @@ const Navbar = () => {
 						</li>
 						<li>
 							<Link
-								href="#"
+								href="/services"
 								className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
 							>
 								Services
@@ -59,7 +61,7 @@ const Navbar = () => {
 						</li>
 						<li>
 							<Link
-								href="#"
+								href="/pricing"
 								className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
 							>
 								Pricing
@@ -84,7 +86,9 @@ const Navbar = () => {
 						data-dropdown-toggle="user-dropdown"
 						data-dropdown-placement="bottom"
 						onFocus={() => setProfToggle(true)}
-						onBlur={() => setProfToggle(false)}
+						onBlur={() =>
+							setTimeout(() => setProfToggle(false), 200)
+						}
 					>
 						<Image
 							height={32}

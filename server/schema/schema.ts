@@ -10,8 +10,8 @@ import {
 	GraphQLString,
 	GraphQLNonNull,
 } from "graphql";
-import { graphql } from "graphql";
-// Client Type
+
+// User Type
 const UserType = new GraphQLObjectType({
 	name: "User",
 	fields: () => ({
@@ -22,7 +22,7 @@ const UserType = new GraphQLObjectType({
 		points: { type: GraphQLInt },
 	}),
 });
-
+// Post Type
 const PostType = new GraphQLObjectType({
 	name: "Post",
 	fields: () => ({
@@ -39,7 +39,7 @@ const PostType = new GraphQLObjectType({
 		},
 	}),
 });
-
+// Queries
 const RootQuery = new GraphQLObjectType({
 	name: "RootQueryType",
 	fields: {
@@ -128,10 +128,31 @@ const mutation = new GraphQLObjectType({
 		deletePost: {
 			type: PostType,
 			args: {
-				id: { type: GraphQLID },
+				id: { type: GraphQLNonNull(GraphQLID) },
 			},
 			resolve(parent, args) {
 				return Post.findByIdAndRemove(args.id);
+			},
+		},
+		// Update a post
+		updatePost: {
+			type: PostType,
+			args: {
+				id: { type: GraphQLNonNull(GraphQLID) },
+				title: { type: GraphQLString },
+				description: { type: GraphQLString },
+			},
+			resolve(parent, args) {
+				return Post.findByIdAndUpdate(
+					args.id,
+					{
+						$set: {
+							title: args.title,
+							description: args.description,
+						},
+					},
+					{ new: true }
+				);
 			},
 		},
 	},

@@ -1,7 +1,15 @@
-import type { AppProps } from "next/app";
 import Layout from "@/components/Layout";
+import { gql, useQuery } from "@apollo/client";
+import { GetServerSideProps } from "next";
+import { FunctionComponent } from "react";
+import client from "../../apollo-client";
 
-export default function Home() {
+interface Props {
+	usersData: number[];
+}
+
+const Home: FunctionComponent<Props> = ({ usersData }) => {
+	console.log(usersData);
 	return (
 		<>
 			<Layout>
@@ -9,4 +17,27 @@ export default function Home() {
 			</Layout>
 		</>
 	);
+};
+
+export async function getServerSideProps() {
+	const { data } = await client.query({
+		query: gql`
+			query getUsers {
+				users {
+					id
+					username
+					password
+					email
+				}
+			}
+		`,
+	});
+
+	return {
+		props: {
+			usersData: data,
+		},
+	};
 }
+
+export default Home;

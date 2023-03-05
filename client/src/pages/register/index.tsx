@@ -1,5 +1,9 @@
 import Layout from "@/components/Layout";
-const Register = () => {
+import { FunctionComponent } from "react";
+
+interface Props {}
+
+const Register: FunctionComponent<Props> = () => {
 	return (
 		<>
 			<Layout>

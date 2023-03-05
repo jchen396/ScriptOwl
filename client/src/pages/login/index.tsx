@@ -1,7 +1,10 @@
 import Layout from "@/components/Layout";
 import Link from "next/link";
+import { FunctionComponent } from "react";
 
-const Login = () => {
+interface Props {}
+
+const Login: FunctionComponent<Props> = () => {
 	return (
 		<Layout>
 			<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono">
