@@ -1,13 +1,27 @@
-const cors = require("cors");
 const express = require("express");
+require("dotenv").config();
+const { graphqlHTTP } = require("express-graphql");
+const schema = require("./schema/schema");
+const cors = require("cors");
+const port = process.env.PORT || 5000;
+
+import { connectDB } from "./config/db";
 
 const app = express();
-const port = 3000;
-
 app.use(cors());
 
+// connect to MongoDB database
+connectDB();
+
+// use GraphQL api
+app.use(
+	"/graphql",
+	graphqlHTTP({
+		schema,
+		graphiql: process.env.NODE_ENV === "development",
+	})
+);
+
 app.listen(port, () => {
-	console.log(
-		`Timezones by location application is running on port ${port}.`
-	);
+	console.log(`PORT ${port} is running.`);
 });

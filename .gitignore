@@ -19,6 +19,7 @@
 # misc
 /client/.DS_Store
 /client/*.pem
+/server/.env
 
 # debug
 /client/npm-debug.log*
