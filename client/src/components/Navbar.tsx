@@ -2,9 +2,16 @@ import Link from "next/link";
 import Image from "next/image";
 import { FunctionComponent, useState } from "react";
 
-interface Props {}
+interface Props {
+	userData?: {
+		username: string;
+		password: string;
+		id: string;
+		email: string;
+	};
+}
 
-const Navbar: FunctionComponent<Props> = () => {
+const Navbar: FunctionComponent<Props> = ({ userData }) => {
 	const [navToggle, setNavToggle] = useState<Boolean>(false);
 	const [profToggle, setProfToggle] = useState<Boolean>(false);
 	return (
@@ -102,14 +109,14 @@ const Navbar: FunctionComponent<Props> = () => {
 						className={`absolute top-16 right-6 md:right-[2em] 4xl:right-[8rem] ${
 							profToggle ? "block" : "hidden"
 						} z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
-						id="user-dropdown font-mono`}
+						id="user-dropdown font-mono w-[12rem] h-[24rerm]`}
 					>
-						<div className="px-4 py-3">
+						<div className="px-4 py-3 ">
 							<span className="block text-sm text-gray-900 dark:text-white">
-								Bonnie Green
+								{userData ? userData.username : "Not signed in"}
 							</span>
 							<span className="block text-sm text-gray-500 truncate dark:text-gray-400">
-								name@flowbite.com
+								{userData ? userData.email : ""}
 							</span>
 						</div>
 						<ul className="py-2" aria-labelledby="user-menu-button">
