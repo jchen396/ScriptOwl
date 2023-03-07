@@ -36,3 +36,4 @@
 # typescript
 /client/*.tsbuildinfo
 /client/next-env.d.ts
+node_modules

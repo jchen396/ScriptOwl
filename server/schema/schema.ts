@@ -9,6 +9,7 @@ import {
 	GraphQLList,
 	GraphQLString,
 	GraphQLNonNull,
+	GraphQLError,
 } from "graphql";
 
 // User Type
@@ -43,12 +44,14 @@ const PostType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
 	name: "RootQueryType",
 	fields: {
+		// return all posts in db
 		posts: {
 			type: new GraphQLList(PostType),
 			resolve(parent, args) {
 				return Post.find();
 			},
 		},
+		// return a post by post id
 		post: {
 			type: PostType,
 			args: { id: { type: GraphQLID } },
@@ -56,17 +59,33 @@ const RootQuery = new GraphQLObjectType({
 				return Post.findById(args.id);
 			},
 		},
+		// return all users in db
 		users: {
 			type: new GraphQLList(UserType),
 			resolve(parent, args) {
 				return User.find();
 			},
 		},
+		// return user by user id
 		user: {
 			type: UserType,
 			args: { id: { type: GraphQLID } },
 			resolve(parent, args) {
 				return User.findById(args.id);
+			},
+		},
+		// return user by username
+		getUser: {
+			type: UserType,
+			args: {
+				username: { type: GraphQLString },
+				password: { type: GraphQLID },
+			},
+			resolve(parent, args) {
+				return User.findOne({
+					username: args.username,
+					password: args.password,
+				});
 			},
 		},
 	},
@@ -85,12 +104,31 @@ const mutation = new GraphQLObjectType({
 				email: { type: GraphQLNonNull(GraphQLID) },
 			},
 			resolve(parent, args) {
-				const user = new User({
-					username: args.username,
-					password: args.password,
-					email: args.email,
-				});
-				return user.save();
+				let error;
+				return Promise.all([
+					User.findOne({ username: args.username }),
+					User.findOne({ email: args.email }),
+				])
+					.then((res) => {
+						if (res[0]) {
+							throw new GraphQLError(
+								"Username is already taken."
+							);
+						} else if (res[1]) {
+							throw new GraphQLError("Email is already taken.");
+						} else {
+							const user = new User({
+								username: args.username,
+								password: args.password,
+								email: args.email,
+								points: 0,
+							});
+							return user.save();
+						}
+					})
+					.catch((err) => {
+						return err;
+					});
 			},
 		},
 		// Remove user by ID

@@ -1,14 +1,72 @@
-import { gql } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
+import { FormEvent, useState } from "react";
 import { FunctionComponent } from "react";
+import CloseIcon from "@mui/icons-material/Close";
+
+const ADD_USER = gql`
+	mutation addUser($username: String!, $password: ID!, $email: ID!) {
+		addUser(username: $username, password: $password, email: $email) {
+			id
+			username
+			password
+			email
+			points
+		}
+	}
+`;
 
 interface Props {}
 
 const Register: FunctionComponent<Props> = () => {
+	const [signUpPassword, setSignUpPassword] = useState<string>();
+	const [signUpConfirmPassword, setSignUpConfirmPassword] =
+		useState<string>();
+	const [signUpUsername, setSignUpUsername] = useState<string>();
+	const [signUpEmail, setSignUpEmail] = useState<string>();
+	const [passwordError, setPasswordError] = useState<string>();
+	const [addUser, { data, loading, error }] = useMutation(ADD_USER);
+	const signUpForm = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		if (signUpPassword === signUpConfirmPassword) {
+			addUser({
+				variables: {
+					username: signUpUsername,
+					password: signUpPassword,
+					email: signUpEmail,
+					points: 0,
+				},
+			})
+				.then((res) => {
+					console.log(res);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+			setPasswordError("");
+		} else {
+			setPasswordError("Passwords do not match.");
+		}
+	};
 	return (
 		<>
 			<div className="w-full h-full flex flex-col justify-center items-center space-y-10 font-mono">
 				<h1 className="text-4xl text-slate-100">Sign Up</h1>
-				<form className="flex flex-col space-y-4 border-2 rounded border-slate-100 bg-transparent text-slate-100 w-100 p-10 w-3/4 lg:w-1/3 md:p-16">
+				<form
+					onSubmit={(e) => signUpForm(e)}
+					className="flex flex-col space-y-4 border-2 rounded border-slate-100 bg-transparent text-slate-100 w-100 p-10 w-3/4 lg:w-1/3 md:p-16"
+				>
+					{error?.message && (
+						<div className="flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4">
+							<p>{error.message}</p>
+							<CloseIcon />
+						</div>
+					)}
+					{passwordError && (
+						<div className="flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4">
+							<p>{passwordError}</p>
+							<CloseIcon />
+						</div>
+					)}
 					<div className="grid gap-6 mb-6 md:grid-cols-2 ">
 						<div>
 							<label
@@ -21,6 +79,9 @@ const Register: FunctionComponent<Props> = () => {
 								type="text"
 								id="first_name"
 								className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+								onChange={(e) =>
+									setSignUpUsername(e.target.value)
+								}
 								required
 							/>
 						</div>
@@ -35,6 +96,7 @@ const Register: FunctionComponent<Props> = () => {
 								type="text"
 								id="last_name"
 								className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+								onChange={(e) => setSignUpEmail(e.target.value)}
 								required
 							/>
 						</div>
@@ -50,6 +112,7 @@ const Register: FunctionComponent<Props> = () => {
 							type="password"
 							id="password"
 							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+							onChange={(e) => setSignUpPassword(e.target.value)}
 							required
 						/>
 					</div>
@@ -64,6 +127,9 @@ const Register: FunctionComponent<Props> = () => {
 							type="password"
 							id="confirm_password"
 							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+							onChange={(e) =>
+								setSignUpConfirmPassword(e.target.value)
+							}
 							required
 						/>
 					</div>

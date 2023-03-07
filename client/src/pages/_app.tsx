@@ -12,7 +12,12 @@ type AppProps<P = any> = AppInitialProps<P> & {
 };
 
 export default function App({ Component, pageProps }: AppProps) {
-	const [userData, setUserData] = useState<object>({});
+	const [userData, setUserData] = useState<{
+		username: string;
+		password: string;
+		id: string;
+		email: string;
+	}>();
 	const getData = async () => {
 		const { data } = await client.query({
 			query: gql`
