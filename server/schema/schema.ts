@@ -1,3 +1,6 @@
+import CryptoJS from "crypto-js";
+import jwt from "jsonwebtoken";
+
 // Mongoose models
 import { User } from "../models/User";
 import { Post } from "../models/Post";
@@ -21,6 +24,7 @@ const UserType = new GraphQLObjectType({
 		password: { type: GraphQLID },
 		email: { type: GraphQLID },
 		points: { type: GraphQLInt },
+		token: { type: GraphQLString },
 	}),
 });
 // Post Type
@@ -74,8 +78,8 @@ const RootQuery = new GraphQLObjectType({
 				return User.findById(args.id);
 			},
 		},
-		// return user by username
-		getUser: {
+		// log in by username
+		logInUser: {
 			type: UserType,
 			args: {
 				username: { type: GraphQLString },
@@ -84,7 +88,31 @@ const RootQuery = new GraphQLObjectType({
 			resolve(parent, args) {
 				return User.findOne({
 					username: args.username,
-					password: args.password,
+				}).then((user) => {
+					try {
+						const hashedPassword = CryptoJS.AES.decrypt(
+							user.password,
+							process.env.PASS_SEC
+						);
+						const originalPassword = hashedPassword.toString(
+							CryptoJS.enc.Utf8
+						);
+						console.log(originalPassword, args.password);
+						if (originalPassword === args.password) {
+							const token = jwt.sign(
+								{ user_id: user._id, email: args.email },
+								process.env.JWT_SEC,
+								{ expiresIn: "3d" }
+							);
+							return { user, token };
+						} else {
+							throw new GraphQLError(
+								"Invalid username or password."
+							);
+						}
+					} catch (err) {
+						return err;
+					}
 				});
 			},
 		},
@@ -104,10 +132,9 @@ const mutation = new GraphQLObjectType({
 				email: { type: GraphQLNonNull(GraphQLID) },
 			},
 			resolve(parent, args) {
-				let error;
 				return Promise.all([
-					User.findOne({ username: args.username }),
-					User.findOne({ email: args.email }),
+					User.findOne({ username: args.username.toLowerCase() }),
+					User.findOne({ email: args.email.toLowerCase() }),
 				])
 					.then((res) => {
 						if (res[0]) {
@@ -117,13 +144,19 @@ const mutation = new GraphQLObjectType({
 						} else if (res[1]) {
 							throw new GraphQLError("Email is already taken.");
 						} else {
+							const encryptedPassword = CryptoJS.AES.encrypt(
+								args.password,
+								process.env.PASS_SEC
+							).toString();
 							const user = new User({
-								username: args.username,
-								password: args.password,
-								email: args.email,
+								username: args.username.toLowerCase(),
+								password: encryptedPassword,
+								email: args.email.toLowerCase(),
 								points: 0,
 							});
-							return user.save();
+							user.save();
+							const { password, ...others } = user;
+							return { ...others };
 						}
 					})
 					.catch((err) => {

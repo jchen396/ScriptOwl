@@ -5,9 +5,9 @@ import CloseIcon from "@mui/icons-material/Close";
 
 interface Props {}
 
-const GET_USER = gql`
-	query getUser($username: String!, $password: ID!) {
-		getUser(username: $username, password: $password) {
+const LOGIN_USER = gql`
+	query logInUser($username: String!, $password: ID!) {
+		logInUser(username: $username, password: $password) {
 			id
 			username
 			password
@@ -19,16 +19,15 @@ const GET_USER = gql`
 const Login: FunctionComponent<Props> = () => {
 	const [logInPassword, setLogInPassword] = useState<string>();
 	const [logInUsername, setFormUsername] = useState<string>();
-	const [getUser, { data, loading, error }] = useLazyQuery(GET_USER);
+	const [logInUser, { data, loading, error }] = useLazyQuery(LOGIN_USER);
 	const validateForm = (e: any) => {
 		e.preventDefault();
-		getUser({
+		logInUser({
 			variables: {
 				username: logInUsername,
 				password: logInPassword,
 			},
 		});
-		console.log(data);
 	};
 	return (
 		<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono">
@@ -38,12 +37,9 @@ const Login: FunctionComponent<Props> = () => {
 				action="/"
 				onSubmit={(e) => validateForm(e)}
 			>
-				{error && (
-					<div className="flex flex-row items-center text-sm text-red-700 bg-red-300 rounded-md p-4">
-						<p>
-							The username and password you entered did not match
-							our records. Please double-check and try again.
-						</p>
+				{error?.message && (
+					<div className="flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4">
+						<p>{error.message}</p>
 						<CloseIcon />
 					</div>
 				)}
