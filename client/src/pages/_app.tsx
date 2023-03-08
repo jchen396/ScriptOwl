@@ -5,6 +5,8 @@ import { NextComponentType, NextPageContext } from "next";
 import { AppInitialProps } from "next/app";
 import { ApolloProvider, gql } from "@apollo/client";
 import { useEffect, useState } from "react";
+import { store } from "./../redux/store";
+import { Provider } from "react-redux";
 
 type AppProps<P = any> = AppInitialProps<P> & {
 	Component: NextComponentType<NextPageContext, any, any>;
@@ -21,7 +23,7 @@ export default function App({ Component, pageProps }: AppProps) {
 	const getData = async () => {
 		const { data } = await client.query({
 			query: gql`
-				query getUsers {
+				query getusers {
 					users {
 						id
 						username
@@ -42,8 +44,10 @@ export default function App({ Component, pageProps }: AppProps) {
 		<Layout userData={userData}>{page}</Layout>
 	);
 	return (
-		<ApolloProvider client={client}>
-			{getLayout(<Component {...pageProps} />)}
-		</ApolloProvider>
+		<Provider store={store}>
+			<ApolloProvider client={client}>
+				{getLayout(<Component {...pageProps} />)}
+			</ApolloProvider>
+		</Provider>
 	);
 }

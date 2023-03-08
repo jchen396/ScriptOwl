@@ -82,14 +82,19 @@ const RootQuery = new GraphQLObjectType({
 		logInUser: {
 			type: UserType,
 			args: {
-				username: { type: GraphQLString },
-				password: { type: GraphQLID },
+				username: { type: GraphQLNonNull(GraphQLString) },
+				password: { type: GraphQLNonNull(GraphQLID) },
 			},
 			resolve(parent, args) {
 				return User.findOne({
-					username: args.username,
-				}).then((user) => {
+					username: args.username.toLowerCase(),
+				}).then((user: any) => {
 					try {
+						if (user === null) {
+							throw new GraphQLError(
+								"Invalid username or password."
+							);
+						}
 						const hashedPassword = CryptoJS.AES.decrypt(
 							user.password,
 							process.env.PASS_SEC
@@ -97,14 +102,14 @@ const RootQuery = new GraphQLObjectType({
 						const originalPassword = hashedPassword.toString(
 							CryptoJS.enc.Utf8
 						);
-						console.log(originalPassword, args.password);
 						if (originalPassword === args.password) {
 							const token = jwt.sign(
 								{ user_id: user._id, email: args.email },
 								process.env.JWT_SEC,
 								{ expiresIn: "3d" }
 							);
-							return { user, token };
+							const { password, ...others } = user._doc;
+							return { others };
 						} else {
 							throw new GraphQLError(
 								"Invalid username or password."

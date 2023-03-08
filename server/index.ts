@@ -7,12 +7,16 @@ const port = process.env.PORT || 5000;
 
 import { connectDB } from "./config/db";
 
+const loggingMiddleware = (req, res, next) => {
+	next();
+};
 const app = express();
 app.use(cors());
 
 // connect to MongoDB database
 connectDB();
 
+app.use(loggingMiddleware);
 // use GraphQL api
 app.use(
 	"/graphql",

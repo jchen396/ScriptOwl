@@ -1,33 +1,20 @@
 import Link from "next/link";
-import { FunctionComponent, useState } from "react";
-import { gql, useLazyQuery } from "@apollo/client";
+import { FormEvent, FunctionComponent, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import { login } from "@/redux/apiCalls";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux/es/exports";
 
 interface Props {}
-
-const LOGIN_USER = gql`
-	query logInUser($username: String!, $password: ID!) {
-		logInUser(username: $username, password: $password) {
-			id
-			username
-			password
-			email
-		}
-	}
-`;
 
 const Login: FunctionComponent<Props> = () => {
 	const [logInPassword, setLogInPassword] = useState<string>();
 	const [logInUsername, setFormUsername] = useState<string>();
-	const [logInUser, { data, loading, error }] = useLazyQuery(LOGIN_USER);
-	const validateForm = (e: any) => {
+	const { isFetching, error } = useSelector((state: any) => state.user);
+	const dispatch = useDispatch();
+	const validateForm = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		logInUser({
-			variables: {
-				username: logInUsername,
-				password: logInPassword,
-			},
-		});
+		login(dispatch, { logInUsername, logInPassword });
 	};
 	return (
 		<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono">
@@ -37,9 +24,9 @@ const Login: FunctionComponent<Props> = () => {
 				action="/"
 				onSubmit={(e) => validateForm(e)}
 			>
-				{error?.message && (
+				{error && (
 					<div className="flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4">
-						<p>{error.message}</p>
+						<p>Invalid username or password.</p>
 						<CloseIcon />
 					</div>
 				)}
