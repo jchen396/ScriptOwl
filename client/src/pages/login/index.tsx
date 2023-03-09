@@ -9,12 +9,17 @@ interface Props {}
 const Login: FunctionComponent<Props> = () => {
 	const [logInPassword, setLogInPassword] = useState<string>();
 	const [logInUsername, setFormUsername] = useState<string>();
-	const user = useSelector((state: RootStateOrAny) => state.user);
+	const { currentUser, error } = useSelector(
+		(state: RootStateOrAny) => state.user
+	);
 	const dispatch = useDispatch();
 	const validateForm = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		login(dispatch, { logInUsername, logInPassword });
 	};
+	if (currentUser) {
+		//location.replace("/");
+	}
 	return (
 		<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono">
 			<h1 className="text-4xl font-medium text-slate-100">Log In</h1>
@@ -23,7 +28,7 @@ const Login: FunctionComponent<Props> = () => {
 				action="/"
 				onSubmit={(e) => validateForm(e)}
 			>
-				{user.error && (
+				{error && (
 					<div className="flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4">
 						<p>Invalid username or password.</p>
 						<CloseIcon />
@@ -35,6 +40,7 @@ const Login: FunctionComponent<Props> = () => {
 						id="floating_outlined"
 						className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
 						placeholder=" "
+						required
 						onChange={(e) => {
 							setFormUsername(e.target.value);
 						}}
@@ -52,6 +58,7 @@ const Login: FunctionComponent<Props> = () => {
 						id="floating_outlined"
 						className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
 						placeholder=" "
+						required
 						onChange={(e) => {
 							setLogInPassword(e.target.value);
 						}}

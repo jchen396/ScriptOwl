@@ -78,6 +78,16 @@ const RootQuery = new GraphQLObjectType({
 				return User.findById(args.id);
 			},
 		},
+		// check token data stored in cookies
+		checkCurrentUser: {
+			type: UserType,
+			resolve(_, __, { res }) {
+				if (!res.req.user_id) {
+					return null;
+				}
+				return User.findById(res.req.user_id);
+			},
+		},
 		// log in by username
 		logInUser: {
 			type: UserType,
@@ -85,7 +95,7 @@ const RootQuery = new GraphQLObjectType({
 				username: { type: GraphQLNonNull(GraphQLString) },
 				password: { type: GraphQLNonNull(GraphQLID) },
 			},
-			resolve(parent, args) {
+			resolve(_, args, { res }) {
 				return User.findOne({
 					username: args.username.toLowerCase(),
 				}).then((user: any) => {
@@ -101,13 +111,35 @@ const RootQuery = new GraphQLObjectType({
 							CryptoJS.enc.Utf8
 						);
 						if (originalPassword === args.password) {
-							const token = jwt.sign(
-								{ user_id: user._id, email: args.email },
+							const accessToken = jwt.sign(
+								{
+									user_id: user._id,
+									username: user.username,
+									email: user.password,
+								},
 								process.env.JWT_SEC,
+								{ expiresIn: "15m" }
+							);
+
+							const refreshToken = jwt.sign(
+								{ username: args.username },
+								process.env.REFRESH_SEC,
 								{ expiresIn: "3d" }
 							);
+							res.cookie("accessToken", accessToken, {
+								httpOnly: true,
+								sameSite: "None",
+								secure: true,
+								maxAge: 15 * 60 * 1000,
+							});
+							res.cookie("refreshToken", refreshToken, {
+								httpOnly: true,
+								sameSite: "None",
+								secure: true,
+								maxAge: 24 * 60 * 60 * 1000,
+							});
 							const { password, ...others } = user._doc;
-							return user;
+							return { ...others, accessToken };
 						} else {
 							throw new GraphQLError(
 								"Username and password do not match."

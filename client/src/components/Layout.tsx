@@ -15,7 +15,6 @@ const Layout = ({ children }: PropsWithChildren) => {
 		email: string;
 	}>();
 	useEffect(() => {
-		console.log(currentUser);
 		setUserData(currentUser);
 	}, [currentUser]);
 	return (

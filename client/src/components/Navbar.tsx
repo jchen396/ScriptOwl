@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { FunctionComponent, useState } from "react";
+import { useDispatch } from "react-redux";
+import { logoutStart } from "@/redux/userRedux";
 
 interface Props {
 	userData?: {
@@ -14,6 +16,11 @@ interface Props {
 const Navbar: FunctionComponent<Props> = ({ userData }) => {
 	const [navToggle, setNavToggle] = useState<Boolean>(false);
 	const [profToggle, setProfToggle] = useState<Boolean>(false);
+	const dispatch = useDispatch();
+
+	const onSignOut = () => {
+		dispatch(logoutStart());
+	};
 	return (
 		<nav className="absolute w-full border-gray-200 px-2 sm:px-4 py-2.5 rounded bg-transparent font-mono">
 			<div className="container flex flex-wrap items-center justify-between mx-auto">
@@ -85,30 +92,56 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 					</ul>
 				</div>
 				<div className="flex items-center md:order-2">
-					<button
-						type="button"
-						className="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-						id="user-menu-button"
-						aria-expanded="false"
-						data-dropdown-toggle="user-dropdown"
-						data-dropdown-placement="bottom"
-						onFocus={() => setProfToggle(true)}
-						onBlur={() =>
-							setTimeout(() => setProfToggle(false), 200)
-						}
-					>
-						<Image
-							height={32}
-							width={32}
-							className="w-8 h-8 rounded-full"
-							src="/../public/img/blank-profile.png"
-							alt="user photo"
-						/>
-					</button>
+					{userData ? (
+						<button
+							type="button"
+							className="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+							id="user-menu-button"
+							aria-expanded="false"
+							data-dropdown-toggle="user-dropdown"
+							data-dropdown-placement="bottom"
+							onFocus={() => setProfToggle(true)}
+							onBlur={() =>
+								setTimeout(() => setProfToggle(false), 200)
+							}
+						>
+							<Image
+								height={32}
+								width={32}
+								className="w-8 h-8 rounded-full"
+								src="/../public/img/blank-profile.png"
+								alt="user photo"
+							/>
+						</button>
+					) : (
+						<div>
+							<ul
+								className="flex flex-row py-2"
+								aria-labelledby="user-menu-button"
+							>
+								<li>
+									<Link
+										href="/login"
+										className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+									>
+										Log In
+									</Link>
+								</li>
+								<li>
+									<Link
+										href="/register"
+										className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-white dark:text-gray-200 dark:hover:text-black"
+									>
+										Sign Up
+									</Link>
+								</li>
+							</ul>
+						</div>
+					)}
 					<div
 						className={`absolute top-16 right-6 md:right-[2em] 4xl:right-[8rem] ${
 							profToggle ? "block" : "hidden"
-						} z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+						} z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
 						id="user-dropdown font-mono w-[12rem] h-[24rerm]`}
 					>
 						<div className="px-4 py-3 ">
@@ -119,22 +152,18 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 								{userData ? userData.email : ""}
 							</span>
 						</div>
-						<ul className="py-2" aria-labelledby="user-menu-button">
-							<li>
-								<Link
-									href="/login"
-									className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-								>
-									Log In
-								</Link>
+						<ul>
+							<li className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 hover:cursor-pointer rounded">
+								Account
 							</li>
-							<li>
-								<Link
-									href="/register"
-									className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-								>
-									Sign Up
-								</Link>
+							<li className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 hover:cursor-pointer rounded">
+								Settings
+							</li>
+							<li
+								className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 hover:cursor-pointer rounded"
+								onClick={onSignOut}
+							>
+								Sign out
 							</li>
 						</ul>
 					</div>

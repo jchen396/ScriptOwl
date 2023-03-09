@@ -2,6 +2,7 @@ import { gql, useMutation } from "@apollo/client";
 import { FormEvent, useState } from "react";
 import { FunctionComponent } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import { RootStateOrAny, useSelector } from "react-redux";
 
 const ADD_USER = gql`
 	mutation addUser($username: String!, $password: ID!, $email: ID!) {
@@ -25,6 +26,7 @@ const Register: FunctionComponent<Props> = () => {
 	const [signUpEmail, setSignUpEmail] = useState<string>();
 	const [passwordError, setPasswordError] = useState<string>();
 	const [addUser, { data, loading, error }] = useMutation(ADD_USER);
+	const { currentUser } = useSelector((state: RootStateOrAny) => state.user);
 	const signUpForm = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (signUpPassword === signUpConfirmPassword) {
@@ -47,6 +49,9 @@ const Register: FunctionComponent<Props> = () => {
 			setPasswordError("Passwords do not match.");
 		}
 	};
+	if (currentUser) {
+		location.replace("/");
+	}
 	return (
 		<>
 			<div className="w-full h-full flex flex-col justify-center items-center space-y-10 font-mono">
