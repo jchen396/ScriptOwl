@@ -1,19 +1,23 @@
-import { PropsWithChildren, ReactNode } from "react";
+import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import client from "../../apollo-client";
 import { gql } from "@apollo/client";
+import { useSelector } from "react-redux";
 
-interface LayoutProps {
-	children: ReactNode;
-	userData?: {
+interface LayoutProps {}
+
+const Layout = ({ children }: PropsWithChildren) => {
+	const { currentUser } = useSelector((state: any) => state.user);
+	const [userData, setUserData] = useState<{
 		username: string;
 		password: string;
 		id: string;
 		email: string;
-	};
-}
-
-const Layout = ({ userData, children }: LayoutProps) => {
+	}>();
+	useEffect(() => {
+		console.log(currentUser);
+		setUserData(currentUser);
+	}, [currentUser]);
 	return (
 		<>
 			<div className="bg-black w-screen h-screen">

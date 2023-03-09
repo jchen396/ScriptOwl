@@ -20,8 +20,8 @@ export const login = async (
 				password: logInPassword,
 			},
 		});
-		loginSuccess(data.logInUser);
+		dispatch(loginSuccess(data.logInUser));
 	} catch (err) {
-		loginFailure();
+		dispatch(loginFailure());
 	}
 };

@@ -8,6 +8,7 @@ const port = process.env.PORT || 5000;
 import { connectDB } from "./config/db";
 
 const loggingMiddleware = (req, res, next) => {
+	console.log("middleware");
 	next();
 };
 const app = express();

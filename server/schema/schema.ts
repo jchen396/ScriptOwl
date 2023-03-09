@@ -91,9 +91,7 @@ const RootQuery = new GraphQLObjectType({
 				}).then((user: any) => {
 					try {
 						if (user === null) {
-							throw new GraphQLError(
-								"Invalid username or password."
-							);
+							throw new GraphQLError("User does not exist.");
 						}
 						const hashedPassword = CryptoJS.AES.decrypt(
 							user.password,
@@ -109,10 +107,10 @@ const RootQuery = new GraphQLObjectType({
 								{ expiresIn: "3d" }
 							);
 							const { password, ...others } = user._doc;
-							return { others };
+							return user;
 						} else {
 							throw new GraphQLError(
-								"Invalid username or password."
+								"Username and password do not match."
 							);
 						}
 					} catch (err) {

@@ -2,15 +2,14 @@ import Link from "next/link";
 import { FormEvent, FunctionComponent, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { login } from "@/redux/apiCalls";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux/es/exports";
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
 
 interface Props {}
 
 const Login: FunctionComponent<Props> = () => {
 	const [logInPassword, setLogInPassword] = useState<string>();
 	const [logInUsername, setFormUsername] = useState<string>();
-	const { isFetching, error } = useSelector((state: any) => state.user);
+	const user = useSelector((state: RootStateOrAny) => state.user);
 	const dispatch = useDispatch();
 	const validateForm = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -24,7 +23,7 @@ const Login: FunctionComponent<Props> = () => {
 				action="/"
 				onSubmit={(e) => validateForm(e)}
 			>
-				{error && (
+				{user.error && (
 					<div className="flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4">
 						<p>Invalid username or password.</p>
 						<CloseIcon />
