@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { FunctionComponent, useState } from "react";
 import { useDispatch } from "react-redux";
-import { logoutStart } from "@/redux/userRedux";
+import { signOut } from "@/redux/apiCalls";
 
 interface Props {
 	userData?: {
@@ -19,7 +19,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 	const dispatch = useDispatch();
 
 	const onSignOut = () => {
-		dispatch(logoutStart());
+		signOut(dispatch);
 	};
 	return (
 		<nav className="absolute w-full border-gray-200 px-2 sm:px-4 py-2.5 rounded bg-transparent font-mono">

@@ -49,14 +49,14 @@ const PostType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
 	name: "RootQueryType",
 	fields: {
-		// return all posts in db
+		// Return all posts in db
 		posts: {
 			type: new GraphQLList(PostType),
 			resolve(parent, args) {
 				return Post.find();
 			},
 		},
-		// return a post by post id
+		// Return a post by post id
 		post: {
 			type: PostType,
 			args: { id: { type: GraphQLID } },
@@ -64,14 +64,14 @@ const RootQuery = new GraphQLObjectType({
 				return Post.findById(args.id);
 			},
 		},
-		// return all users in db
+		// Return all users in db
 		users: {
 			type: new GraphQLList(UserType),
 			resolve(parent, args) {
 				return User.find();
 			},
 		},
-		// return user by user id
+		// Return user by user id
 		user: {
 			type: UserType,
 			args: { id: { type: GraphQLID } },
@@ -79,7 +79,7 @@ const RootQuery = new GraphQLObjectType({
 				return User.findById(args.id);
 			},
 		},
-		// check token data stored in cookies
+		// Check token data stored in cookies
 		checkTokens: {
 			type: UserType,
 			resolve(_, __, { res }) {
@@ -89,7 +89,15 @@ const RootQuery = new GraphQLObjectType({
 				return User.findById(res.req.user_id);
 			},
 		},
-		// log in by username
+		// Sign user out by remmoving cookies tokens
+		signOutUser: {
+			type: UserType,
+			async resolve(_, __, { res }) {
+				res.clearCookie("accessToken");
+				res.clearCookie("refreshToken");
+			},
+		},
+		// Log in by username
 		logInUser: {
 			type: UserType,
 			args: {

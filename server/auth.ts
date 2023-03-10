@@ -9,13 +9,13 @@ export const createTokens = (user) => {
 			email: user.password,
 		},
 		process.env.JWT_SEC,
-		{ expiresIn: "5s" }
+		{ expiresIn: "60m" }
 	);
 
 	const refreshToken = jwt.sign(
 		{ username: user.username },
 		process.env.REFRESH_SEC,
-		{ expiresIn: "3d" }
+		{ expiresIn: "5d" }
 	);
 	return { accessToken, refreshToken };
 };

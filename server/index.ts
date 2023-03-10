@@ -55,13 +55,13 @@ app.use(async (req, res, next) => {
 		httpOnly: true,
 		sameSite: "None",
 		secure: true,
-		maxAge: 15 * 1000,
+		maxAge: 60 * 60 * 1000,
 	});
 	res.cookie("refreshToken", tokens.refreshToken, {
 		httpOnly: true,
 		sameSite: "None",
 		secure: true,
-		maxAge: 3 * 24 * 60 * 60 * 1000,
+		maxAge: 5 * 24 * 60 * 60 * 1000,
 	});
 	req.user_id = user.id;
 	next();

@@ -16,6 +16,7 @@ const Layout = ({ children }: PropsWithChildren) => {
 	}>();
 	useEffect(() => {
 		authenticate(dispatch);
+		console.log("auth");
 	}, [dispatch]);
 	useEffect(() => {
 		setUserData(currentUser);
