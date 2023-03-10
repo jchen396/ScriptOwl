@@ -14,6 +14,7 @@ import {
 	GraphQLNonNull,
 	GraphQLError,
 } from "graphql";
+import { createTokens } from "../auth";
 
 // User Type
 const UserType = new GraphQLObjectType({
@@ -79,7 +80,7 @@ const RootQuery = new GraphQLObjectType({
 			},
 		},
 		// check token data stored in cookies
-		checkCurrentUser: {
+		checkTokens: {
 			type: UserType,
 			resolve(_, __, { res }) {
 				if (!res.req.user_id) {
@@ -111,21 +112,8 @@ const RootQuery = new GraphQLObjectType({
 							CryptoJS.enc.Utf8
 						);
 						if (originalPassword === args.password) {
-							const accessToken = jwt.sign(
-								{
-									user_id: user._id,
-									username: user.username,
-									email: user.password,
-								},
-								process.env.JWT_SEC,
-								{ expiresIn: "15m" }
-							);
-
-							const refreshToken = jwt.sign(
-								{ username: args.username },
-								process.env.REFRESH_SEC,
-								{ expiresIn: "3d" }
-							);
+							const { accessToken, refreshToken } =
+								createTokens(user);
 							res.cookie("accessToken", accessToken, {
 								httpOnly: true,
 								sameSite: "None",
