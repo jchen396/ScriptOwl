@@ -1,5 +1,4 @@
 import CryptoJS from "crypto-js";
-import jwt from "jsonwebtoken";
 
 // Mongoose models
 import { User } from "../models/User";

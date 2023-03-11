@@ -1,31 +1,29 @@
+import { GetObjectCommand } from "@aws-sdk/client-s3";
+
 require("dotenv").config();
 const fs = require("fs");
-const { S3Client } = require("@aws-sdk/client-s3");
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 
-const bucketName = process.env.AWS_BUCKET_NAME;
-const region = process.env.AWS_BUCKET_REGION;
-const accessKeyId = process.env.AWS_ACCESS_KEY;
-const secretAccessKey = process.env.AWS_SECRET_KEY;
-
-const s3 = new S3Client({
-	region: region,
-	crededntials: {
-		accessKeyId: accessKeyId,
-		secretAccessKey: secretAccessKey,
+const s3Client = new S3Client({
+	credentials: {
+		accessKeyId: process.env.AWS_BUCKET_ACCESS_KEY,
+		secretAccessKey: process.env.AWS_BUCKET_SECRET_KEY,
 	},
+	region: process.env.AWS_BUCKET_REGION,
 });
 
 // uploads a file to s3
-function uploadFile(file) {
+async function uploadFile(file) {
 	const fileStream = fs.createReadStream(file.path);
-
 	const uploadParams = {
-		Bucket: bucketName,
+		Bucket: process.env.AWS_BUCKET_NAME,
 		Body: fileStream,
 		Key: file.filename,
+		BucketKeyEnabled: true,
 	};
-
-	return s3.upload(uploadParams).promise();
+	let putCommand = new PutObjectCommand(uploadParams);
+	await s3Client.send(putCommand);
+	return file.filename;
 }
 exports.uploadFile = uploadFile;
 
@@ -33,9 +31,9 @@ exports.uploadFile = uploadFile;
 function getFileStream(fileKey) {
 	const downloadParams = {
 		Key: fileKey,
-		Bucket: bucketName,
+		Bucket: process.env.AWS_BUCKET_NAME,
 	};
-
-	return s3.getObject(downloadParams).createReadStream();
+	let getCommand = new GetObjectCommand(downloadParams);
+	return s3Client.send(getCommand);
 }
 exports.getFileStream = getFileStream;

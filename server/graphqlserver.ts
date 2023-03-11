@@ -7,16 +7,6 @@ const port = process.env.PORT || 5000;
 const cookieParser = require("cookie-parser");
 const jwt = require("jsonwebtoken");
 
-// uploading files
-const fs = require("fs");
-const util = require("util");
-const unlinkFile = util.promisify(fs.unlink);
-
-const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
-
-const { uploadFile, getFileStream } = require("./s3");
-
 import { createTokens } from "./auth";
 import { connectDB } from "./config/db";
 import { User } from "./models/User";
@@ -65,41 +55,17 @@ app.use(async (req, res, next) => {
 		httpOnly: true,
 		sameSite: "None",
 		secure: true,
-		maxAge: 60 * 60 * 1000,
+		maxAge: 15 * 1000,
 	});
 	res.cookie("refreshToken", tokens.refreshToken, {
 		httpOnly: true,
 		sameSite: "None",
 		secure: true,
-		maxAge: 5 * 24 * 60 * 60 * 1000,
+		maxAge: 3 * 24 * 60 * 60 * 1000,
 	});
 	req.user_id = user.id;
 	next();
 });
-
-// posting and fetching files to s3 via rest API
-app.get("/images/:key", (req, res) => {
-	console.log(req.params);
-	const key = req.params.key;
-	const readStream = getFileStream(key);
-
-	readStream.pipe(res);
-});
-
-app.post("/images", upload.single("image"), async (req, res) => {
-	const file = req.file;
-	console.log(file);
-
-	// apply filter
-	// resize
-
-	const result = await uploadFile(file);
-	await unlinkFile(file.path);
-	console.log(result);
-	const description = req.body.description;
-	res.send({ imagePath: `/images/${result.Key}` });
-});
-
 // use GraphQL api
 app.use(
 	"/graphql",

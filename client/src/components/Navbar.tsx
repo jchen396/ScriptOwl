@@ -153,8 +153,16 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 							</span>
 						</div>
 						<ul>
-							<li className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 hover:cursor-pointer rounded">
-								Account
+							<li>
+								<Link
+									className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 hover:cursor-pointer rounded"
+									href={{
+										pathname: "/account",
+										query: userData,
+									}}
+								>
+									Account
+								</Link>
 							</li>
 							<li className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 hover:cursor-pointer rounded">
 								Settings
