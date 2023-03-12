@@ -10,6 +10,7 @@ interface Props {
 		password: string;
 		id: string;
 		email: string;
+		avatarKey: string;
 	};
 }
 
@@ -109,7 +110,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 								height={32}
 								width={32}
 								className="w-8 h-8 rounded-full"
-								src="/../public/img/blank-profile.png"
+								src={`http://localhost:8080/images/${userData.avatarKey}`}
 								alt="user photo"
 							/>
 						</button>

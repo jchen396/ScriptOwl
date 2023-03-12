@@ -7,6 +7,7 @@ export const LOG_IN_USER = gql`
 			username
 			email
 			points
+			avatarKey
 		}
 	}
 `;

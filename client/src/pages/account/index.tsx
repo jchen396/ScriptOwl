@@ -19,7 +19,7 @@ async function postImage({ image }: { image: any }) {
 }
 
 const Account: FunctionComponent<Props> = () => {
-	const [image, setImage] = useState<any>();
+	const [imageKey, setImageKey] = useState<any>();
 	const [editToggle, setEditToggle] = useState<boolean>(false);
 	const router = useRouter();
 	const { currentUser } = useSelector((state: any) => state.user);
@@ -34,11 +34,15 @@ const Account: FunctionComponent<Props> = () => {
 	const onEditToggle = () => {
 		setEditToggle(!editToggle);
 	};
+	const onResetPhoto = () => {
+		setImageKey(null);
+	};
 	const onFileSelected = async (e: any) => {
 		const targetFile = e.target.files[0];
 		const result = await postImage({ image: targetFile });
-		setImage(result.imagePath);
+		setImageKey(result.key);
 	};
+	console.log(`http://localhost:8080/images/${imageKey}`);
 	return (
 		<>
 			<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono">
@@ -48,13 +52,23 @@ const Account: FunctionComponent<Props> = () => {
 						<div className="h-full flex flex-col justify-between items-center basis-1/2 space-y-10">
 							<div className="flex flex-col space-y-4 justify-center items-center">
 								<p className="text-xl">Profile picture</p>
-								<Image
-									height={32}
-									width={32}
-									className="w-32 h-32 rounded-full"
-									src={`http://localhost:8080${image}`}
-									alt="user photo"
-								/>
+								{imageKey ? (
+									<Image
+										height={32}
+										width={32}
+										className="w-32 h-32 rounded-full"
+										src={`http://localhost:8080/images/${imageKey}`}
+										alt="user photo"
+									/>
+								) : (
+									<Image
+										height={32}
+										width={32}
+										className="w-32 h-32 rounded-full"
+										src={`http://localhost:8080/images/${currentUser.avatarKey}`}
+										alt="user photo"
+									/>
+								)}
 								<div className="flex flex-col items-center p-4 bg">
 									<button
 										onClick={onEditToggle}
@@ -86,12 +100,24 @@ const Account: FunctionComponent<Props> = () => {
 											>
 												Upload a photo...
 											</label>
-											<li className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 hover:cursor-pointer rounded w-full">
-												Remove photo
+											<li
+												onClick={onResetPhoto}
+												className={`block px-4 py-2 text-sm text-gray-700 rounded w-full ${
+													imageKey
+														? "hover:cursor-pointer hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600  "
+														: "dark:text-gray-400 hover:cursor-not-allowed"
+												}`}
+											>
+												Reset photo
 											</li>
 										</ul>
 									</div>
 								</div>
+							</div>
+							<div className="w-full flex flex-col items-center ">
+								<p className="text-2xl">
+									Points {currentUser.points}
+								</p>
 							</div>
 						</div>
 						<div className="basis-1/2">

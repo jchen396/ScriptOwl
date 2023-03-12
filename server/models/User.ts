@@ -7,6 +7,7 @@ interface IUser {
 	email: string;
 	points: number;
 	token: string;
+	avatarKey: string;
 }
 
 // 2. Create a Schema corresponding to the document interface.
@@ -16,6 +17,7 @@ const userSchema = new Schema<IUser>(
 		password: { type: String, require: true },
 		email: { type: String, required: true, unique: true },
 		points: { type: Number },
+		avatarKey: { type: String },
 	},
 	{
 		timestamps: true,

@@ -7,6 +7,7 @@ export const createTokens = (user) => {
 			user_id: user._id,
 			username: user.username,
 			email: user.password,
+			avatarKey: user.avatarKey,
 		},
 		process.env.JWT_SEC,
 		{ expiresIn: "60m" }

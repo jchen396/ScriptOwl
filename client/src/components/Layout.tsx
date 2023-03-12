@@ -13,6 +13,7 @@ const Layout = ({ children }: PropsWithChildren) => {
 		password: string;
 		id: string;
 		email: string;
+		avatarKey: string;
 	}>();
 	useEffect(() => {
 		authenticate(dispatch);

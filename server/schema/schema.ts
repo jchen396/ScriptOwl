@@ -25,6 +25,7 @@ const UserType = new GraphQLObjectType({
 		email: { type: GraphQLID },
 		points: { type: GraphQLInt },
 		token: { type: GraphQLString },
+		avatarKey: { type: GraphQLString },
 	}),
 });
 // Post Type
@@ -183,6 +184,7 @@ const mutation = new GraphQLObjectType({
 								password: encryptedPassword,
 								email: args.email.toLowerCase(),
 								points: 0,
+								avatarKey: "d3b74dbd159a95a0cd27dc875a9aa104",
 							});
 							user.save();
 							const { password, ...others } = user;

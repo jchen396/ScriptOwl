@@ -21,15 +21,17 @@ const {} = require("./s3");
 
 // posting and fetching files to s3 via rest API
 app.get("/images/:key", async (req, res) => {
-	const key = req.params.key;
-	const { Body } = await getFileStream(key);
-	Body.pipe(res);
+	try {
+		const key = req.params.key;
+		const { Body } = await getFileStream(key);
+		Body.pipe(res);
+	} catch (e) {}
 });
 
 app.post("/images", upload.single("image"), async (req, res) => {
 	const result = await uploadFile(req.file);
 	await unlinkFile(req.file.path);
-	res.send({ imagePath: `/images/${result}` });
+	res.send({ key: `${result}` });
 });
 
 app.listen(port, () => {
