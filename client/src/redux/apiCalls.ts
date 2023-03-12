@@ -1,4 +1,4 @@
-import { SIGN_OUT } from "@/graphql/mutations/signOut";
+import { SIGN_OUT } from "@/graphql/queries/signOut";
 import { CHECK_TOKENS } from "@/graphql/queries/checkTokens";
 import { LOG_IN_USER } from "@/graphql/queries/login";
 import { AnyAction } from "@reduxjs/toolkit";
@@ -49,4 +49,11 @@ export const signOut = async (dispatch: Dispatch<AnyAction>) => {
 	await client.query({
 		query: SIGN_OUT,
 	});
+};
+
+export const updateUser = async (
+	dispatch: Dispatch<AnyAction>,
+	data: object
+) => {
+	console.log(data);
 };

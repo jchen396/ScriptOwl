@@ -1,9 +1,12 @@
 import { FunctionComponent, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
+import { updateUser } from "@/redux/apiCalls";
+import { useMutation } from "@apollo/client";
+import { UPDATE_USER } from "@/graphql/mutations/updateUser";
 
 interface Props {}
 
@@ -19,12 +22,15 @@ async function postImage({ image }: { image: any }) {
 }
 
 const Account: FunctionComponent<Props> = () => {
+	const dispatch = useDispatch();
+	const [newPassword, setNewPassword] = useState<string>();
 	const [imageKey, setImageKey] = useState<any>();
 	const [editToggle, setEditToggle] = useState<boolean>(false);
 	const router = useRouter();
 	const { currentUser } = useSelector((state: any) => state.user);
-	const data = router.query;
-	if (!currentUser || data.id !== currentUser.id) {
+	const userData = router.query;
+	const [userUpdateMutate, { data }] = useMutation(UPDATE_USER);
+	if (!currentUser || userData.username !== currentUser.username) {
 		try {
 			location.replace("/");
 		} catch (err) {
@@ -42,12 +48,22 @@ const Account: FunctionComponent<Props> = () => {
 		const result = await postImage({ image: targetFile });
 		setImageKey(result.key);
 	};
-	console.log(`http://localhost:8080/images/${imageKey}`);
+	const onSaveChanges = () => {
+		const id = currentUser.id;
+		userUpdateMutate({
+			variables: {
+				id: id,
+				avatarKey: imageKey,
+				password: newPassword,
+			},
+		});
+		updateUser(dispatch, data);
+	};
 	return (
 		<>
 			<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono">
 				<h1 className="text-4xl font-medium text-slate-100">Account</h1>
-				<div className="flex flex-col space-y-4 border-t-2 border-slate-100 bg-transparent text-slate-100 w-2/3 h-2/3 md:py-20 md:px-0">
+				<div className="flex flex-col space-y-4 border-2 border-slate-100 bg-transparent text-slate-100 w-2/3 h-2/3 md:py-20 md:px-0">
 					<div className="w-full h-full flex flex-col justify-between items-center md:flex-row space-y-10">
 						<div className="h-full flex flex-col justify-between items-center basis-1/2 space-y-10">
 							<div className="flex flex-col space-y-4 justify-center items-center">
@@ -136,7 +152,7 @@ const Account: FunctionComponent<Props> = () => {
 									id="disabled-input"
 									aria-label="disabled input"
 									className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-slate-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-									value={`${data.username}`}
+									value={`${userData.username}`}
 									disabled
 								></input>
 								<label className="text-white" htmlFor="email">
@@ -147,7 +163,7 @@ const Account: FunctionComponent<Props> = () => {
 									id="disabled-input"
 									aria-label="disabled input"
 									className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-									value={`${data.email}`}
+									value={`${userData.email}`}
 									disabled
 								></input>
 								<label
@@ -161,7 +177,6 @@ const Account: FunctionComponent<Props> = () => {
 									id="disabled-input"
 									aria-label="disabled input"
 									className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-									value={`Test`}
 									disabled
 								></input>
 								<label
@@ -181,6 +196,14 @@ const Account: FunctionComponent<Props> = () => {
 							</form>
 						</div>
 					</div>
+				</div>
+				<div>
+					<button
+						className="bg-white text-black text-2xl hover:bg-gray-300 p-2 px-4 rounded-lg text-bold items-center justify-center"
+						onClick={onSaveChanges}
+					>
+						Save
+					</button>
 				</div>
 			</div>
 		</>

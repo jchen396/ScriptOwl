@@ -24,7 +24,6 @@ const UserType = new GraphQLObjectType({
 		password: { type: GraphQLID },
 		email: { type: GraphQLID },
 		points: { type: GraphQLInt },
-		token: { type: GraphQLString },
 		avatarKey: { type: GraphQLString },
 	}),
 });
@@ -235,6 +234,30 @@ const mutation = new GraphQLObjectType({
 			},
 			resolve(parent, args) {
 				return Post.findByIdAndRemove(args.id);
+			},
+		},
+		updateUser: {
+			type: UserType,
+			args: {
+				id: { type: GraphQLNonNull(GraphQLID) },
+				avatarKey: { type: GraphQLString },
+				password: { type: GraphQLID },
+			},
+			resolve(_, args) {
+				const encryptedPassword = CryptoJS.AES.encrypt(
+					args.password,
+					process.env.PASS_SEC
+				).toString();
+				return User.findByIdAndUpdate(
+					args.id,
+					{
+						$set: {
+							avatarKey: args.avatarKey,
+							password: encryptedPassword,
+						},
+					},
+					{ new: true }
+				);
 			},
 		},
 		// Update a post
