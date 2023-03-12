@@ -24,6 +24,7 @@ async function postImage({ image }: { image: any }) {
 const Account: FunctionComponent<Props> = () => {
 	const dispatch = useDispatch();
 	const [newPassword, setNewPassword] = useState<string>();
+	const [confirmNewPassword, setConfirmNewPassword] = useState<string>();
 	const [imageKey, setImageKey] = useState<any>();
 	const [editToggle, setEditToggle] = useState<boolean>(false);
 	const router = useRouter();
@@ -48,16 +49,23 @@ const Account: FunctionComponent<Props> = () => {
 		const result = await postImage({ image: targetFile });
 		setImageKey(result.key);
 	};
-	const onSaveChanges = () => {
-		const id = currentUser.id;
-		userUpdateMutate({
-			variables: {
-				id: id,
-				avatarKey: imageKey,
-				password: newPassword,
-			},
-		});
-		updateUser(dispatch, data);
+	const onSaveChanges = async () => {
+		try {
+			if (newPassword !== confirmNewPassword) {
+				throw new Error("Passwords do not match.");
+			}
+			const id = currentUser.id;
+			await userUpdateMutate({
+				variables: {
+					id: id,
+					avatarKey: imageKey,
+					password: newPassword,
+				},
+			});
+			updateUser(dispatch, data);
+		} catch (err) {
+			console.log(err);
+		}
 	};
 	return (
 		<>
@@ -132,7 +140,7 @@ const Account: FunctionComponent<Props> = () => {
 							</div>
 							<div className="w-full flex flex-col items-center ">
 								<p className="text-2xl">
-									Points {currentUser.points}
+									Points: {currentUser.points}
 								</p>
 							</div>
 						</div>
@@ -173,11 +181,12 @@ const Account: FunctionComponent<Props> = () => {
 									Password
 								</label>
 								<input
-									type="text"
-									id="disabled-input"
-									aria-label="disabled input"
-									className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-									disabled
+									onChange={(e) =>
+										setNewPassword(e.target.value)
+									}
+									placeholder="Type in new password..."
+									type="password"
+									className="mb-6 bg-gray-100 border-gray-300 text-gray-900 text-sm rounded-sm block w-1/2 p-2.5 dark:bg-gray-600 dark:border-gray-900 dark:placeholder-gray-400 dark:text-gray-400 "
 								></input>
 								<label
 									className="text-white"
@@ -186,12 +195,12 @@ const Account: FunctionComponent<Props> = () => {
 									Confirm Password
 								</label>
 								<input
-									type="text"
-									id="disabled-input"
-									aria-label="disabled input"
-									className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-									value={`Test2`}
-									disabled
+									onChange={(e) =>
+										setConfirmNewPassword(e.target.value)
+									}
+									type="password"
+									placeholder="Re-enter new password..."
+									className="mb-6 bg-gray-100 border-gray-300 text-gray-900 text-sm rounded-sm block w-1/2 p-2.5 dark:bg-gray-600 dark:border-gray-900 dark:placeholder-gray-400 dark:text-gray-400 "
 								></input>
 							</form>
 						</div>

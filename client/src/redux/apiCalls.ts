@@ -9,6 +9,7 @@ import {
 	loginStart,
 	loginSuccess,
 	logoutStart,
+	updateStart,
 } from "./userRedux";
 
 export const login = async (
@@ -51,9 +52,6 @@ export const signOut = async (dispatch: Dispatch<AnyAction>) => {
 	});
 };
 
-export const updateUser = async (
-	dispatch: Dispatch<AnyAction>,
-	data: object
-) => {
-	console.log(data);
+export const updateUser = async (dispatch: Dispatch<AnyAction>, data: any) => {
+	dispatch(updateStart(data.updateUser));
 };
