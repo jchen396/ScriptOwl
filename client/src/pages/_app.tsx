@@ -3,10 +3,9 @@ import client from "../../apollo-client";
 import Layout from "@/components/Layout";
 import { NextComponentType, NextPageContext } from "next";
 import { AppInitialProps } from "next/app";
-import { ApolloProvider, gql } from "@apollo/client";
-import { useEffect, useState } from "react";
+import { ApolloProvider } from "@apollo/client";
 import { store } from "./../redux/store";
-import { Provider, useSelector } from "react-redux";
+import { Provider } from "react-redux";
 
 type AppProps<P = any> = AppInitialProps<P> & {
 	Component: NextComponentType<NextPageContext, any, any>;

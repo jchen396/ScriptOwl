@@ -2,19 +2,8 @@ import { gql, useMutation } from "@apollo/client";
 import { FormEvent, useState } from "react";
 import { FunctionComponent } from "react";
 import CloseIcon from "@mui/icons-material/Close";
-import { RootStateOrAny, useSelector } from "react-redux";
-
-const ADD_USER = gql`
-	mutation addUser($username: String!, $password: ID!, $email: ID!) {
-		addUser(username: $username, password: $password, email: $email) {
-			id
-			username
-			password
-			email
-			points
-		}
-	}
-`;
+import { useSelector } from "react-redux";
+import { ADD_USER } from "../../graphql/mutations/addUser";
 
 interface Props {}
 
@@ -26,7 +15,7 @@ const Register: FunctionComponent<Props> = () => {
 	const [signUpEmail, setSignUpEmail] = useState<string>();
 	const [passwordError, setPasswordError] = useState<string>();
 	const [addUser, { data, loading, error }] = useMutation(ADD_USER);
-	const { currentUser } = useSelector((state: RootStateOrAny) => state.user);
+	const { currentUser } = useSelector((state: any) => state.user);
 	const signUpForm = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (signUpPassword === signUpConfirmPassword) {
