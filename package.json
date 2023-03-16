@@ -1,11 +1,4 @@
 {
   "dependencies": {
-    "@emotion/react": "^11.10.6",
-    "@emotion/styled": "^11.10.6",
-    "@mui/icons-material": "^5.11.11",
-    "@mui/material": "^5.11.12",
-    "crypto-js": "^4.1.1",
-    "jsonwebtoken": "^9.0.0",
-    "swr": "^2.0.4"
   }
 }

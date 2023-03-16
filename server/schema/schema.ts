@@ -32,9 +32,10 @@ const PostType = new GraphQLObjectType({
 	name: "Post",
 	fields: () => ({
 		id: { type: GraphQLID },
-		videoId: { type: GraphQLID },
+		videoKey: { type: GraphQLID },
 		description: { type: GraphQLString },
 		title: { type: GraphQLString },
+		category: { type: GraphQLString },
 		likes: { type: GraphQLInt },
 		publisher: {
 			type: UserType,
@@ -209,18 +210,20 @@ const mutation = new GraphQLObjectType({
 		addPost: {
 			type: PostType,
 			args: {
-				videoId: { type: GraphQLNonNull(GraphQLID) },
+				videoKey: { type: GraphQLNonNull(GraphQLID) },
 				title: { type: GraphQLNonNull(GraphQLString) },
 				description: { type: GraphQLString },
+				category: { type: GraphQLString },
 				publisher: { type: GraphQLNonNull(GraphQLID) },
 				likes: { type: GraphQLNonNull(GraphQLInt) },
 			},
 			resolve(parent, args) {
 				const post = new Post({
-					videoId: args.videoId,
+					videoKey: args.videoKey,
 					title: args.title,
 					description: args.description,
 					publisher: args.publisher,
+					category: args.category,
 					likes: args.likes,
 				});
 				return post.save();

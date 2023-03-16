@@ -2,16 +2,14 @@ import Link from "next/link";
 import { FormEvent, FunctionComponent, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { login } from "@/redux/apiCalls";
-import { RootStateOrAny, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 interface Props {}
 
 const Login: FunctionComponent<Props> = () => {
 	const [logInPassword, setLogInPassword] = useState<string>();
 	const [logInUsername, setFormUsername] = useState<string>();
-	const { currentUser, error } = useSelector(
-		(state: RootStateOrAny) => state.user
-	);
+	const { currentUser, error } = useSelector((state: any) => state.user);
 	const dispatch = useDispatch();
 	const validateForm = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();

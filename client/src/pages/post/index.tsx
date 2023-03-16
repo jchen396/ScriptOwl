@@ -1,9 +1,12 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import { useSelector } from "react-redux";
 
 type Props = {};
 
 const Post: FunctionComponent<Props> = () => {
+	const [title, setTitle] = useState<string>();
+	const [description, setDescription] = useState<string>();
+	const [category, setCategory] = useState<string>();
 	const { currentUser } = useSelector((state: any) => state.user);
 	if (!currentUser) {
 		location.replace("/login");
