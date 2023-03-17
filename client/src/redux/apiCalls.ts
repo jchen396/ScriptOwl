@@ -46,10 +46,10 @@ export const authenticate = async (dispatch: Dispatch<AnyAction>) => {
 };
 
 export const signOut = async (dispatch: Dispatch<AnyAction>) => {
-	dispatch(logoutStart());
 	await client.query({
 		query: SIGN_OUT,
 	});
+	dispatch(logoutStart());
 };
 
 export const updateUser = async (dispatch: Dispatch<AnyAction>, data: any) => {

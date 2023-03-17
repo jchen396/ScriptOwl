@@ -14,6 +14,7 @@ import {
 	GraphQLError,
 } from "graphql";
 import { createTokens } from "../auth";
+import mongoose from "mongoose";
 
 // User Type
 const UserType = new GraphQLObjectType({
@@ -218,6 +219,10 @@ const mutation = new GraphQLObjectType({
 				likes: { type: GraphQLNonNull(GraphQLInt) },
 			},
 			resolve(parent, args) {
+				console.log(
+					args.publisher,
+					mongoose.Types.ObjectId.isValid(args.publisher)
+				);
 				const post = new Post({
 					videoKey: args.videoKey,
 					title: args.title,
