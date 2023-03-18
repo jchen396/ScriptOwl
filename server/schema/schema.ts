@@ -219,10 +219,6 @@ const mutation = new GraphQLObjectType({
 				likes: { type: GraphQLNonNull(GraphQLInt) },
 			},
 			resolve(parent, args) {
-				console.log(
-					args.publisher,
-					mongoose.Types.ObjectId.isValid(args.publisher)
-				);
 				const post = new Post({
 					videoKey: args.videoKey,
 					title: args.title,

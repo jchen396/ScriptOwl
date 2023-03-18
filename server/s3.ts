@@ -4,36 +4,59 @@ require("dotenv").config();
 const fs = require("fs");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 
-const s3Client = new S3Client({
+const s3ClientImages = new S3Client({
 	credentials: {
-		accessKeyId: process.env.AWS_BUCKET_ACCESS_KEY,
-		secretAccessKey: process.env.AWS_BUCKET_SECRET_KEY,
+		accessKeyId: process.env.AWS_BUCKET1_ACCESS_KEY,
+		secretAccessKey: process.env.AWS_BUCKET1_SECRET_KEY,
 	},
 	region: process.env.AWS_BUCKET_REGION,
 });
 
-// uploads a file to s3
-async function uploadFile(file) {
+const s3ClientVideos = new S3Client({
+	credentials: {
+		accessKeyId: process.env.AWS_BUCKET2_ACCESS_KEY,
+		secretAccessKey: process.env.AWS_BUCKET2_SECRET_KEY,
+	},
+	region: process.env.AWS_BUCKET_REGION,
+});
+
+// uploads an image to s3
+async function uploadImage(file) {
 	const fileStream = fs.createReadStream(file.path);
 	const uploadParams = {
-		Bucket: process.env.AWS_BUCKET_NAME,
+		Bucket: process.env.AWS_BUCKET1_NAME,
 		Body: fileStream,
 		Key: file.filename,
 		BucketKeyEnabled: true,
 	};
 	let putCommand = new PutObjectCommand(uploadParams);
-	await s3Client.send(putCommand);
+	await s3ClientImages.send(putCommand);
 	return file.filename;
 }
-exports.uploadFile = uploadFile;
+exports.uploadImage = uploadImage;
 
 // downloads a file from s3
-function getFileStream(fileKey) {
+function getImageFileStream(fileKey) {
 	const downloadParams = {
 		Key: fileKey,
-		Bucket: process.env.AWS_BUCKET_NAME,
+		Bucket: process.env.AWS_BUCKET1_NAME,
 	};
 	let getCommand = new GetObjectCommand(downloadParams);
-	return s3Client.send(getCommand);
+	return s3ClientImages.send(getCommand);
 }
-exports.getFileStream = getFileStream;
+exports.getImageFileStream = getImageFileStream;
+
+//uploads a video to s3
+async function uploadVideo(file) {
+	const fileStream = fs.createReadStream(file.path);
+	const uploadParams = {
+		Bucket: process.env.AWS_BUCKET2_NAME,
+		Body: fileStream,
+		Key: file.filename,
+		BucketKeyEnabled: true,
+	};
+	let putCommand = new PutObjectCommand(uploadParams);
+	await s3ClientVideos.send(putCommand);
+	return file.filename;
+}
+exports.uploadVideo = uploadVideo;

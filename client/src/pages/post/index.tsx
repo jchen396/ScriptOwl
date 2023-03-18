@@ -2,10 +2,23 @@ import { ADD_POST } from "@/graphql/mutations/addPost";
 import { useMutation } from "@apollo/client";
 import { FormEvent, FunctionComponent, useState } from "react";
 import { useSelector } from "react-redux";
+import axios from "axios";
+
+async function postVideo({ videoFile }: { videoFile: File }) {
+	const formData = new FormData();
+	formData.append("video", videoFile);
+	const result = await axios
+		.post("http://localhost:8080/videos", formData, {
+			headers: { "Content-Type": "multipart/form-data" },
+		})
+		.then((data) => data);
+	return result.data;
+}
 
 type Props = {};
 
 const Post: FunctionComponent<Props> = () => {
+	const [videoFile, setVideoFile] = useState<File>();
 	const [title, setTitle] = useState<string>();
 	const [description, setDescription] = useState<string>();
 	const [category, setCategory] = useState<string>();
@@ -14,11 +27,18 @@ const Post: FunctionComponent<Props> = () => {
 	if (!currentUser) {
 		location.replace("/login");
 	}
-	const onSubmitHandler = (e: FormEvent<HTMLButtonElement>) => {
+	const onSubmitHandler = async (e: FormEvent<HTMLButtonElement>) => {
 		e.preventDefault();
+		let result;
+		if (videoFile) {
+			result = await postVideo({ videoFile });
+		} else {
+			console.log("No file selected...");
+			return;
+		}
 		addPost({
 			variables: {
-				videoKey: "testVideoKey",
+				videoKey: result.key,
 				title,
 				description,
 				category,
@@ -41,7 +61,14 @@ const Post: FunctionComponent<Props> = () => {
 						>
 							Upload
 						</label>
-						<input type="file" className="w-full" />
+						<input
+							onChange={(e) => {
+								if (!e.target.files) return;
+								setVideoFile(e.target.files[0]);
+							}}
+							type="file"
+							className="w-full"
+						/>
 					</div>
 					<div>
 						<label

@@ -12,7 +12,7 @@ import { UPDATE_USER } from "@/graphql/mutations/updateUser";
 
 interface Props {}
 
-async function postImage({ image }: { image: any }) {
+async function postImage({ image }: { image: File }) {
 	const formData = new FormData();
 	formData.append("image", image);
 	const result = await axios
