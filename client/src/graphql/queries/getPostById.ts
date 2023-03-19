@@ -13,6 +13,16 @@ export const GET_POST_BY_ID = gql`
 			publisher {
 				username
 			}
+			comments {
+				commenter {
+					username
+					id
+					avatarKey
+				}
+				comment
+				likes
+				timestamp
+			}
 		}
 	}
 `;

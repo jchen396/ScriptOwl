@@ -1,18 +1,27 @@
 import { GET_POST_BY_ID } from "@/graphql/queries/getPostById";
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useState, useEffect } from "react";
 import React from "react";
 import client from "../../../apollo-client";
 import ReactPlayer from "react-player";
 import { useSelector } from "react-redux";
 import { COMMENT_POST } from "@/graphql/mutations/commentPost";
 import { useMutation } from "@apollo/client";
-import { current } from "@reduxjs/toolkit";
+import Image from "next/image";
+
+interface IUser {
+	username: string;
+	password: string;
+	id: string;
+	email: string;
+	avatarKey: string;
+}
 
 interface IPublisher {
 	username: string;
 }
 
 interface IComment {
+	commenter: IUser;
 	comment: string;
 	timestamp: string;
 	likes: number;
@@ -59,12 +68,32 @@ const Watch: FunctionComponent<Props> = ({ post }) => {
 				/>
 			</div>
 			<div className="basis-1/3 h-full w-full flex flex-col justify-center items-center text-white space-y-4">
-				<h2 className="text-2xl">Comments</h2>
+				<h2 className="text-2xl">{post.comments.length} Comments</h2>
 				<div className="h-3/4 w-full flex flex-col space-y-4">
-					<div className="basis-4/5 text-white border-2 bg-transparent border-gray-800 rounded-lg">
+					<div className="basis-4/5 text-white border-2 bg-transparent border-gray-800 rounded-lg overflow-auto">
 						{post.comments ? (
 							post.comments.map((comment, key) => (
-								<div key={key}>{comment.comment}</div>
+								<div key={key}>
+									<div className="flex flex-row justify-start items-center p-2 space-x-4">
+										<Image
+											height={32}
+											width={32}
+											className="w-8 h-8 rounded-full"
+											src={`http://localhost:8080/images/${comment.commenter.avatarKey}`}
+											alt="commenter photo"
+										/>
+										<div className="flex flex-col text-gray-600">
+											<p className="text-xl">
+												{comment.commenter.username}
+											</p>
+											<p>{comment.comment}</p>
+											<p className="text-sm">
+												Likes: {comment.likes}
+											</p>
+										</div>
+									</div>
+									<hr className="border-gray-800 opacity-75" />
+								</div>
 							))
 						) : (
 							<div className="w-full h-full flex justify-center items-center text-gray-600">

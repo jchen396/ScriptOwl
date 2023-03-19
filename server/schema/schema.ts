@@ -242,6 +242,7 @@ const mutation = new GraphQLObjectType({
 					category: args.category,
 					likes: 0,
 					views: 0,
+					comments: {},
 				});
 				return post.save();
 			},
@@ -255,7 +256,7 @@ const mutation = new GraphQLObjectType({
 				timestamp: { type: GraphQLString },
 			},
 			resolve(parent, args) {
-				Post.findByIdAndUpdate(args.postId, {
+				return Post.findByIdAndUpdate(args.postId, {
 					$push: {
 						comments: {
 							commenter: args.commenter,
