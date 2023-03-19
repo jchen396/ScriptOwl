@@ -7,6 +7,7 @@ interface IPost {
 	publisher: Types.ObjectId;
 	category: string;
 	likes: number;
+	views: number;
 }
 
 // 2. Create a Schema corresponding to the document interface.
@@ -17,6 +18,7 @@ const postSchema = new Schema<IPost>({
 	publisher: { type: Schema.Types.ObjectId, required: true, ref: "User" },
 	category: { type: String },
 	likes: { type: Number, required: true },
+	views: { type: Number, required: true },
 });
 
 // 3. Create a Model.

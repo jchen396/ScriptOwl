@@ -38,6 +38,7 @@ const PostType = new GraphQLObjectType({
 		title: { type: GraphQLString },
 		category: { type: GraphQLString },
 		likes: { type: GraphQLInt },
+		views: { type: GraphQLInt },
 		publisher: {
 			type: UserType,
 			resolve(parent, args) {
@@ -217,6 +218,7 @@ const mutation = new GraphQLObjectType({
 				category: { type: GraphQLString },
 				publisher: { type: GraphQLNonNull(GraphQLID) },
 				likes: { type: GraphQLNonNull(GraphQLInt) },
+				views: { type: GraphQLNonNull(GraphQLInt) },
 			},
 			resolve(parent, args) {
 				const post = new Post({
@@ -226,6 +228,7 @@ const mutation = new GraphQLObjectType({
 					publisher: args.publisher,
 					category: args.category,
 					likes: args.likes,
+					views: args.views,
 				});
 				return post.save();
 			},

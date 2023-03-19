@@ -8,8 +8,9 @@ export const GET_POSTS = gql`
 			description
 			category
 			likes
+			views
 			publisher {
-				id
+				username
 			}
 		}
 	}
