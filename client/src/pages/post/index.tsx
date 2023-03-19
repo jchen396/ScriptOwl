@@ -2,6 +2,7 @@ import { ADD_POST } from "@/graphql/mutations/addPost";
 import { useMutation } from "@apollo/client";
 import { FormEvent, FunctionComponent, useState } from "react";
 import { useSelector } from "react-redux";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import axios from "axios";
 
 async function postVideo({ videoFile }: { videoFile: File }) {
@@ -22,7 +23,8 @@ const Post: FunctionComponent<Props> = () => {
 	const [title, setTitle] = useState<string>();
 	const [description, setDescription] = useState<string>();
 	const [category, setCategory] = useState<string>();
-	const [addPost, { data }] = useMutation(ADD_POST);
+	const [addPost] = useMutation(ADD_POST);
+	const [success, setSuccess] = useState<boolean>();
 	const { currentUser } = useSelector((state: any) => state.user);
 	if (!currentUser) {
 		location.replace("/login");
@@ -36,16 +38,16 @@ const Post: FunctionComponent<Props> = () => {
 			console.log("No file selected...");
 			return;
 		}
-		addPost({
+		await addPost({
 			variables: {
 				videoKey: result.key,
 				title,
 				description,
 				category,
 				publisher: currentUser.id,
-				likes: 0,
 			},
 		});
+		setSuccess(true);
 	};
 	return (
 		<>
@@ -54,6 +56,14 @@ const Post: FunctionComponent<Props> = () => {
 					Post a video
 				</h1>
 				<form className="flex flex-col space-y-4 border-2 rounded border-slate-100 bg-transparent text-slate-100 w-100 p-10 w-3/4 lg:w-1/3 md:p-16">
+					{success && (
+						<div className="bg-green-500 p-4 rounded flex flex-row justify-start items-center space-x-2">
+							<CheckCircleIcon className="text-green-900" />
+							<span className="text-black ">
+								Uploaded successfully!
+							</span>
+						</div>
+					)}
 					<div>
 						<label
 							htmlFor="video"

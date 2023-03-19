@@ -1,5 +1,10 @@
 import { Schema, model, Types } from "mongoose";
 // 1. Create an interface representing a document in MongoDB.
+interface IComment {
+	comment: string;
+	timestamp: string;
+	likes: number;
+}
 interface IPost {
 	title: string;
 	videoKey: string;
@@ -8,6 +13,7 @@ interface IPost {
 	category: string;
 	likes: number;
 	views: number;
+	comments: IComment[];
 }
 
 // 2. Create a Schema corresponding to the document interface.
@@ -19,6 +25,7 @@ const postSchema = new Schema<IPost>({
 	category: { type: String },
 	likes: { type: Number, required: true },
 	views: { type: Number, required: true },
+	comments: { type: [Object] },
 });
 
 // 3. Create a Model.

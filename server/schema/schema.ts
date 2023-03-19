@@ -14,7 +14,6 @@ import {
 	GraphQLError,
 } from "graphql";
 import { createTokens } from "../auth";
-import mongoose from "mongoose";
 
 // User Type
 const UserType = new GraphQLObjectType({
@@ -28,6 +27,15 @@ const UserType = new GraphQLObjectType({
 		avatarKey: { type: GraphQLString },
 	}),
 });
+// Comment Type
+const CommentType = new GraphQLObjectType({
+	name: "Comment",
+	fields: () => ({
+		comment: { type: GraphQLString },
+		timestamp: { type: GraphQLString },
+		likes: { type: GraphQLInt },
+	}),
+});
 // Post Type
 const PostType = new GraphQLObjectType({
 	name: "Post",
@@ -39,6 +47,7 @@ const PostType = new GraphQLObjectType({
 		category: { type: GraphQLString },
 		likes: { type: GraphQLInt },
 		views: { type: GraphQLInt },
+		comments: { type: GraphQLList(CommentType) },
 		publisher: {
 			type: UserType,
 			resolve(parent, args) {
@@ -217,8 +226,6 @@ const mutation = new GraphQLObjectType({
 				description: { type: GraphQLString },
 				category: { type: GraphQLString },
 				publisher: { type: GraphQLNonNull(GraphQLID) },
-				likes: { type: GraphQLNonNull(GraphQLInt) },
-				views: { type: GraphQLNonNull(GraphQLInt) },
 			},
 			resolve(parent, args) {
 				const post = new Post({
@@ -227,10 +234,30 @@ const mutation = new GraphQLObjectType({
 					description: args.description,
 					publisher: args.publisher,
 					category: args.category,
-					likes: args.likes,
-					views: args.views,
+					likes: 0,
+					views: 0,
+					comments: {},
 				});
 				return post.save();
+			},
+		},
+		commentPost: {
+			type: PostType,
+			args: {
+				postId: { type: GraphQLID },
+				comment: { type: GraphQLNonNull(GraphQLString) },
+				timestamp: { type: GraphQLString },
+			},
+			resolve(parent, args) {
+				Post.findByIdAndUpdate(args.postId, {
+					$push: {
+						comments: {
+							comment: args.comments,
+							timestamp: args.timestamp,
+							likes: 0,
+						},
+					},
+				});
 			},
 		},
 		// Remove post by ID

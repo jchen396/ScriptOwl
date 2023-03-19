@@ -7,7 +7,6 @@ export const ADD_POST = gql`
 		$description: String
 		$category: String
 		$publisher: ID!
-		$likes: Int!
 	) {
 		addPost(
 			videoKey: $videoKey
@@ -15,7 +14,6 @@ export const ADD_POST = gql`
 			description: $description
 			category: $category
 			publisher: $publisher
-			likes: $likes
 		) {
 			videoKey
 			title

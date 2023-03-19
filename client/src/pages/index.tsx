@@ -17,6 +17,7 @@ interface IPost {
 	publisher: IPublisher;
 	likes: number;
 	views: number;
+	comments: object[];
 }
 interface Props {
 	posts: IPost[];
