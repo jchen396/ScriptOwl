@@ -44,6 +44,7 @@ app.post("/images", upload.single("image"), async (req, res) => {
 app.post("/videos", upload.single("video"), async (req, res) => {
 	try {
 		const result = await uploadVideo(req.file);
+		await unlinkFile(req.file.path);
 		res.send({ key: `${result}` });
 	} catch (e) {}
 });

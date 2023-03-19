@@ -1,9 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const GET_POSTS = gql`
-	query GetPosts {
-		posts {
-			id
+export const GET_POST_BY_ID = gql`
+	query GetPostById($id: ID!) {
+		post(id: $id) {
 			videoKey
 			title
 			description
