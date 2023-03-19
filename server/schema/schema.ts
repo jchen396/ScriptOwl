@@ -31,6 +31,12 @@ const UserType = new GraphQLObjectType({
 const CommentType = new GraphQLObjectType({
 	name: "Comment",
 	fields: () => ({
+		commenter: {
+			type: UserType,
+			resolve(parent, args) {
+				return User.findById(parent.commenter);
+			},
+		},
 		comment: { type: GraphQLString },
 		timestamp: { type: GraphQLString },
 		likes: { type: GraphQLInt },
@@ -236,7 +242,6 @@ const mutation = new GraphQLObjectType({
 					category: args.category,
 					likes: 0,
 					views: 0,
-					comments: {},
 				});
 				return post.save();
 			},
@@ -244,7 +249,8 @@ const mutation = new GraphQLObjectType({
 		commentPost: {
 			type: PostType,
 			args: {
-				postId: { type: GraphQLID },
+				postId: { type: GraphQLNonNull(GraphQLID) },
+				commenter: { type: GraphQLNonNull(GraphQLID) },
 				comment: { type: GraphQLNonNull(GraphQLString) },
 				timestamp: { type: GraphQLString },
 			},
@@ -252,7 +258,8 @@ const mutation = new GraphQLObjectType({
 				Post.findByIdAndUpdate(args.postId, {
 					$push: {
 						comments: {
-							comment: args.comments,
+							commenter: args.commenter,
+							comment: args.comment,
 							timestamp: args.timestamp,
 							likes: 0,
 						},
