@@ -108,7 +108,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 							<Image
 								height={32}
 								width={32}
-								className="w-8 h-8 rounded-full"
+								className="w-10 h-10 rounded-full"
 								src={`http://localhost:8080/images/${userData.avatarKey}`}
 								alt="user photo"
 							/>

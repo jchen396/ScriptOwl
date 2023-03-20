@@ -15,6 +15,18 @@ import {
 } from "graphql";
 import { createTokens } from "../auth";
 
+const DateType = new GraphQLObjectType({
+	name: "Date",
+	fields: () => ({
+		date: {
+			type: GraphQLString,
+			resolve: (parent, __) => {
+				return parent;
+			},
+		},
+	}),
+});
+
 // User Type
 const UserType = new GraphQLObjectType({
 	name: "User",
@@ -25,6 +37,9 @@ const UserType = new GraphQLObjectType({
 		email: { type: GraphQLID },
 		points: { type: GraphQLInt },
 		avatarKey: { type: GraphQLString },
+		createdAt: {
+			type: DateType,
+		},
 	}),
 });
 // Comment Type
@@ -40,6 +55,9 @@ const CommentType = new GraphQLObjectType({
 		comment: { type: GraphQLString },
 		timestamp: { type: GraphQLString },
 		likes: { type: GraphQLInt },
+		createdAt: {
+			type: DateType,
+		},
 	}),
 });
 // Post Type
@@ -54,6 +72,9 @@ const PostType = new GraphQLObjectType({
 		likes: { type: GraphQLInt },
 		views: { type: GraphQLInt },
 		comments: { type: GraphQLList(CommentType) },
+		createdAt: {
+			type: DateType,
+		},
 		publisher: {
 			type: UserType,
 			resolve(parent, args) {
@@ -242,7 +263,6 @@ const mutation = new GraphQLObjectType({
 					category: args.category,
 					likes: 0,
 					views: 0,
-					comments: {},
 				});
 				return post.save();
 			},
@@ -263,6 +283,7 @@ const mutation = new GraphQLObjectType({
 							comment: args.comment,
 							timestamp: args.timestamp,
 							likes: 0,
+							createdAt: new Date(),
 						},
 					},
 				});

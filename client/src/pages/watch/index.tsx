@@ -6,7 +6,13 @@ import ReactPlayer from "react-player";
 import { useSelector } from "react-redux";
 import { COMMENT_POST } from "@/graphql/mutations/commentPost";
 import { useMutation } from "@apollo/client";
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import Image from "next/image";
+import { getTimeDiff } from "@/functions/getTimeDiff";
+
+interface IDate {
+	date: string;
+}
 
 interface IUser {
 	username: string;
@@ -25,6 +31,7 @@ interface IComment {
 	comment: string;
 	timestamp: string;
 	likes: number;
+	createdAt: IDate;
 }
 
 interface IPost {
@@ -36,6 +43,7 @@ interface IPost {
 	publisher: IPublisher;
 	likes: number;
 	views: number;
+	createdAt: IDate;
 	comments: IComment[];
 }
 interface Props {
@@ -46,6 +54,7 @@ const Watch: FunctionComponent<Props> = ({ post }) => {
 	const [comment, setComment] = useState<string>();
 	const [commentPost] = useMutation(COMMENT_POST);
 	const { currentUser } = useSelector((state: any) => state.user);
+	const { timeNumber, timeWord } = getTimeDiff(parseInt(post.createdAt.date));
 	const onCommentHandler = (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
 	) => {
@@ -60,41 +69,67 @@ const Watch: FunctionComponent<Props> = ({ post }) => {
 	return (
 		<div className="h-screen w-screen flex flex-row items-center justify-start space-y-10 font-mono p-6 pt-20 ">
 			<div className="basis-2/3 w-full h-full flex justify-center items-center">
-				<ReactPlayer
-					url={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}
-					width="90%"
-					height="auto"
-					controls={true}
-				/>
+				<div className="flex flex-col justify-center items-center space-y-2">
+					<ReactPlayer
+						url={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}
+						width="90%"
+						height="auto"
+						controls={true}
+					/>
+					<div className="w-[90%] flex flex-row justify-start items-center space-x-4 text-white text-2xl">
+						<p>{post.views} views</p>
+						<span>&middot;</span>
+						<p>
+							{timeNumber} {timeWord} ago
+						</p>
+					</div>
+				</div>
 			</div>
 			<div className="basis-1/3 h-full w-full flex flex-col justify-center items-center text-white space-y-4">
 				<h2 className="text-2xl">{post.comments.length} Comments</h2>
 				<div className="h-3/4 w-full flex flex-col space-y-4">
 					<div className="basis-4/5 text-white border-2 bg-transparent border-gray-800 rounded-lg overflow-auto">
-						{post.comments ? (
-							post.comments.map((comment, key) => (
-								<div key={key}>
-									<div className="flex flex-row justify-start items-center p-2 space-x-4">
-										<Image
-											height={32}
-											width={32}
-											className="w-8 h-8 rounded-full"
-											src={`http://localhost:8080/images/${comment.commenter.avatarKey}`}
-											alt="commenter photo"
-										/>
-										<div className="flex flex-col text-gray-600">
-											<p className="text-xl">
-												{comment.commenter.username}
-											</p>
-											<p>{comment.comment}</p>
-											<p className="text-sm">
-												Likes: {comment.likes}
-											</p>
+						{post.comments.length ? (
+							post.comments.map((comment, key) => {
+								// convert time difference between current time and time when comment was posted
+								const { timeNumber, timeWord } = getTimeDiff(
+									parseInt(comment.createdAt.date)
+								);
+								return (
+									<div key={key}>
+										<div className="flex flex-row justify-start items-center p-2 space-x-4">
+											<Image
+												height={32}
+												width={32}
+												className="w-10 h-10 rounded-full"
+												src={`http://localhost:8080/images/${comment.commenter.avatarKey}`}
+												alt="commenter photo"
+											/>
+											<div className="flex flex-col text-gray-400">
+												<div className="flex flex-row items-center space-x-2">
+													<h2 className="text-xl hover:underline hover:text-white hover:cursor-pointer">
+														{
+															comment.commenter
+																.username
+														}
+													</h2>
+													<p className="text-gray-600">
+														{timeNumber} {timeWord}{" "}
+														ago
+													</p>
+												</div>
+
+												<p>{comment.comment}</p>
+												<div className="text-sm flex flex-row items-center space-x-2">
+													<ThumbUpOffAltIcon className="hover:text-white hover:cursor-pointer" />
+													<p>{comment.likes}</p>
+												</div>
+											</div>
 										</div>
+										<hr className="border-gray-800 opacity-75" />
 									</div>
-									<hr className="border-gray-800 opacity-75" />
-								</div>
-							))
+								);
+							})
 						) : (
 							<div className="w-full h-full flex justify-center items-center text-gray-600">
 								<p>No comments yet</p>

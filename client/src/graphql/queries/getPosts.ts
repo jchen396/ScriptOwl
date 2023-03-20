@@ -10,6 +10,9 @@ export const GET_POSTS = gql`
 			category
 			likes
 			views
+			createdAt {
+				date
+			}
 			publisher {
 				username
 			}

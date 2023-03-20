@@ -10,6 +10,9 @@ export const GET_POST_BY_ID = gql`
 			category
 			likes
 			views
+			createdAt {
+				date
+			}
 			publisher {
 				username
 			}
@@ -22,6 +25,9 @@ export const GET_POST_BY_ID = gql`
 				comment
 				likes
 				timestamp
+				createdAt {
+					date
+				}
 			}
 		}
 	}
