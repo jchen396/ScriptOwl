@@ -1,5 +1,5 @@
 import { GET_POST_BY_ID } from "@/graphql/queries/getPostById";
-import { FunctionComponent, useState, useEffect } from "react";
+import { FunctionComponent, useState } from "react";
 import React from "react";
 import client from "../../../apollo-client";
 import ReactPlayer from "react-player";
@@ -9,6 +9,7 @@ import { useMutation } from "@apollo/client";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import Image from "next/image";
 import { getTimeDiff } from "@/functions/getTimeDiff";
+import { useRouter } from "next/router";
 
 interface IDate {
 	date: string;
@@ -51,20 +52,26 @@ interface Props {
 }
 
 const Watch: FunctionComponent<Props> = ({ post }) => {
+	const router = useRouter();
 	const [comment, setComment] = useState<string>();
 	const [commentPost] = useMutation(COMMENT_POST);
 	const { currentUser } = useSelector((state: any) => state.user);
 	const { timeNumber, timeWord } = getTimeDiff(parseInt(post.createdAt.date));
-	const onCommentHandler = (
+	const refreshData = () => {
+		router.replace(router.asPath);
+	};
+	const onCommentHandler = async (
 		e: React.MouseEvent<HTMLButtonElement, MouseEvent>
 	) => {
-		commentPost({
+		const { data } = await commentPost({
 			variables: {
 				postId: post.id,
 				commenter: currentUser.id,
 				comment,
 			},
 		});
+		post = await data.commentPost;
+		refreshData();
 	};
 	return (
 		<div className="h-screen w-screen flex flex-row items-center justify-start space-y-10 font-mono p-6 pt-20 ">
@@ -87,49 +94,61 @@ const Watch: FunctionComponent<Props> = ({ post }) => {
 			</div>
 			<div className="basis-1/3 h-full w-full flex flex-col justify-center items-center text-white space-y-4">
 				<h2 className="text-2xl">{post.comments.length} Comments</h2>
-				<div className="h-3/4 w-full flex flex-col space-y-4">
+				<div className="h-4/5 w-full flex flex-col space-y-4">
 					<div className="basis-4/5 text-white border-2 bg-transparent border-gray-800 rounded-lg overflow-auto">
 						{post.comments.length ? (
-							post.comments.map((comment, key) => {
-								// convert time difference between current time and time when comment was posted
-								const { timeNumber, timeWord } = getTimeDiff(
-									parseInt(comment.createdAt.date)
-								);
-								return (
-									<div key={key}>
-										<div className="flex flex-row justify-start items-center p-2 space-x-4">
-											<Image
-												height={32}
-												width={32}
-												className="w-10 h-10 rounded-full"
-												src={`http://localhost:8080/images/${comment.commenter.avatarKey}`}
-												alt="commenter photo"
-											/>
-											<div className="flex flex-col text-gray-400">
-												<div className="flex flex-row items-center space-x-2">
-													<h2 className="text-xl hover:underline hover:text-white hover:cursor-pointer">
-														{
-															comment.commenter
-																.username
-														}
-													</h2>
-													<p className="text-gray-600">
-														{timeNumber} {timeWord}{" "}
-														ago
-													</p>
-												</div>
+							post.comments
+								.slice(0)
+								.reverse()
+								.map((comment, key) => {
+									// convert time difference between current time and time when comment was posted
+									const { timeNumber, timeWord } =
+										getTimeDiff(
+											parseInt(comment.createdAt.date)
+										);
+									return (
+										<div key={key}>
+											<div className="flex flex-row justify-start items-center p-2 space-x-4">
+												<Image
+													height={32}
+													width={32}
+													className="w-10 h-10 rounded-full"
+													src={`http://localhost:8080/images/${comment.commenter.avatarKey}`}
+													alt="commenter photo"
+												/>
+												<div className="flex flex-col text-gray-400">
+													<div className="flex flex-row items-center space-x-2">
+														<h2 className="text-xl hover:underline hover:text-white hover:cursor-pointer">
+															{
+																comment
+																	.commenter
+																	.username
+															}
+														</h2>
+														{timeNumber &&
+														timeWord ? (
+															<p className="text-gray-600">
+																{timeNumber}{" "}
+																{timeWord} ago
+															</p>
+														) : (
+															<p className="text-gray-600">
+																Just now
+															</p>
+														)}
+													</div>
 
-												<p>{comment.comment}</p>
-												<div className="text-sm flex flex-row items-center space-x-2">
-													<ThumbUpOffAltIcon className="hover:text-white hover:cursor-pointer" />
-													<p>{comment.likes}</p>
+													<p>{comment.comment}</p>
+													<div className="text-sm flex flex-row items-center space-x-2">
+														<ThumbUpOffAltIcon className="hover:text-white hover:cursor-pointer" />
+														<p>{comment.likes}</p>
+													</div>
 												</div>
 											</div>
+											<hr className="border-gray-800 opacity-75" />
 										</div>
-										<hr className="border-gray-800 opacity-75" />
-									</div>
-								);
-							})
+									);
+								})
 						) : (
 							<div className="w-full h-full flex justify-center items-center text-gray-600">
 								<p>No comments yet</p>

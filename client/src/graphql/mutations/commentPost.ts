@@ -14,6 +14,31 @@ export const COMMENT_POST = gql`
 			timestamp: $timestamp
 		) {
 			id
+			videoKey
+			title
+			description
+			category
+			likes
+			views
+			createdAt {
+				date
+			}
+			publisher {
+				username
+			}
+			comments {
+				commenter {
+					username
+					id
+					avatarKey
+				}
+				comment
+				likes
+				timestamp
+				createdAt {
+					date
+				}
+			}
 		}
 	}
 `;
