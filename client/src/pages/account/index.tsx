@@ -24,19 +24,19 @@ async function postImage({ image }: { image: File }) {
 }
 
 const Account: FunctionComponent<Props> = () => {
+	const router = useRouter();
 	const dispatch = useDispatch();
 	const [changePassword, setChangePassword] = useState<boolean>();
 	const [newPassword, setNewPassword] = useState<string>("");
 	const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
 	const [imageKey, setImageKey] = useState<any>();
 	const [editToggle, setEditToggle] = useState<boolean>(false);
-	const router = useRouter();
 	const { currentUser } = useSelector((state: any) => state.user);
 	const userData = router.query;
 	const [userUpdateMutate, { data }] = useMutation(UPDATE_USER);
 	if (!currentUser || userData.username !== currentUser.username) {
 		try {
-			location.replace("/");
+			router.replace("/");
 		} catch (err) {
 			console.log(err);
 		}

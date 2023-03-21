@@ -267,6 +267,7 @@ const mutation = new GraphQLObjectType({
 				return post.save();
 			},
 		},
+		// Comment a post
 		commentPost: {
 			type: PostType,
 			args: {
@@ -285,6 +286,20 @@ const mutation = new GraphQLObjectType({
 							likes: 0,
 							createdAt: new Date(),
 						},
+					},
+				});
+			},
+		},
+		incrementViewCount: {
+			type: PostType,
+			args: {
+				postId: { type: GraphQLNonNull(GraphQLID) },
+				views: { type: GraphQLNonNull(GraphQLInt) },
+			},
+			resolve(_, args) {
+				return Post.findByIdAndUpdate(args.postId, {
+					$set: {
+						views: args.views,
 					},
 				});
 			},

@@ -4,6 +4,7 @@ import UploadIcon from "@mui/icons-material/Upload";
 import { FunctionComponent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { signOut } from "@/redux/apiCalls";
+import { useRouter } from "next/router";
 
 interface Props {
 	userData?: {
@@ -16,11 +17,13 @@ interface Props {
 }
 
 const Navbar: FunctionComponent<Props> = ({ userData }) => {
+	const router = useRouter();
 	const [navToggle, setNavToggle] = useState<Boolean>(false);
 	const [profToggle, setProfToggle] = useState<Boolean>(false);
 	const dispatch = useDispatch();
 
 	const onSignOut = () => {
+		router.push("/");
 		signOut(dispatch);
 	};
 	return (
@@ -68,7 +71,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 							</Link>
 						</li>
 						<li className="block p-1 px-2 rounded-lg text-blue-600 hover:text-white border-2 border-blue-600 hover:text-black hover:bg-blue-600 hover:cursor-pointer flex flex-row items-center">
-							<Link href="/post">
+							<Link href={userData ? "/post" : "/login"}>
 								<UploadIcon />
 								<span>Post</span>
 							</Link>

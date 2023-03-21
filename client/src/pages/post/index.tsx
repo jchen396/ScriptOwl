@@ -4,6 +4,7 @@ import { FormEvent, FunctionComponent, useState } from "react";
 import { useSelector } from "react-redux";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 async function postVideo({ videoFile }: { videoFile: File }) {
 	const formData = new FormData();
@@ -19,6 +20,7 @@ async function postVideo({ videoFile }: { videoFile: File }) {
 type Props = {};
 
 const Post: FunctionComponent<Props> = () => {
+	const router = useRouter();
 	const [videoFile, setVideoFile] = useState<File>();
 	const [title, setTitle] = useState<string>();
 	const [description, setDescription] = useState<string>();
@@ -27,7 +29,7 @@ const Post: FunctionComponent<Props> = () => {
 	const [success, setSuccess] = useState<boolean>();
 	const { currentUser } = useSelector((state: any) => state.user);
 	if (!currentUser) {
-		location.replace("/login");
+		router.push("/login");
 	}
 	const onSubmitHandler = async (e: FormEvent<HTMLButtonElement>) => {
 		e.preventDefault();

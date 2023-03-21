@@ -3,10 +3,12 @@ import { FormEvent, FunctionComponent, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { login } from "@/redux/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 interface Props {}
 
 const Login: FunctionComponent<Props> = () => {
+	const router = useRouter();
 	const [logInPassword, setLogInPassword] = useState<string>();
 	const [logInUsername, setFormUsername] = useState<string>();
 	const { currentUser, error } = useSelector((state: any) => state.user);
@@ -16,7 +18,7 @@ const Login: FunctionComponent<Props> = () => {
 		login(dispatch, { logInUsername, logInPassword });
 	};
 	if (currentUser) {
-		location.replace("/");
+		router.back();
 	}
 	return (
 		<>

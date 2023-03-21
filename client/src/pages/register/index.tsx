@@ -1,13 +1,15 @@
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { FormEvent, useState } from "react";
 import { FunctionComponent } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import { useSelector } from "react-redux";
 import { ADD_USER } from "../../graphql/mutations/addUser";
+import { useRouter } from "next/router";
 
 interface Props {}
 
 const Register: FunctionComponent<Props> = () => {
+	const router = useRouter();
 	const [signUpPassword, setSignUpPassword] = useState<string>();
 	const [signUpConfirmPassword, setSignUpConfirmPassword] =
 		useState<string>();
@@ -37,9 +39,10 @@ const Register: FunctionComponent<Props> = () => {
 		} else {
 			setPasswordError("Passwords do not match.");
 		}
+		router.replace("/");
 	};
 	if (currentUser) {
-		location.replace("/");
+		router.replace("/");
 	}
 	return (
 		<>
