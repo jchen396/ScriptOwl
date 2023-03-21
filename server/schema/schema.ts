@@ -172,8 +172,7 @@ const RootQuery = new GraphQLObjectType({
 								secure: true,
 								maxAge: 24 * 60 * 60 * 1000,
 							});
-							const { password, ...others } = user._doc;
-							return { ...others, accessToken };
+							return user;
 						} else {
 							throw new GraphQLError(
 								"Username and password do not match."
@@ -322,10 +321,13 @@ const mutation = new GraphQLObjectType({
 				password: { type: GraphQLID },
 			},
 			resolve(_, args) {
-				const encryptedPassword = CryptoJS.AES.encrypt(
-					args.password,
-					process.env.PASS_SEC
-				).toString();
+				let encryptedPassword;
+				if (args.password) {
+					encryptedPassword = CryptoJS.AES.encrypt(
+						args.password,
+						process.env.PASS_SEC
+					).toString();
+				}
 				return User.findByIdAndUpdate(
 					args.id,
 					{

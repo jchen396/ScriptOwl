@@ -29,11 +29,11 @@ const Account: FunctionComponent<Props> = () => {
 	const [changePassword, setChangePassword] = useState<boolean>();
 	const [newPassword, setNewPassword] = useState<string>("");
 	const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
-	const [imageKey, setImageKey] = useState<any>();
+	const [imageKey, setImageKey] = useState<string>("");
 	const [editToggle, setEditToggle] = useState<boolean>(false);
 	const { currentUser } = useSelector((state: any) => state.user);
 	const userData = router.query;
-	const [userUpdateMutate, { data }] = useMutation(UPDATE_USER);
+	const [userUpdateMutate] = useMutation(UPDATE_USER);
 	if (!currentUser || userData.username !== currentUser.username) {
 		try {
 			router.replace("/");
@@ -45,7 +45,7 @@ const Account: FunctionComponent<Props> = () => {
 		setEditToggle(!editToggle);
 	};
 	const onResetPhoto = () => {
-		setImageKey(null);
+		setImageKey("");
 	};
 	const onFileSelected = async (e: any) => {
 		const targetFile = e.target.files[0];
@@ -59,7 +59,7 @@ const Account: FunctionComponent<Props> = () => {
 				throw new Error("Passwords do not match.");
 			}
 			const id = currentUser.id;
-			await userUpdateMutate({
+			const { data } = await userUpdateMutate({
 				variables: {
 					id: id,
 					avatarKey: imageKey,
@@ -67,6 +67,8 @@ const Account: FunctionComponent<Props> = () => {
 				},
 			});
 			updateUser(dispatch, data);
+			setNewPassword("");
+			setImageKey("");
 		} catch (err) {
 			console.log(err);
 		}
