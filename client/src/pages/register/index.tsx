@@ -25,7 +25,7 @@ const Register: FunctionComponent<Props> = () => {
 		const { username, email, password, confirmPassword } = e.currentTarget;
 		if (!validateUsername(username.value)) {
 			setErrorMessage(
-				"Username must be 8-20 characters long, be alphanumeric, and not contain . or - at the beginning or end"
+				"Username must be 4-16 characters long, be alphanumeric, and not contain . or - at the beginning or end"
 			);
 			return;
 		}

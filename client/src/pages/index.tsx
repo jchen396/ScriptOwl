@@ -6,27 +6,8 @@ import Link from "next/link";
 import { getTimeDiff } from "@/functions/getTimeDiff";
 import { INCREMENT_VIEW_COUNT } from "@/graphql/mutations/incrementViewCount";
 import { useMutation } from "@apollo/client";
+import { IPost } from "@/types/types";
 
-interface IDate {
-	date: string;
-}
-
-interface IPublisher {
-	username: string;
-}
-
-interface IPost {
-	id: string;
-	videoKey: string;
-	title: string;
-	description?: string;
-	category?: string;
-	publisher: IPublisher;
-	likes: number;
-	views: number;
-	comments: object[];
-	createdAt: IDate;
-}
 interface Props {
 	posts: IPost[];
 }

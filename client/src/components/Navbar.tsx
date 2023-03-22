@@ -5,15 +5,10 @@ import { FunctionComponent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { signOut } from "@/redux/apiCalls";
 import { useRouter } from "next/router";
+import { IUser } from "@/types/types";
 
 interface Props {
-	userData?: {
-		username: string;
-		password: string;
-		id: string;
-		email: string;
-		avatarKey: string;
-	};
+	userData?: IUser;
 }
 
 const Navbar: FunctionComponent<Props> = ({ userData }) => {
@@ -21,7 +16,6 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 	const [navToggle, setNavToggle] = useState<Boolean>(false);
 	const [profToggle, setProfToggle] = useState<Boolean>(false);
 	const dispatch = useDispatch();
-
 	const onSignOut = () => {
 		router.push("/");
 		signOut(dispatch);

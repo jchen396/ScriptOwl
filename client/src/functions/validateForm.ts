@@ -4,7 +4,7 @@ export const validateEmail = (email: string): boolean => {
 	);
 };
 export const validateUsername = (username: string): boolean => {
-	return /^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(
+	return /^(?=.{4,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(
 		username
 	);
 };

@@ -11,43 +11,8 @@ import Image from "next/image";
 import { getTimeDiff } from "@/functions/getTimeDiff";
 import { useRouter } from "next/router";
 import { INCREMENT_VIEW_COUNT } from "@/graphql/mutations/incrementViewCount";
+import { IPost } from "@/types/types";
 
-interface IDate {
-	date: string;
-}
-
-interface IUser {
-	username: string;
-	password: string;
-	id: string;
-	email: string;
-	avatarKey: string;
-}
-
-interface IPublisher {
-	username: string;
-}
-
-interface IComment {
-	commenter: IUser;
-	comment: string;
-	timestamp: string;
-	likes: number;
-	createdAt: IDate;
-}
-
-interface IPost {
-	id: string;
-	videoKey: string;
-	title: string;
-	description?: string;
-	category?: string;
-	publisher: IPublisher;
-	likes: number;
-	views: number;
-	createdAt: IDate;
-	comments: IComment[];
-}
 interface Props {
 	post: IPost;
 }
