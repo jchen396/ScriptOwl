@@ -2,44 +2,65 @@ import { useMutation } from "@apollo/client";
 import { FormEvent, useState } from "react";
 import { FunctionComponent } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useSelector } from "react-redux";
 import { ADD_USER } from "../../graphql/mutations/addUser";
 import { useRouter } from "next/router";
+import {
+	validateEmail,
+	validatePassword,
+	validateUsername,
+} from "@/functions/validateForm";
 
 interface Props {}
 
 const Register: FunctionComponent<Props> = () => {
 	const router = useRouter();
-	const [signUpPassword, setSignUpPassword] = useState<string>();
-	const [signUpConfirmPassword, setSignUpConfirmPassword] =
-		useState<string>();
-	const [signUpUsername, setSignUpUsername] = useState<string>();
-	const [signUpEmail, setSignUpEmail] = useState<string>();
-	const [passwordError, setPasswordError] = useState<string>();
-	const [addUser, { data, loading, error }] = useMutation(ADD_USER);
+	const [errorMessage, setErrorMessage] = useState<string>("");
+	const [successMessage, setSuccessMessage] = useState<string>("");
+	const [addUser, { error }] = useMutation(ADD_USER);
 	const { currentUser } = useSelector((state: any) => state.user);
-	const signUpForm = (e: FormEvent<HTMLFormElement>) => {
+	const signUpForm = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (signUpPassword === signUpConfirmPassword) {
-			addUser({
+		const { username, email, password, confirmPassword } = e.currentTarget;
+		if (!validateUsername(username.value)) {
+			setErrorMessage(
+				"Username must be 8-20 characters long, be alphanumeric, and not contain . or - at the beginning or end"
+			);
+			return;
+		}
+		if (!validateEmail(email.value)) {
+			setErrorMessage("Please enter a valid E-mail.");
+			return;
+		}
+		if (!validatePassword(password.value)) {
+			setErrorMessage(
+				"Password must be eight or more characters, including upper and lowercase letters, and at least one number. "
+			);
+			return;
+		}
+		if (password.value !== confirmPassword.value) {
+			setErrorMessage("Passwords do not match.");
+			return;
+		}
+		try {
+			await addUser({
 				variables: {
-					username: signUpUsername,
-					password: signUpPassword,
-					email: signUpEmail,
+					username: username.value,
+					password: password.value,
+					email: email.value,
 					points: 0,
 				},
-			})
-				.then((res) => {
-					console.log(res);
-				})
-				.catch((err) => {
-					console.log(err);
-				});
-			setPasswordError("");
-		} else {
-			setPasswordError("Passwords do not match.");
+			});
+			username.value = "";
+			email.value = "";
+			password.value = "";
+			confirmPassword.value = "";
+			setErrorMessage("");
+			setSuccessMessage("Successfully created an account.");
+		} catch (err) {
+			setSuccessMessage("");
 		}
-		router.replace("/");
 	};
 	if (currentUser) {
 		router.replace("/");
@@ -58,42 +79,46 @@ const Register: FunctionComponent<Props> = () => {
 							<CloseIcon />
 						</div>
 					)}
-					{passwordError && (
+					{errorMessage && (
 						<div className="flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4">
-							<p>{passwordError}</p>
+							<p>{errorMessage}</p>
 							<CloseIcon />
+						</div>
+					)}
+					{successMessage && (
+						<div className="bg-green-500 p-4 rounded flex flex-row justify-start items-center space-x-2">
+							<CheckCircleIcon className="text-green-900" />
+							<span className="text-black ">
+								{successMessage}
+							</span>
 						</div>
 					)}
 					<div className="grid gap-6 mb-6 md:grid-cols-2 ">
 						<div>
 							<label
-								htmlFor="first_name"
+								htmlFor="username"
 								className="block mb-2 text-sm text-gray-900 dark:text-white"
 							>
 								Username
 							</label>
 							<input
 								type="text"
-								id="first_name"
+								id="username"
 								className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-								onChange={(e) =>
-									setSignUpUsername(e.target.value)
-								}
 								required
 							/>
 						</div>
 						<div>
 							<label
-								htmlFor="last_name"
+								htmlFor="email"
 								className="block mb-2 text-sm text-gray-900 dark:text-white"
 							>
 								Email
 							</label>
 							<input
 								type="text"
-								id="last_name"
+								id="email"
 								className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-								onChange={(e) => setSignUpEmail(e.target.value)}
 								required
 							/>
 						</div>
@@ -109,24 +134,20 @@ const Register: FunctionComponent<Props> = () => {
 							type="password"
 							id="password"
 							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-							onChange={(e) => setSignUpPassword(e.target.value)}
 							required
 						/>
 					</div>
 					<div className="mb-6">
 						<label
-							htmlFor="confirm_password"
+							htmlFor="confirmPassword"
 							className="block mb-2 text-sm text-gray-900 dark:text-white"
 						>
 							Confirm password
 						</label>
 						<input
 							type="password"
-							id="confirm_password"
+							id="confirmPassword"
 							className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-							onChange={(e) =>
-								setSignUpConfirmPassword(e.target.value)
-							}
 							required
 						/>
 					</div>
