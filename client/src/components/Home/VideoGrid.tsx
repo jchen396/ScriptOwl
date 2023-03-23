@@ -2,7 +2,6 @@ import { getTimeDiff } from "@/functions/getTimeDiff";
 import { INCREMENT_VIEW_COUNT } from "@/graphql/mutations/incrementViewCount";
 import { IPost } from "@/types/types";
 import { useMutation } from "@apollo/client";
-import Link from "next/link";
 import React from "react";
 import VideoPost from "./VideoPost";
 
@@ -22,31 +21,13 @@ const VideoGrid: React.FunctionComponent<Props> = ({ posts }) => {
 							parseInt(post.createdAt.date)
 						);
 						return (
-							<div
+							<VideoPost
+								post={post}
 								key={key}
-								className="hover:bg-gray-800 p-2 hover:cursor-pointer rounded-lg"
-								onClick={() => {
-									incrementViewCount({
-										variables: {
-											postId: post.id,
-											views: post.views + 1,
-										},
-									});
-								}}
-							>
-								<Link
-									href={{
-										pathname: "/watch",
-										query: { v: post.id },
-									}}
-								>
-									<VideoPost
-										post={post}
-										timeNumber={timeNumber}
-										timeWord={timeWord}
-									/>
-								</Link>
-							</div>
+								timeNumber={timeNumber}
+								timeWord={timeWord}
+								incrementViewCount={incrementViewCount}
+							/>
 						);
 					})}
 			</div>

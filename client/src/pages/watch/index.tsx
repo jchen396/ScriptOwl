@@ -7,9 +7,7 @@ import { COMMENT_POST } from "@/graphql/mutations/commentPost";
 import { useMutation } from "@apollo/client";
 import { getTimeDiff } from "@/functions/getTimeDiff";
 import { useRouter } from "next/router";
-import { INCREMENT_VIEW_COUNT } from "@/graphql/mutations/incrementViewCount";
 import { IPost } from "@/types/types";
-import Comment from "@/components/Watch/Comment";
 import VideoSection from "@/components/Watch/VideoSection";
 import CommentSection from "@/components/Watch/CommentSection";
 
