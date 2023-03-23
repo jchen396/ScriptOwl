@@ -5,23 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import EditIcon from "@mui/icons-material/Edit";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import axios from "axios";
 import { updateUser } from "@/redux/apiCalls";
 import { useMutation } from "@apollo/client";
 import { UPDATE_USER } from "@/graphql/mutations/updateUser";
+import { postImage } from "@/functions/s3functions/postImage";
 
 interface Props {}
-
-async function postImage({ image }: { image: File }) {
-	const formData = new FormData();
-	formData.append("image", image);
-	const result = await axios
-		.post("http://localhost:8080/images", formData, {
-			headers: { "Content-Type": "multipart/form-data" },
-		})
-		.then((data) => data);
-	return result.data;
-}
 
 const Account: FunctionComponent<Props> = () => {
 	const router = useRouter();
@@ -55,7 +44,6 @@ const Account: FunctionComponent<Props> = () => {
 	const onSaveChanges = async () => {
 		try {
 			if (newPassword !== confirmNewPassword) {
-				console.log(newPassword, confirmNewPassword);
 				throw new Error("Passwords do not match.");
 			}
 			const id = currentUser.id;

@@ -4,7 +4,9 @@ const DAY_IN_MILLISECONDS = 8.64e7;
 const HOUR_IN_MILLISECONDS = 3.6e6;
 const MINUTE_IN_MILLISECONDS = 60000;
 const SECONDS_IN_MILLISECONDS = 1000;
-export const getTimeDiff = (milliseconds: number) => {
+export const getTimeDiff = (
+	milliseconds: number
+): { timeNumber?: string; timeWord?: string } => {
 	const CURRENT_DATE = new Date();
 	let dateDiff = CURRENT_DATE.getTime() - milliseconds;
 	let timeNumber;
@@ -52,5 +54,7 @@ export const getTimeDiff = (milliseconds: number) => {
 			timeWord = "second";
 		}
 	}
+	// parse number to string
+	timeNumber = timeNumber?.toString();
 	return { timeNumber, timeWord };
 };

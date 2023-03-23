@@ -21,7 +21,6 @@ const Watch: FunctionComponent<Props> = ({ post }) => {
 	const [isSSR, setIsSSR] = useState(true);
 	const router = useRouter();
 	const [commentPost] = useMutation(COMMENT_POST);
-	const [incrementViewCount] = useMutation(INCREMENT_VIEW_COUNT);
 	const { currentUser } = useSelector((state: any) => state.user);
 	const { timeNumber, timeWord } = getTimeDiff(parseInt(post.createdAt.date));
 	const refreshData = async () => {

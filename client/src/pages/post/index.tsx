@@ -3,19 +3,8 @@ import { useMutation } from "@apollo/client";
 import { FormEvent, FunctionComponent, useState } from "react";
 import { useSelector } from "react-redux";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import axios from "axios";
 import { useRouter } from "next/router";
-
-async function postVideo({ videoFile }: { videoFile: File }) {
-	const formData = new FormData();
-	formData.append("video", videoFile);
-	const result = await axios
-		.post("http://localhost:8080/videos", formData, {
-			headers: { "Content-Type": "multipart/form-data" },
-		})
-		.then((data) => data);
-	return result.data;
-}
+import { postVideo } from "@/functions/s3functions/postVideo";
 
 type Props = {};
 
