@@ -26,10 +26,10 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 				<div>
 					<Link href="/" className="flex items-center">
 						<Image
-							width={36}
-							height={36}
+							width={50}
+							height={50}
 							src="https://flowbite.com/docs/images/logo.svg"
-							className="h-6 mr-3 sm:h-9"
+							className="h-10 w-10 mr-3 sm:h-9"
 							alt="Flowbite Logo"
 						/>
 						<span className="self-center text-xl whitespace-nowrap dark:text-white">
@@ -103,8 +103,8 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 							}
 						>
 							<Image
-								height={32}
-								width={32}
+								height={50}
+								width={50}
 								className="w-10 h-10 rounded-full"
 								src={`http://localhost:8080/images/${userData.avatarKey}`}
 								alt="user photo"

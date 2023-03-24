@@ -26,16 +26,16 @@ const Avatar: React.FunctionComponent<Props> = ({
 				<p className="text-xl">Profile picture</p>
 				{imageKey ? (
 					<Image
-						height={32}
-						width={32}
+						height={100}
+						width={100}
 						className="w-32 h-32 rounded-full"
 						src={`http://localhost:8080/images/${imageKey}`}
 						alt="user photo"
 					/>
 				) : (
 					<Image
-						height={32}
-						width={32}
+						height={100}
+						width={100}
 						className="w-32 h-32 rounded-full"
 						src={`http://localhost:8080/images/${currentUser.avatarKey}`}
 						alt="user photo"

@@ -1,4 +1,5 @@
 import CryptoJS from "crypto-js";
+import mongoose from "mongoose";
 
 // Mongoose models
 import { User } from "../models/User";
@@ -46,6 +47,7 @@ const UserType = new GraphQLObjectType({
 const CommentType = new GraphQLObjectType({
 	name: "Comment",
 	fields: () => ({
+		id: { type: GraphQLID },
 		commenter: {
 			type: UserType,
 			resolve(parent, args) {
@@ -55,6 +57,7 @@ const CommentType = new GraphQLObjectType({
 		comment: { type: GraphQLString },
 		timestamp: { type: GraphQLString },
 		likes: { type: GraphQLInt },
+		dislikes: { type: GraphQLInt },
 		createdAt: {
 			type: DateType,
 		},
@@ -70,6 +73,7 @@ const PostType = new GraphQLObjectType({
 		title: { type: GraphQLString },
 		category: { type: GraphQLString },
 		likes: { type: GraphQLInt },
+		dislikes: { type: GraphQLInt },
 		views: { type: GraphQLInt },
 		comments: { type: GraphQLList(CommentType) },
 		createdAt: {
@@ -261,6 +265,7 @@ const mutation = new GraphQLObjectType({
 					publisher: args.publisher,
 					category: args.category,
 					likes: 0,
+					dislikes: 0,
 					views: 0,
 				});
 				return post.save();
@@ -279,16 +284,31 @@ const mutation = new GraphQLObjectType({
 				return Post.findByIdAndUpdate(args.postId, {
 					$push: {
 						comments: {
+							id: new mongoose.Types.ObjectId(),
 							commenter: args.commenter,
 							comment: args.comment,
 							timestamp: args.timestamp,
 							likes: 0,
+							dislike: 0,
 							createdAt: new Date(),
 						},
 					},
 				});
 			},
 		},
+		// Increase like count when pressed thumbs up button on commment
+		likeComment: {
+			type: PostType,
+			args: {
+				postId: { type: GraphQLNonNull(GraphQLID) },
+				userId: { type: GraphQLNonNull(GraphQLID) },
+				commentId: { type: GraphQLNonNull(GraphQLID) },
+			},
+			resolve(_, args) {
+				const post = Post.findById(args.postId);
+			},
+		},
+		// Increase view count of post
 		incrementViewCount: {
 			type: PostType,
 			args: {

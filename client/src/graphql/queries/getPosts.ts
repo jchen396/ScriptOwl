@@ -8,8 +8,9 @@ export const GET_POSTS = gql`
 			title
 			description
 			category
-			likes
 			views
+			likes
+			dislikes
 			createdAt {
 				date
 			}

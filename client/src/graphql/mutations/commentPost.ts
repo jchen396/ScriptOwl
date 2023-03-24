@@ -27,6 +27,7 @@ export const COMMENT_POST = gql`
 				username
 			}
 			comments {
+				id
 				commenter {
 					username
 					id
@@ -34,6 +35,7 @@ export const COMMENT_POST = gql`
 				}
 				comment
 				likes
+
 				timestamp
 				createdAt {
 					date

@@ -5,8 +5,8 @@ import Link from "next/link";
 import { getTimeDiff } from "@/functions/getTimeDiff";
 import { INCREMENT_VIEW_COUNT } from "@/graphql/mutations/incrementViewCount";
 import { useMutation } from "@apollo/client";
-import { IPost } from "@/types/types";
 import VideoGrid from "@/components/Home/VideoGrid";
+import { IPost } from "../../../types/types";
 
 interface Props {
 	posts: IPost[];

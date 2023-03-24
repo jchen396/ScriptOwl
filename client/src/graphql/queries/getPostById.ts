@@ -17,6 +17,7 @@ export const GET_POST_BY_ID = gql`
 				username
 			}
 			comments {
+				id
 				commenter {
 					username
 					id

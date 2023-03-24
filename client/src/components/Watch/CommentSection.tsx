@@ -1,17 +1,38 @@
 import { getTimeDiff } from "@/functions/getTimeDiff";
-import { IComment, IPost } from "@/types/types";
-import React from "react";
+import { COMMENT_POST } from "@/graphql/mutations/commentPost";
+import { useMutation } from "@apollo/client";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
+import { IPost, IUser } from "../../../../types/types";
 import Comment from "./Comment";
 
 type Props = {
 	post: IPost;
-	onCommentHandler: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
+	currentUser: IUser;
 };
 
 const CommentSection: React.FunctionComponent<Props> = ({
 	post,
-	onCommentHandler,
+	currentUser,
 }) => {
+	const router = useRouter();
+	const [hasInput, setHasInput] = useState<boolean>();
+	const [commentPost] = useMutation(COMMENT_POST);
+	const onCommentHandler = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		const comment = e.currentTarget.comment.value;
+		e.currentTarget.comment.value = "";
+		const { data } = await commentPost({
+			variables: {
+				postId: post.id,
+				commenter: currentUser.id,
+				comment,
+			},
+		});
+		post = data.commentPost;
+		setHasInput(false);
+		router.replace(router.asPath);
+	};
 	return (
 		<div className="basis-1/3 h-full w-full flex flex-col justify-center items-center text-white space-y-4">
 			<h2 className="text-2xl">{post.comments.length} Comments</h2>
@@ -27,12 +48,15 @@ const CommentSection: React.FunctionComponent<Props> = ({
 									parseInt(comment.createdAt.date)
 								);
 								return (
-									<Comment
-										comment={comment}
-										key={key}
-										timeNumber={timeNumber}
-										timeWord={timeWord}
-									/>
+									<div key={key}>
+										<Comment
+											timeNumber={timeNumber}
+											timeWord={timeWord}
+											post={post}
+											currentUser={currentUser}
+											comment={comment}
+										/>
+									</div>
 								);
 							})
 					) : (
@@ -50,11 +74,21 @@ const CommentSection: React.FunctionComponent<Props> = ({
 						id="comment"
 						name="comment"
 						placeholder="Add a comment..."
-						className="w-full h-auto p-2 bg-transparent border-gray-800 border-b-2 "
+						className="w-full h-auto p-2 bg-transparent border-gray-800 border-b-2"
+						onChange={(e) => {
+							e.target.value
+								? setHasInput(true)
+								: setHasInput(false);
+						}}
 					/>
 					<button
-						className="border-2 border-blue-700 hover:bg-blue-700 text-white py-2 px-4 rounded-full "
+						className={`border-2 py-2 px-4 rounded-full ${
+							hasInput
+								? "border-blue-700 hover:bg-blue-700 text-white "
+								: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
+						} `}
 						type="submit"
+						disabled={!hasInput}
 					>
 						Comment
 					</button>
