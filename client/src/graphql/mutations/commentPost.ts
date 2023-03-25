@@ -35,7 +35,7 @@ export const COMMENT_POST = gql`
 				}
 				comment
 				likes
-
+				dislikes
 				timestamp
 				createdAt {
 					date
