@@ -8,6 +8,10 @@ export const CHECK_TOKENS = gql`
 			email
 			points
 			avatarKey
+			likedCommentsIds
+			dislikedCommentsIds
+			likedPostsIds
+			dislikedPostsIds
 		}
 	}
 `;

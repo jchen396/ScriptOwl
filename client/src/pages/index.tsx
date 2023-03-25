@@ -17,13 +17,19 @@ const Home: FunctionComponent<Props> = ({ posts }) => {
 	useEffect(() => {
 		setIsSSR(false);
 	}, []);
-	return (
+	return posts ? (
 		<>
 			{!isSSR && (
 				<div className="h-screen w-screen flex flex-col items-center justify-start space-y-10 font-mono pt-40">
 					<VideoGrid posts={posts} />
 				</div>
-			)}
+			)}{" "}
+		</>
+	) : (
+		<>
+			<div className="h-screen w-screen flex flex-col items-center justify-start space-y-10 font-mono pt-40 text-white">
+				<p>No videos found</p>
+			</div>
 		</>
 	);
 };

@@ -38,10 +38,10 @@ const UserType = new GraphQLObjectType({
 		email: { type: GraphQLID },
 		points: { type: GraphQLInt },
 		avatarKey: { type: GraphQLString },
-		likedCommentIds: { type: GraphQLList(GraphQLID) },
-		dislikedCommentIds: { type: GraphQLList(GraphQLID) },
-		likedPostIds: { type: GraphQLList(GraphQLID) },
-		dislikedPostIds: { type: GraphQLList(GraphQLID) },
+		likedCommentsIds: { type: GraphQLList(GraphQLID) },
+		dislikedCommentsIds: { type: GraphQLList(GraphQLID) },
+		likedPostsIds: { type: GraphQLList(GraphQLID) },
+		dislikedPostsIds: { type: GraphQLList(GraphQLID) },
 		createdAt: {
 			type: DateType,
 		},
@@ -297,14 +297,13 @@ const mutation = new GraphQLObjectType({
 							comment: args.comment,
 							timestamp: args.timestamp,
 							likes: 0,
-							dislike: 0,
+							dislikes: 0,
 							createdAt: new Date(),
 						},
 					},
 				});
 			},
 		},
-		// Increase like count when pressed thumbs up button on commment
 		likeComment: {
 			type: PostType,
 			args: {
@@ -326,6 +325,84 @@ const mutation = new GraphQLObjectType({
 					),
 					User.findByIdAndUpdate(args.userId, {
 						$push: { likedCommentsIds: args.commentId },
+					}),
+				]);
+			},
+		},
+		// Decrease like count when pressed thumbs up button on commment that was already liked
+		unlikeComment: {
+			type: PostType,
+			args: {
+				postId: { type: GraphQLNonNull(GraphQLID) },
+				userId: { type: GraphQLNonNull(GraphQLID) },
+				commentId: { type: GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				const objId = new mongoose.Types.ObjectId(args.commentId);
+				Promise.all([
+					await Post.findOneAndUpdate(
+						{
+							_id: args.postId,
+							"comments.id": objId,
+						},
+						{
+							$inc: { "comments.$.likes": -1 },
+						}
+					),
+					User.findByIdAndUpdate(args.userId, {
+						$pull: { likedCommentsIds: args.commentId },
+					}),
+				]);
+			},
+		},
+		// Increase dislike count when pressed thumbs up button on commment
+		dislikeComment: {
+			type: PostType,
+			args: {
+				postId: { type: GraphQLNonNull(GraphQLID) },
+				userId: { type: GraphQLNonNull(GraphQLID) },
+				commentId: { type: GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				const objId = new mongoose.Types.ObjectId(args.commentId);
+				Promise.all([
+					await Post.findOneAndUpdate(
+						{
+							_id: args.postId,
+							"comments.id": objId,
+						},
+						{
+							$inc: { "comments.$.dislikes": 1 },
+						}
+					),
+					User.findByIdAndUpdate(args.userId, {
+						$push: { dislikedCommentsIds: args.commentId },
+					}),
+				]);
+			},
+		},
+		// Decrease dislike count when pressed thumbs up button on commment that was already disliked
+		undislikeComment: {
+			type: PostType,
+			args: {
+				postId: { type: GraphQLNonNull(GraphQLID) },
+				userId: { type: GraphQLNonNull(GraphQLID) },
+				commentId: { type: GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				const objId = new mongoose.Types.ObjectId(args.commentId);
+				Promise.all([
+					await Post.findOneAndUpdate(
+						{
+							_id: args.postId,
+							"comments.id": objId,
+						},
+						{
+							$inc: { "comments.$.dislikes": -1 },
+						}
+					),
+					User.findByIdAndUpdate(args.userId, {
+						$pull: { dislikedCommentsIds: args.commentId },
 					}),
 				]);
 			},
