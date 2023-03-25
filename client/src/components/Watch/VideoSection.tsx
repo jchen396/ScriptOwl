@@ -1,18 +1,101 @@
-import { IPost } from "@/types/types";
-import React from "react";
+import { IPost, IUser } from "./../../../../types/types";
+import React, { useState } from "react";
 import ReactPlayer from "react-player";
+import { useMutation } from "@apollo/client";
+import { LIKE_POST } from "@/graphql/mutations/likePost";
+import { UNLIKE_POST } from "@/graphql/mutations/unlikePost";
+import { DISLIKE_POST } from "@/graphql/mutations/dislikePost";
+import { UNDISLIKE_POST } from "@/graphql/mutations/undislikePost";
+import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
+import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 
 type Props = {
+	currentUser: IUser;
 	post: IPost;
 	timeNumber?: string;
 	timeWord?: string;
 };
 
 const VideoSection: React.FunctionComponent<Props> = ({
+	currentUser,
 	post,
 	timeNumber,
 	timeWord,
 }) => {
+	const [postLikes, setPostLikes] = useState<number>(post.likes);
+	const [postDislikes, setPostDislikes] = useState<number>(post.dislikes);
+	const [postLiked, setPostLiked] = useState<boolean>(
+		currentUser.likedPostsIds.includes(post.id)
+	);
+	const [postDisliked, setPostDisliked] = useState<boolean>(
+		currentUser.dislikedPostsIds.includes(post.id)
+	);
+	const [likePost] = useMutation(LIKE_POST);
+	const [unlikePost] = useMutation(UNLIKE_POST);
+	const [dislikePost] = useMutation(DISLIKE_POST);
+	const [undislikePost] = useMutation(UNDISLIKE_POST);
+	const onLikePost = () => {
+		if (postLiked) {
+			unlikePost({
+				variables: {
+					postId: post.id,
+					userId: currentUser.id,
+				},
+			});
+			setPostLikes((likes) => likes - 1);
+			setPostLiked(false);
+		} else {
+			if (postDisliked) {
+				undislikePost({
+					variables: {
+						postId: post.id,
+						userId: currentUser.id,
+					},
+				});
+				setPostDislikes((dislikes) => dislikes - 1);
+				setPostDisliked(false);
+			}
+			likePost({
+				variables: {
+					postId: post.id,
+					userId: currentUser.id,
+				},
+			});
+			setPostLikes((likes) => likes + 1);
+			setPostLiked(true);
+		}
+	};
+	const onDislikePost = () => {
+		if (postDisliked) {
+			undislikePost({
+				variables: {
+					postId: post.id,
+					userId: currentUser.id,
+				},
+			});
+			setPostDislikes((dislikes) => dislikes - 1);
+			setPostDisliked(false);
+		} else {
+			if (postLiked) {
+				unlikePost({
+					variables: {
+						postId: post.id,
+						userId: currentUser.id,
+					},
+				});
+				setPostLikes((likes) => likes - 1);
+				setPostLiked(false);
+			}
+			dislikePost({
+				variables: {
+					postId: post.id,
+					userId: currentUser.id,
+				},
+			});
+			setPostDislikes((dislikes) => dislikes + 1);
+			setPostDisliked(true);
+		}
+	};
 	return (
 		<div>
 			<div className="basis-2/3 w-full h-full flex justify-center items-center">
@@ -23,12 +106,41 @@ const VideoSection: React.FunctionComponent<Props> = ({
 						height="auto"
 						controls={true}
 					/>
-					<div className="w-[90%] flex flex-row justify-start items-center space-x-4 text-white text-2xl">
-						<p>{post.views} views</p>
-						<span>&middot;</span>
-						<p>
-							{timeNumber} {timeWord} ago
-						</p>
+					<div className="w-[90%] flex flex-row justify-between items-center text-white text-2xl">
+						<div className="flex flex-row space-x-4">
+							<p>{post.views} views</p>
+							<span>&middot;</span>
+							<p>
+								{timeNumber} {timeWord} ago
+							</p>
+						</div>
+
+						<div className="flex flex-row space-x-4 text-4xl">
+							<div
+								className={`hover:cursor-pointer ${
+									postLiked
+										? "hover:text-blue-400 text-blue-600 "
+										: "hover:text-white text-gray-400"
+								}`}
+								onClick={onLikePost}
+							>
+								<ThumbUpOffAltIcon sx={{ fontSize: 40 }} />
+							</div>
+
+							<p>{postLikes}</p>
+							<div
+								className={`hover:cursor-pointer ${
+									postDisliked
+										? "hover:text-red-400 text-red-600 "
+										: "hover:text-white text-gray-400"
+								}`}
+								onClick={onDislikePost}
+							>
+								<ThumbDownOffAltIcon sx={{ fontSize: 40 }} />
+							</div>
+
+							<p>{postDislikes}</p>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -24,6 +24,7 @@ const Watch: FunctionComponent<Props> = ({ post }) => {
 			{!isSSR && (
 				<div className="h-screen w-screen flex flex-row items-center justify-start space-y-10 font-mono p-6 pt-20 ">
 					<VideoSection
+						currentUser={currentUser}
 						post={post}
 						timeNumber={timeNumber}
 						timeWord={timeWord}

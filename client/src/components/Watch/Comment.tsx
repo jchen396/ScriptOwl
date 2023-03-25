@@ -24,12 +24,14 @@ const Comment: React.FunctionComponent<Props> = ({
 	post,
 	currentUser,
 }) => {
-	const [likes, setLikes] = useState<number>(comment.likes);
-	const [dislikes, setDislikes] = useState<number>(comment.dislikes);
-	const [userLiked, setUserLiked] = useState<boolean>(
+	const [commentLikes, setCommentLikes] = useState<number>(comment.likes);
+	const [commentDislikes, setCommentDislikes] = useState<number>(
+		comment.dislikes
+	);
+	const [commentLiked, setCommentLiked] = useState<boolean>(
 		currentUser.likedCommentsIds.includes(comment.id)
 	);
-	const [userDisliked, setUserDisliked] = useState<boolean>(
+	const [commentDisliked, setCommentDisliked] = useState<boolean>(
 		currentUser.dislikedCommentsIds.includes(comment.id)
 	);
 	const [likeComment] = useMutation(LIKE_COMMENT);
@@ -37,7 +39,7 @@ const Comment: React.FunctionComponent<Props> = ({
 	const [dislikeComment] = useMutation(DISLIKE_COMMENT);
 	const [undislikeComment] = useMutation(UNDISLIKE_COMMENT);
 	const onLikeComment = () => {
-		if (userLiked) {
+		if (commentLiked) {
 			unlikeComment({
 				variables: {
 					postId: post.id,
@@ -45,10 +47,10 @@ const Comment: React.FunctionComponent<Props> = ({
 					commentId: comment.id,
 				},
 			});
-			setLikes((likes) => likes - 1);
-			setUserLiked(false);
+			setCommentLikes((likes) => likes - 1);
+			setCommentLiked(false);
 		} else {
-			if (userDisliked) {
+			if (commentDisliked) {
 				undislikeComment({
 					variables: {
 						postId: post.id,
@@ -56,8 +58,8 @@ const Comment: React.FunctionComponent<Props> = ({
 						commentId: comment.id,
 					},
 				});
-				setDislikes((dislikes) => dislikes - 1);
-				setUserDisliked(false);
+				setCommentDislikes((dislikes) => dislikes - 1);
+				setCommentDisliked(false);
 			}
 			likeComment({
 				variables: {
@@ -66,12 +68,12 @@ const Comment: React.FunctionComponent<Props> = ({
 					commentId: comment.id,
 				},
 			});
-			setLikes((likes) => likes + 1);
-			setUserLiked(true);
+			setCommentLikes((likes) => likes + 1);
+			setCommentLiked(true);
 		}
 	};
 	const onDislikeComment = () => {
-		if (userDisliked) {
+		if (commentDisliked) {
 			undislikeComment({
 				variables: {
 					postId: post.id,
@@ -79,10 +81,10 @@ const Comment: React.FunctionComponent<Props> = ({
 					commentId: comment.id,
 				},
 			});
-			setDislikes((dislikes) => dislikes - 1);
-			setUserDisliked(false);
+			setCommentDislikes((dislikes) => dislikes - 1);
+			setCommentDisliked(false);
 		} else {
-			if (userLiked) {
+			if (commentLiked) {
 				unlikeComment({
 					variables: {
 						postId: post.id,
@@ -90,8 +92,8 @@ const Comment: React.FunctionComponent<Props> = ({
 						commentId: comment.id,
 					},
 				});
-				setLikes((likes) => likes - 1);
-				setUserLiked(false);
+				setCommentLikes((likes) => likes - 1);
+				setCommentLiked(false);
 			}
 			dislikeComment({
 				variables: {
@@ -100,8 +102,8 @@ const Comment: React.FunctionComponent<Props> = ({
 					commentId: comment.id,
 				},
 			});
-			setDislikes((dislikes) => dislikes + 1);
-			setUserDisliked(true);
+			setCommentDislikes((dislikes) => dislikes + 1);
+			setCommentDisliked(true);
 		}
 	};
 
@@ -133,7 +135,7 @@ const Comment: React.FunctionComponent<Props> = ({
 					<div className="text-sm flex flex-row items-center space-x-2">
 						<div
 							className={`hover:cursor-pointer ${
-								userLiked
+								commentLiked
 									? "hover:text-blue-400 text-blue-600 "
 									: "hover:text-white text-gray-400"
 							}`}
@@ -142,10 +144,10 @@ const Comment: React.FunctionComponent<Props> = ({
 							<ThumbUpOffAltIcon />
 						</div>
 
-						<p>{likes}</p>
+						<p>{commentLikes}</p>
 						<div
 							className={`hover:cursor-pointer ${
-								userDisliked
+								commentDisliked
 									? "hover:text-red-400 text-red-600 "
 									: "hover:text-white text-gray-400"
 							}`}
@@ -154,7 +156,7 @@ const Comment: React.FunctionComponent<Props> = ({
 							<ThumbDownOffAltIcon />
 						</div>
 
-						<p>{dislikes}</p>
+						<p>{commentDislikes}</p>
 					</div>
 				</div>
 			</div>

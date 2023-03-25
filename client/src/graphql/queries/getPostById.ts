@@ -9,6 +9,7 @@ export const GET_POST_BY_ID = gql`
 			description
 			category
 			likes
+			dislikes
 			views
 			createdAt {
 				date

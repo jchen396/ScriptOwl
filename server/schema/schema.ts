@@ -304,6 +304,83 @@ const mutation = new GraphQLObjectType({
 				});
 			},
 		},
+		// Increase like count when pressed thumbs up button on post
+		likePost: {
+			type: PostType,
+			args: {
+				postId: { type: GraphQLNonNull(GraphQLID) },
+				userId: { type: GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				Promise.all([
+					await Post.findByIdAndUpdate(
+						args.postId,
+
+						{
+							$inc: { likes: 1 },
+						}
+					),
+					User.findByIdAndUpdate(args.userId, {
+						$push: { likedPostsIds: args.postId },
+					}),
+				]);
+			},
+		},
+		// Decrease like count when pressed thumbs up button on post that was already liked
+		unlikePost: {
+			type: PostType,
+			args: {
+				postId: { type: GraphQLNonNull(GraphQLID) },
+				userId: { type: GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				Promise.all([
+					await Post.findByIdAndUpdate(args.postId, {
+						$inc: { likes: -1 },
+					}),
+					User.findByIdAndUpdate(args.userId, {
+						$pull: { likedPostsIds: args.postId },
+					}),
+				]);
+			},
+		},
+		// Increase dislike count when pressed thumbs up button on post
+		dislikePost: {
+			type: PostType,
+			args: {
+				postId: { type: GraphQLNonNull(GraphQLID) },
+				userId: { type: GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				Promise.all([
+					await Post.findByIdAndUpdate(args.postId, {
+						$inc: { dislikes: 1 },
+					}),
+					User.findByIdAndUpdate(args.userId, {
+						$push: { dislikedPostsIds: args.postId },
+					}),
+				]);
+			},
+		},
+		// Decrease dislike count when pressed thumbs up button on post that was already disliked
+		undislikePost: {
+			type: PostType,
+			args: {
+				postId: { type: GraphQLNonNull(GraphQLID) },
+				userId: { type: GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				Promise.all([
+					await Post.findOneAndUpdate(args.postId, {
+						$inc: { dislikes: -1 },
+					}),
+					User.findByIdAndUpdate(args.userId, {
+						$pull: { dislikedPostsIds: args.postId },
+					}),
+				]);
+			},
+		},
+		// Increase like count when pressed thumbs up button on commment
 		likeComment: {
 			type: PostType,
 			args: {
