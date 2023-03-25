@@ -3,13 +3,17 @@ export interface IDate {
 }
 
 export interface IUser {
-	[key: string]: string | number;
+	//[key: string]: Array<string> | string | number;
 	username: string;
 	password: string;
-	id: string;
+	readonly id: string;
 	email: string;
 	avatarKey: string;
 	points: number;
+	likedCommentsIds: Array<string>;
+	dislikedCommentsIds: Array<string>;
+	likedPostsIds: Array<string>;
+	dislikedPostsIds: Array<string>;
 }
 
 export interface IPublisher {
@@ -17,7 +21,7 @@ export interface IPublisher {
 }
 
 export interface IComment {
-	id: string;
+	readonly id: string;
 	commenter: IUser;
 	comment: string;
 	timestamp: string;
@@ -27,7 +31,7 @@ export interface IComment {
 }
 
 export interface IPost {
-	id: string;
+	readonly id: string;
 	videoKey: string;
 	title: string;
 	description?: string;

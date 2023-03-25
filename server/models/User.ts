@@ -11,6 +11,10 @@ const userSchema = new Schema<IUser>(
 		email: { type: String, required: true, unique: true },
 		points: { type: Number },
 		avatarKey: { type: String },
+		likedCommentsIds: { type: [String] },
+		dislikedCommentsIds: { type: [String] },
+		likedPostsIds: { type: [String] },
+		dislikedPostsIds: { type: [String] },
 	},
 	{
 		timestamps: true,

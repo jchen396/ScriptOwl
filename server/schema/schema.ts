@@ -38,6 +38,10 @@ const UserType = new GraphQLObjectType({
 		email: { type: GraphQLID },
 		points: { type: GraphQLInt },
 		avatarKey: { type: GraphQLString },
+		likedCommentIds: { type: GraphQLList(GraphQLID) },
+		dislikedCommentIds: { type: GraphQLList(GraphQLID) },
+		likedPostIds: { type: GraphQLList(GraphQLID) },
+		dislikedPostIds: { type: GraphQLList(GraphQLID) },
 		createdAt: {
 			type: DateType,
 		},
@@ -226,6 +230,10 @@ const mutation = new GraphQLObjectType({
 								email: args.email.toLowerCase(),
 								points: 0,
 								avatarKey: "d3b74dbd159a95a0cd27dc875a9aa104",
+								likedCommentsIds: [],
+								dislikedCommentsIds: [],
+								likedPostsIds: [],
+								dislikedPostsIds: [],
 							});
 							user.save();
 							const { password, ...others } = user;
@@ -304,8 +312,22 @@ const mutation = new GraphQLObjectType({
 				userId: { type: GraphQLNonNull(GraphQLID) },
 				commentId: { type: GraphQLNonNull(GraphQLID) },
 			},
-			resolve(_, args) {
-				const post = Post.findById(args.postId);
+			async resolve(_, args) {
+				const objId = new mongoose.Types.ObjectId(args.commentId);
+				Promise.all([
+					await Post.findOneAndUpdate(
+						{
+							_id: args.postId,
+							"comments.id": objId,
+						},
+						{
+							$inc: { "comments.$.likes": 1 },
+						}
+					),
+					User.findByIdAndUpdate(args.userId, {
+						$push: { likedCommentsIds: args.commentId },
+					}),
+				]);
 			},
 		},
 		// Increase view count of post
