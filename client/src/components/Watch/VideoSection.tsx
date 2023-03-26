@@ -1,5 +1,5 @@
 import { IPost, IUser } from "./../../../../types/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { useMutation } from "@apollo/client";
 import { LIKE_POST } from "@/graphql/mutations/likePost";
@@ -30,6 +30,7 @@ const VideoSection: React.FunctionComponent<Props> = ({
 	const [postDisliked, setPostDisliked] = useState<boolean>(
 		currentUser.dislikedPostsIds.includes(post.id)
 	);
+	const [postLikePercentage, setPostLikePercentage] = useState<number>(0);
 	const [likePost] = useMutation(LIKE_POST);
 	const [unlikePost] = useMutation(UNLIKE_POST);
 	const [dislikePost] = useMutation(DISLIKE_POST);
@@ -96,6 +97,13 @@ const VideoSection: React.FunctionComponent<Props> = ({
 			setPostDisliked(true);
 		}
 	};
+	useEffect(() => {
+		setPostLikePercentage(
+			postDislikes
+				? Math.floor(postLikes / (postLikes + postDislikes)) * 100
+				: 100
+		);
+	}, [postLikes, postDislikes]);
 	return (
 		<div>
 			<div className="basis-2/3 w-full h-full flex justify-center items-center">
@@ -107,39 +115,55 @@ const VideoSection: React.FunctionComponent<Props> = ({
 						controls={true}
 					/>
 					<div className="w-[90%] flex flex-row justify-between items-center text-white text-2xl">
-						<div className="flex flex-row space-x-4">
-							<p>{post.views} views</p>
-							<span>&middot;</span>
-							<p>
-								{timeNumber} {timeWord} ago
-							</p>
+						<div className="flex flex-col items-start">
+							<div className="flex flex-row space-x-4">
+								<p>{post.views} views</p>
+								<span>&middot;</span>
+								<p>
+									{timeNumber} {timeWord} ago
+								</p>
+							</div>
 						</div>
 
-						<div className="flex flex-row space-x-4 text-4xl">
-							<div
-								className={`hover:cursor-pointer ${
-									postLiked
-										? "hover:text-blue-400 text-blue-600 "
-										: "hover:text-white text-gray-400"
-								}`}
-								onClick={onLikePost}
-							>
-								<ThumbUpOffAltIcon sx={{ fontSize: 40 }} />
-							</div>
+						<div className="flex flex-col space-y-2">
+							<div className="flex flex-row space-x-4 text-4xl">
+								<div
+									className={`hover:cursor-pointer ${
+										postLiked
+											? "hover:text-blue-400 text-blue-600 "
+											: "hover:text-white text-gray-400"
+									}`}
+									onClick={onLikePost}
+								>
+									<ThumbUpOffAltIcon sx={{ fontSize: 40 }} />
+								</div>
 
-							<p>{postLikes}</p>
-							<div
-								className={`hover:cursor-pointer ${
-									postDisliked
-										? "hover:text-red-400 text-red-600 "
-										: "hover:text-white text-gray-400"
-								}`}
-								onClick={onDislikePost}
-							>
-								<ThumbDownOffAltIcon sx={{ fontSize: 40 }} />
-							</div>
+								<p>{postLikes}</p>
+								<div
+									className={`hover:cursor-pointer ${
+										postDisliked
+											? "hover:text-red-400 text-red-600 "
+											: "hover:text-white text-gray-400"
+									}`}
+									onClick={onDislikePost}
+								>
+									<ThumbDownOffAltIcon
+										sx={{ fontSize: 40 }}
+									/>
+								</div>
 
-							<p>{postDislikes}</p>
+								<p>{postDislikes}</p>
+							</div>
+							<div className="w-full flex flex-row justify-center items-center">
+								<div
+									className={`
+									w-[${postLikePercentage}%] py-1 bg-blue-600 rounded-l-full`}
+								></div>
+								<div
+									className={`
+									 w-[${100 - postLikePercentage}%] py-1 bg-red-600 rounded-r-full`}
+								></div>
+							</div>
 						</div>
 					</div>
 				</div>

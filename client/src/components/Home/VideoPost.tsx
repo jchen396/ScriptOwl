@@ -14,6 +14,9 @@ const VideoPost: React.FunctionComponent<Props> = ({
 	timeNumber,
 	timeWord,
 }) => {
+	const postLikeRatio = post.dislikes
+		? Math.floor((post.likes / (post.likes + post.dislikes)) * 100)
+		: 100;
 	return (
 		<>
 			<Link
@@ -29,8 +32,19 @@ const VideoPost: React.FunctionComponent<Props> = ({
 						height="150px"
 					/>
 				</div>
+				<div className="flex flex-row justify-between items-center">
+					<p className="text-white text-xl bold">{post.title}</p>
+					<p
+						className={`${
+							postLikeRatio > 50
+								? "text-blue-600"
+								: "text-red-600"
+						}`}
+					>
+						{postLikeRatio}%
+					</p>
+				</div>
 
-				<p className="text-white text-xl bold">{post.title}</p>
 				<p className="text-gray-400 text-lg">
 					{post.publisher.username}
 				</p>
