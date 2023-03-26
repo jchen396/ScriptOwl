@@ -1,5 +1,5 @@
 export const likeDislikeBar: { [key: number]: [string, string] } = {
-	0: ["w-[0%]", "w-[100%]"],
+	0: ["w-[0%]", "w-[100%] rounded-l-full"],
 	1: ["w-[1%]", "w-[99%]"],
 	2: ["w-[2%]", "w-[98%]"],
 	3: ["w-[3%]", "w-[97%]"],
@@ -99,5 +99,5 @@ export const likeDislikeBar: { [key: number]: [string, string] } = {
 	97: ["w-[97%]", "w-[3%]"],
 	98: ["w-[98%]", "w-[2%]"],
 	99: ["w-[99%]", "w-[1%]"],
-	100: ["w-[100%", "w-[0%]"],
+	100: ["w-[100%] round-r-full", "w-[0%]"],
 };
