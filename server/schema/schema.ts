@@ -129,7 +129,6 @@ const RootQuery = new GraphQLObjectType({
 		checkTokens: {
 			type: UserType,
 			resolve(_, __, { res }) {
-				console.log(res.req.user_id);
 				if (!res.req.user_id) {
 					return null;
 				}
