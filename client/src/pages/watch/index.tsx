@@ -72,6 +72,7 @@ export async function getServerSideProps(context: any) {
 		variables: {
 			id: context.query.v,
 		},
+		fetchPolicy: "no-cache",
 	});
 	return {
 		props: { post: data.post },
