@@ -2,19 +2,14 @@ import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticate } from "@/redux/apiCalls";
+import { IUser } from "../../../types/types";
 
 interface LayoutProps {}
 
 const Layout = ({ children }: PropsWithChildren) => {
 	const { currentUser } = useSelector((state: any) => state.user);
 	const dispatch = useDispatch();
-	const [userData, setUserData] = useState<{
-		username: string;
-		password: string;
-		id: string;
-		email: string;
-		avatarKey: string;
-	}>();
+	const [userData, setUserData] = useState<IUser>();
 	useEffect(() => {
 		authenticate(dispatch);
 	}, [dispatch]);

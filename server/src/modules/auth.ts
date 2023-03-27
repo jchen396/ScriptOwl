@@ -1,30 +1,29 @@
-const express = require("express");
-require("dotenv").config();
-const { graphqlHTTP } = require("express-graphql");
-const schema = require("./schema/schema");
-const cors = require("cors");
-const port = process.env.PORT || 5000;
-const cookieParser = require("cookie-parser");
+import { User } from "../../models/User";
+
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-import { createTokens } from "./auth";
-import { connectDB } from "./config/db";
-import { User } from "./models/User";
+export const createTokens = (user) => {
+	const accessToken = jwt.sign(
+		{
+			user_id: user._id,
+			username: user.username,
+			email: user.password,
+			avatarKey: user.avatarKey,
+		},
+		process.env.JWT_SEC,
+		{ expiresIn: "15m" }
+	);
 
-const app = express();
-app.use(
-	cors({
-		credentials: true,
-		origin: "http://localhost:3000",
-	})
-);
+	const refreshToken = jwt.sign(
+		{ user_id: user.id },
+		process.env.REFRESH_SEC,
+		{ expiresIn: "5d" }
+	);
+	return { accessToken, refreshToken };
+};
 
-// connect to MongoDB database
-connectDB();
-
-app.use(cookieParser());
-
-app.use(async (req, res, next) => {
+export const authenticateTokens = async (req, res, next) => {
 	const accessToken = req.cookies["accessToken"];
 	const refreshToken = req.cookies["refreshToken"];
 	if (!refreshToken && !accessToken) {
@@ -55,7 +54,7 @@ app.use(async (req, res, next) => {
 		httpOnly: true,
 		sameSite: "None",
 		secure: true,
-		maxAge: 60 * 1000,
+		maxAge: 15 * 60 * 1000,
 	});
 	res.cookie("refreshToken", tokens.refreshToken, {
 		httpOnly: true,
@@ -65,19 +64,4 @@ app.use(async (req, res, next) => {
 	});
 	req.user_id = user.id;
 	next();
-});
-// use GraphQL api
-app.use(
-	"/graphql",
-	graphqlHTTP((_, res) => {
-		return {
-			schema,
-			context: { res },
-			graphiql: process.env.NODE_ENV === "development",
-		};
-	})
-);
-
-app.listen(port, () => {
-	console.log(`PORT ${port} is running.`);
-});
+};

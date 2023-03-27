@@ -1,16 +1,23 @@
+const express = require("express");
+require("dotenv").config({ path: "../.env" });
+const { graphqlHTTP } = require("express-graphql");
+const schema = require("./../schema/schema");
+const cors = require("cors");
+const port = process.env.PORT || 8080;
+const fs = require("fs");
+const util = require("util");
+const unlinkFile = util.promisify(fs.unlink);
+const cookieParser = require("cookie-parser");
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
+import { authenticateTokens } from "./modules/auth";
+import { connectDB } from "../config/db";
 const {
 	uploadImage,
 	getImageFileStream,
 	uploadVideo,
-	getVideoFileStream,
-} = require("./s3");
-const express = require("express");
-require("dotenv").config();
-const port = process.env.S3_PORT || 8080;
-const fs = require("fs");
-const cors = require("cors");
-const util = require("util");
-const unlinkFile = util.promisify(fs.unlink);
+} = require("./modules/s3");
+
 const app = express();
 app.use(
 	cors({
@@ -19,10 +26,25 @@ app.use(
 	})
 );
 
-const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+// connect to MongoDB database
+connectDB();
 
-const {} = require("./s3");
+app.use(cookieParser());
+// authenticate tokens
+app.use(async (req, res, next) => {
+	authenticateTokens(req, res, next);
+});
+// use GraphQL api
+app.use(
+	"/graphql",
+	graphqlHTTP((_, res) => {
+		return {
+			schema,
+			context: { res },
+			graphiql: process.env.NODE_ENV === "development",
+		};
+	})
+);
 
 // posting and fetching files to s3 via rest API
 app.get("/images/:key", async (req, res) => {

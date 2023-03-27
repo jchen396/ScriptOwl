@@ -14,7 +14,7 @@ import {
 	GraphQLNonNull,
 	GraphQLError,
 } from "graphql";
-import { createTokens } from "../auth";
+import { createTokens } from "../src/modules/auth";
 
 const DateType = new GraphQLObjectType({
 	name: "Date",
@@ -172,7 +172,7 @@ const RootQuery = new GraphQLObjectType({
 								httpOnly: true,
 								sameSite: "None",
 								secure: true,
-								maxAge: 60 * 1000,
+								maxAge: 15 * 60 * 1000,
 							});
 							res.cookie("refreshToken", refreshToken, {
 								httpOnly: true,

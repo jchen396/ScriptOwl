@@ -3,7 +3,7 @@ export interface IDate {
 }
 
 export interface IUser {
-	//[key: string]: Array<string> | string | number;
+	[key: string]: Array<string> | string | number;
 	username: string;
 	password: string;
 	readonly id: string;

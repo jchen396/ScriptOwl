@@ -1,4 +1,4 @@
-import { IUser } from "@/types/types";
+import { IUser } from "./../../../../types/types";
 import Image from "next/image";
 import React from "react";
 import EditIcon from "@mui/icons-material/Edit";
@@ -29,7 +29,7 @@ const Avatar: React.FunctionComponent<Props> = ({
 						height={100}
 						width={100}
 						className="w-32 h-32 rounded-full"
-						src={`http://localhost:8080/images/${imageKey}`}
+						src={`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${imageKey}`}
 						alt="user photo"
 					/>
 				) : (

@@ -145,7 +145,7 @@ const Comment: React.FunctionComponent<Props> = ({
 					height={32}
 					width={32}
 					className="w-10 h-10 rounded-full"
-					src={`http://localhost:8080/images/${comment.commenter.avatarKey}`}
+					src={`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${comment.commenter.avatarKey}`}
 					alt="commenter photo"
 				/>
 				<div className="flex flex-col text-gray-400">

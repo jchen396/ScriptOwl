@@ -5,7 +5,7 @@ import { FunctionComponent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { signOut } from "@/redux/apiCalls";
 import { useRouter } from "next/router";
-import { IUser } from "@/types/types";
+import { IUser } from "./../../../types/types";
 
 interface Props {
 	userData?: IUser;
@@ -106,7 +106,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 								height={50}
 								width={50}
 								className="w-10 h-10 rounded-full"
-								src={`http://localhost:8080/images/${userData.avatarKey}`}
+								src={`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${userData.avatarKey}`}
 								alt="user photo"
 							/>
 						</button>
