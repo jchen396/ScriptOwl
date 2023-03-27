@@ -312,8 +312,8 @@ const mutation = new GraphQLObjectType({
 				userId: { type: GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
-				Promise.all([
-					await Post.findByIdAndUpdate(
+				await Promise.all([
+					Post.findByIdAndUpdate(
 						args.postId,
 
 						{
@@ -334,8 +334,8 @@ const mutation = new GraphQLObjectType({
 				userId: { type: GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
-				Promise.all([
-					await Post.findByIdAndUpdate(args.postId, {
+				await Promise.all([
+					Post.findByIdAndUpdate(args.postId, {
 						$inc: { likes: -1 },
 					}),
 					User.findByIdAndUpdate(args.userId, {
@@ -352,8 +352,8 @@ const mutation = new GraphQLObjectType({
 				userId: { type: GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
-				Promise.all([
-					await Post.findByIdAndUpdate(args.postId, {
+				await Promise.all([
+					Post.findByIdAndUpdate(args.postId, {
 						$inc: { dislikes: 1 },
 					}),
 					User.findByIdAndUpdate(args.userId, {
@@ -370,8 +370,8 @@ const mutation = new GraphQLObjectType({
 				userId: { type: GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
-				Promise.all([
-					await Post.findOneAndUpdate(args.postId, {
+				await Promise.all([
+					Post.findByIdAndUpdate(args.postId, {
 						$inc: { dislikes: -1 },
 					}),
 					User.findByIdAndUpdate(args.userId, {
@@ -390,8 +390,8 @@ const mutation = new GraphQLObjectType({
 			},
 			async resolve(_, args) {
 				const objId = new mongoose.Types.ObjectId(args.commentId);
-				Promise.all([
-					await Post.findOneAndUpdate(
+				await Promise.all([
+					Post.findOneAndUpdate(
 						{
 							_id: args.postId,
 							"comments.id": objId,
@@ -416,8 +416,8 @@ const mutation = new GraphQLObjectType({
 			},
 			async resolve(_, args) {
 				const objId = new mongoose.Types.ObjectId(args.commentId);
-				Promise.all([
-					await Post.findOneAndUpdate(
+				await Promise.all([
+					Post.findOneAndUpdate(
 						{
 							_id: args.postId,
 							"comments.id": objId,
@@ -442,8 +442,8 @@ const mutation = new GraphQLObjectType({
 			},
 			async resolve(_, args) {
 				const objId = new mongoose.Types.ObjectId(args.commentId);
-				Promise.all([
-					await Post.findOneAndUpdate(
+				await Promise.all([
+					Post.findOneAndUpdate(
 						{
 							_id: args.postId,
 							"comments.id": objId,
@@ -468,8 +468,8 @@ const mutation = new GraphQLObjectType({
 			},
 			async resolve(_, args) {
 				const objId = new mongoose.Types.ObjectId(args.commentId);
-				Promise.all([
-					await Post.findOneAndUpdate(
+				await Promise.all([
+					Post.findOneAndUpdate(
 						{
 							_id: args.postId,
 							"comments.id": objId,

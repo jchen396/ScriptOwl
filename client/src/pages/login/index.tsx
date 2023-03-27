@@ -8,7 +8,9 @@ interface Props {}
 
 const Login: FunctionComponent<Props> = () => {
 	const router = useRouter();
-	const { currentUser, error } = useSelector((state: any) => state.user);
+	const { currentUser, error, isFetching } = useSelector(
+		(state: any) => state.user
+	);
 	const dispatch = useDispatch();
 	const validateForm = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -23,7 +25,11 @@ const Login: FunctionComponent<Props> = () => {
 	return (
 		<>
 			<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono">
-				<LoginForm error={error} validateForm={validateForm} />
+				<LoginForm
+					error={error}
+					validateForm={validateForm}
+					isFetching={isFetching}
+				/>
 			</div>
 		</>
 	);

@@ -5,6 +5,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 type Props = {
 	error?: ApolloError;
+	loading: boolean;
 	errorMessage: string;
 	successMessage: string;
 	signUpForm: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
@@ -12,6 +13,7 @@ type Props = {
 
 const RegisterForm: React.FunctionComponent<Props> = ({
 	error,
+	loading,
 	errorMessage,
 	successMessage,
 	signUpForm,
@@ -125,9 +127,30 @@ const RegisterForm: React.FunctionComponent<Props> = ({
 				</div>
 				<button
 					type="submit"
-					className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+					className={`text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center hover:bg-blue-700 ${
+						loading
+							? "hover:cursor-not-allowed bg-blue-700"
+							: "hover:cursor-pointer"
+					} `}
 				>
-					Submit
+					{loading ? (
+						<div className="w-full flex flex-row justify-center items-center space-x-4">
+							<div role="status">
+								<div
+									className="inline-block h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-neutral-100 motion-reduce:animate-[spin_1.5s_linear_infinite]"
+									role="status"
+								>
+									<span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+										Loading...
+									</span>
+								</div>
+								<span className="sr-only">Loading...</span>
+							</div>
+							<span>Creating Account...</span>
+						</div>
+					) : (
+						<p>Sign Up</p>
+					)}
 				</button>
 			</form>
 		</>

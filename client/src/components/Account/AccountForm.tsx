@@ -1,6 +1,6 @@
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { IUser } from "@/types/types";
+import { IUser } from "./../../../../types/types";
 import { ParsedUrlQuery } from "querystring";
 
 interface Props {

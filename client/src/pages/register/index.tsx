@@ -17,7 +17,7 @@ const Register: FunctionComponent<Props> = () => {
 	const router = useRouter();
 	const [errorMessage, setErrorMessage] = useState<string>("");
 	const [successMessage, setSuccessMessage] = useState<string>("");
-	const [addUser, { error }] = useMutation(ADD_USER);
+	const [addUser, { error, loading }] = useMutation(ADD_USER);
 	const { currentUser } = useSelector((state: any) => state.user);
 	const signUpForm = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -69,6 +69,7 @@ const Register: FunctionComponent<Props> = () => {
 			<div className="w-full h-full flex flex-col justify-center items-center space-y-10 font-mono">
 				<RegisterForm
 					error={error}
+					loading={loading}
 					errorMessage={errorMessage}
 					successMessage={successMessage}
 					signUpForm={signUpForm}

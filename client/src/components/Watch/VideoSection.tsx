@@ -25,6 +25,7 @@ const VideoSection: React.FunctionComponent<Props> = ({
 	timeWord,
 	refreshUserData,
 }) => {
+	const [disabled, setDisabled] = useState<boolean>(false);
 	const [postLikes, setPostLikes] = useState<number>(post.likes);
 	const [postDislikes, setPostDislikes] = useState<number>(post.dislikes);
 	const [postLiked, setPostLiked] = useState<boolean>(
@@ -39,6 +40,8 @@ const VideoSection: React.FunctionComponent<Props> = ({
 	const [dislikePost] = useMutation(DISLIKE_POST);
 	const [undislikePost] = useMutation(UNDISLIKE_POST);
 	const onLikePost = async () => {
+		if (disabled) return;
+		setDisabled(true);
 		if (postLiked) {
 			await unlikePost({
 				variables: {
@@ -48,17 +51,26 @@ const VideoSection: React.FunctionComponent<Props> = ({
 			});
 			setPostLikes((likes) => likes - 1);
 			setPostLiked(false);
-		} else {
-			if (postDisliked) {
-				await undislikePost({
+		} else if (postDisliked) {
+			await Promise.all([
+				undislikePost({
 					variables: {
 						postId: post.id,
 						userId: currentUser?.id,
 					},
-				});
-				setPostDislikes((dislikes) => dislikes - 1);
-				setPostDisliked(false);
-			}
+				}),
+				likePost({
+					variables: {
+						postId: post.id,
+						userId: currentUser?.id,
+					},
+				}),
+			]);
+			setPostDislikes((dislikes) => dislikes - 1);
+			setPostDisliked(false);
+			setPostLikes((likes) => likes + 1);
+			setPostLiked(true);
+		} else {
 			await likePost({
 				variables: {
 					postId: post.id,
@@ -68,9 +80,13 @@ const VideoSection: React.FunctionComponent<Props> = ({
 			setPostLikes((likes) => likes + 1);
 			setPostLiked(true);
 		}
-		refreshUserData();
+		await refreshUserData();
+		setDisabled(false);
 	};
 	const onDislikePost = async () => {
+		if (disabled) return;
+		setDisabled(true);
+		if (disabled) return;
 		if (postDisliked) {
 			await undislikePost({
 				variables: {
@@ -80,17 +96,26 @@ const VideoSection: React.FunctionComponent<Props> = ({
 			});
 			setPostDislikes((dislikes) => dislikes - 1);
 			setPostDisliked(false);
-		} else {
-			if (postLiked) {
-				await unlikePost({
+		} else if (postLiked) {
+			await Promise.all([
+				unlikePost({
 					variables: {
 						postId: post.id,
 						userId: currentUser?.id,
 					},
-				});
-				setPostLikes((likes) => likes - 1);
-				setPostLiked(false);
-			}
+				}),
+				dislikePost({
+					variables: {
+						postId: post.id,
+						userId: currentUser?.id,
+					},
+				}),
+			]);
+			setPostLikes((likes) => likes - 1);
+			setPostLiked(false);
+			setPostDislikes((dislikes) => dislikes + 1);
+			setPostDisliked(true);
+		} else {
 			await dislikePost({
 				variables: {
 					postId: post.id,
@@ -100,7 +125,8 @@ const VideoSection: React.FunctionComponent<Props> = ({
 			setPostDislikes((dislikes) => dislikes + 1);
 			setPostDisliked(true);
 		}
-		refreshUserData();
+		await refreshUserData();
+		setDisabled(false);
 	};
 	useEffect(() => {
 		setPostLikePercentage(

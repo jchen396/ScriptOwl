@@ -1,6 +1,6 @@
 import { ADD_POST } from "@/graphql/mutations/addPost";
 import { useMutation } from "@apollo/client";
-import { FormEvent, FunctionComponent, useState } from "react";
+import { FormEvent, FunctionComponent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useRouter } from "next/router";
@@ -10,11 +10,12 @@ type Props = {};
 
 const Post: FunctionComponent<Props> = () => {
 	const router = useRouter();
+	const [posted, setPosted] = useState<boolean>(false);
 	const [videoFile, setVideoFile] = useState<File>();
 	const [title, setTitle] = useState<string>();
 	const [description, setDescription] = useState<string>();
 	const [category, setCategory] = useState<string>();
-	const [addPost] = useMutation(ADD_POST);
+	const [addPost, { loading }] = useMutation(ADD_POST);
 	const [success, setSuccess] = useState<boolean>();
 	const { currentUser } = useSelector((state: any) => state.user);
 	if (!currentUser) {
@@ -22,6 +23,7 @@ const Post: FunctionComponent<Props> = () => {
 	}
 	const onSubmitHandler = async (e: FormEvent<HTMLButtonElement>) => {
 		e.preventDefault();
+		setPosted(true);
 		let result;
 		if (videoFile) {
 			result = await postVideo({ videoFile });
@@ -39,6 +41,7 @@ const Post: FunctionComponent<Props> = () => {
 			},
 		});
 		setSuccess(true);
+		setPosted(false);
 	};
 	return (
 		<>
@@ -124,10 +127,32 @@ const Post: FunctionComponent<Props> = () => {
 					</div>
 					<button
 						type="button"
-						className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+						className={`text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center hover:bg-blue-700 ${
+							loading || posted
+								? "hover:cursor-not-allowed bg-blue-700"
+								: "hover:cursor-pointer"
+						} `}
+						disabled={loading}
 						onClick={(e) => onSubmitHandler(e)}
 					>
-						Post
+						{loading || posted ? (
+							<div className="w-full flex flex-row justify-center items-center space-x-4">
+								<div role="status">
+									<div
+										className="inline-block h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-neutral-100 motion-reduce:animate-[spin_1.5s_linear_infinite]"
+										role="status"
+									>
+										<span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+											Loading...
+										</span>
+									</div>
+									<span className="sr-only">Loading...</span>
+								</div>
+								<span>Posting...</span>
+							</div>
+						) : (
+							<span>Post</span>
+						)}
 					</button>
 				</form>
 			</div>

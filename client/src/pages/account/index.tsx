@@ -19,7 +19,7 @@ const Account: FunctionComponent<Props> = () => {
 	const [editToggle, setEditToggle] = useState<boolean>(false);
 	const { currentUser } = useSelector((state: any) => state.user);
 	const userData = router.query;
-	const [userUpdateMutate] = useMutation(UPDATE_USER);
+	const [userUpdateMutate, { loading }] = useMutation(UPDATE_USER);
 	if (!currentUser || userData.username !== currentUser.username) {
 		try {
 			router.replace("/");
@@ -80,6 +80,7 @@ const Account: FunctionComponent<Props> = () => {
 					setNewPassword={setNewPassword}
 					confirmNewPassword={confirmNewPassword}
 					setConfirmNewPassword={setConfirmNewPassword}
+					loading={loading}
 				/>
 			</div>
 		</>

@@ -6,9 +6,14 @@ import { ApolloError } from "@apollo/client";
 type Props = {
 	error: ApolloError;
 	validateForm: (e: React.FormEvent<HTMLFormElement>) => void;
+	isFetching: boolean;
 };
 
-const LoginForm: React.FunctionComponent<Props> = ({ error, validateForm }) => {
+const LoginForm: React.FunctionComponent<Props> = ({
+	error,
+	validateForm,
+	isFetching,
+}) => {
 	return (
 		<>
 			<h1 className="text-4xl font-medium text-slate-100">Log In</h1>
@@ -56,8 +61,31 @@ const LoginForm: React.FunctionComponent<Props> = ({ error, validateForm }) => {
 				<Link className="text-sm italic underline" href="">
 					Forgot your password?
 				</Link>
-				<button className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-					Log In
+				<button
+					className={`text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center hover:bg-blue-700 ${
+						isFetching
+							? "hover:cursor-not-allowed bg-blue-700"
+							: "hover:cursor-pointer"
+					} `}
+				>
+					{isFetching ? (
+						<div className="w-full flex flex-row justify-center items-center space-x-4">
+							<div role="status">
+								<div
+									className="inline-block h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-neutral-100 motion-reduce:animate-[spin_1.5s_linear_infinite]"
+									role="status"
+								>
+									<span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+										Loading...
+									</span>
+								</div>
+								<span className="sr-only">Loading...</span>
+							</div>
+							<span>Logging In</span>
+						</div>
+					) : (
+						<p>Log In</p>
+					)}
 				</button>
 				<div className="w-2/3 flex flex-row items-center justify-between">
 					<p className="basis-2/3">Don&#39;t have an account? </p>
