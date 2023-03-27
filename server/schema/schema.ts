@@ -129,6 +129,7 @@ const RootQuery = new GraphQLObjectType({
 		checkTokens: {
 			type: UserType,
 			resolve(_, __, { res }) {
+				console.log(res.req.user_id);
 				if (!res.req.user_id) {
 					return null;
 				}
@@ -172,13 +173,13 @@ const RootQuery = new GraphQLObjectType({
 								httpOnly: true,
 								sameSite: "None",
 								secure: true,
-								maxAge: 15 * 60 * 1000,
+								maxAge: 60 * 1000,
 							});
 							res.cookie("refreshToken", refreshToken, {
 								httpOnly: true,
 								sameSite: "None",
 								secure: true,
-								maxAge: 24 * 60 * 60 * 1000,
+								maxAge: 5 * 24 * 60 * 60 * 1000,
 							});
 							return user;
 						} else {

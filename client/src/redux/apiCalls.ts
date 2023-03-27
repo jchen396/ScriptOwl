@@ -53,5 +53,5 @@ export const signOut = async (dispatch: Dispatch<AnyAction>) => {
 };
 
 export const updateUser = async (dispatch: Dispatch<AnyAction>, data: any) => {
-	dispatch(updateStart(data.updateUser));
+	dispatch(updateStart(data));
 };

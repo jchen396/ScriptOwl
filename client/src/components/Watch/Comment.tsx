@@ -15,6 +15,7 @@ type Props = {
 	timeWord?: string;
 	post: IPost;
 	currentUser: IUser;
+	refreshUserData: () => Promise<void>;
 };
 
 const Comment: React.FunctionComponent<Props> = ({
@@ -23,27 +24,28 @@ const Comment: React.FunctionComponent<Props> = ({
 	timeWord,
 	post,
 	currentUser,
+	refreshUserData,
 }) => {
 	const [commentLikes, setCommentLikes] = useState<number>(comment.likes);
 	const [commentDislikes, setCommentDislikes] = useState<number>(
 		comment.dislikes
 	);
 	const [commentLiked, setCommentLiked] = useState<boolean>(
-		currentUser.likedCommentsIds.includes(comment.id)
+		currentUser?.likedCommentsIds.includes(comment.id)
 	);
 	const [commentDisliked, setCommentDisliked] = useState<boolean>(
-		currentUser.dislikedCommentsIds.includes(comment.id)
+		currentUser?.dislikedCommentsIds.includes(comment.id)
 	);
 	const [likeComment] = useMutation(LIKE_COMMENT);
 	const [unlikeComment] = useMutation(UNLIKE_COMMENT);
 	const [dislikeComment] = useMutation(DISLIKE_COMMENT);
 	const [undislikeComment] = useMutation(UNDISLIKE_COMMENT);
-	const onLikeComment = () => {
+	const onLikeComment = async () => {
 		if (commentLiked) {
-			unlikeComment({
+			await unlikeComment({
 				variables: {
 					postId: post.id,
-					userId: currentUser.id,
+					userId: currentUser?.id,
 					commentId: comment.id,
 				},
 			});
@@ -51,33 +53,34 @@ const Comment: React.FunctionComponent<Props> = ({
 			setCommentLiked(false);
 		} else {
 			if (commentDisliked) {
-				undislikeComment({
+				await undislikeComment({
 					variables: {
 						postId: post.id,
-						userId: currentUser.id,
+						userId: currentUser?.id,
 						commentId: comment.id,
 					},
 				});
 				setCommentDislikes((dislikes) => dislikes - 1);
 				setCommentDisliked(false);
 			}
-			likeComment({
+			await likeComment({
 				variables: {
 					postId: post.id,
-					userId: currentUser.id,
+					userId: currentUser?.id,
 					commentId: comment.id,
 				},
 			});
 			setCommentLikes((likes) => likes + 1);
 			setCommentLiked(true);
 		}
+		refreshUserData();
 	};
-	const onDislikeComment = () => {
+	const onDislikeComment = async () => {
 		if (commentDisliked) {
-			undislikeComment({
+			await undislikeComment({
 				variables: {
 					postId: post.id,
-					userId: currentUser.id,
+					userId: currentUser?.id,
 					commentId: comment.id,
 				},
 			});
@@ -85,26 +88,27 @@ const Comment: React.FunctionComponent<Props> = ({
 			setCommentDisliked(false);
 		} else {
 			if (commentLiked) {
-				unlikeComment({
+				await unlikeComment({
 					variables: {
 						postId: post.id,
-						userId: currentUser.id,
+						userId: currentUser?.id,
 						commentId: comment.id,
 					},
 				});
 				setCommentLikes((likes) => likes - 1);
 				setCommentLiked(false);
 			}
-			dislikeComment({
+			await dislikeComment({
 				variables: {
 					postId: post.id,
-					userId: currentUser.id,
+					userId: currentUser?.id,
 					commentId: comment.id,
 				},
 			});
 			setCommentDislikes((dislikes) => dislikes + 1);
 			setCommentDisliked(true);
 		}
+		refreshUserData();
 	};
 
 	return (

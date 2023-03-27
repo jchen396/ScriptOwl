@@ -1,21 +1,24 @@
 import { getTimeDiff } from "@/functions/getTimeDiff";
 import { COMMENT_POST } from "@/graphql/mutations/commentPost";
 import { useMutation } from "@apollo/client";
-import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IPost, IUser } from "../../../../types/types";
 import Comment from "./Comment";
 
 type Props = {
 	post: IPost;
 	currentUser: IUser;
+	refreshUserData: () => Promise<void>;
+	refreshSSRProps: () => void;
 };
 
 const CommentSection: React.FunctionComponent<Props> = ({
 	post,
 	currentUser,
+	refreshUserData,
+	refreshSSRProps,
 }) => {
-	const router = useRouter();
+	const [isCommenting, setIsCommenting] = useState<boolean>(false);
 	const [hasInput, setHasInput] = useState<boolean>();
 	const [commentPost] = useMutation(COMMENT_POST);
 	const onCommentHandler = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,10 +32,13 @@ const CommentSection: React.FunctionComponent<Props> = ({
 				comment,
 			},
 		});
-		post = data.commentPost;
 		setHasInput(false);
-		router.replace(router.asPath);
+		setIsCommenting(true);
+		refreshSSRProps();
 	};
+	useEffect(() => {
+		setIsCommenting(false);
+	}, [post]);
 	return (
 		<div className="basis-1/3 h-full w-full flex flex-col justify-center items-center text-white space-y-4">
 			<h2 className="text-2xl">{post.comments.length} Comments</h2>
@@ -55,6 +61,7 @@ const CommentSection: React.FunctionComponent<Props> = ({
 											post={post}
 											currentUser={currentUser}
 											comment={comment}
+											refreshUserData={refreshUserData}
 										/>
 									</div>
 								);
@@ -90,7 +97,7 @@ const CommentSection: React.FunctionComponent<Props> = ({
 						type="submit"
 						disabled={!hasInput}
 					>
-						Comment
+						{isCommenting ? "..." : "Comment"}
 					</button>
 				</form>
 			</div>

@@ -55,7 +55,7 @@ const Account: FunctionComponent<Props> = () => {
 					password: newPassword,
 				},
 			});
-			updateUser(dispatch, data);
+			updateUser(dispatch, data.updateUser);
 			setNewPassword("");
 			setImageKey("");
 		} catch (err) {

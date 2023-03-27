@@ -8,6 +8,10 @@ export const UPDATE_USER = gql`
 			email
 			points
 			avatarKey
+			likedCommentsIds
+			dislikedCommentsIds
+			likedPostsIds
+			dislikedPostsIds
 		}
 	}
 `;

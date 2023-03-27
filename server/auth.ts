@@ -10,11 +10,11 @@ export const createTokens = (user) => {
 			avatarKey: user.avatarKey,
 		},
 		process.env.JWT_SEC,
-		{ expiresIn: "60m" }
+		{ expiresIn: "1m" }
 	);
 
 	const refreshToken = jwt.sign(
-		{ username: user.username },
+		{ user_id: user.id },
 		process.env.REFRESH_SEC,
 		{ expiresIn: "5d" }
 	);

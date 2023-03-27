@@ -44,7 +44,7 @@ app.use(async (req, res, next) => {
 	try {
 		data = jwt.verify(refreshToken, process.env.REFRESH_SEC);
 	} catch (err) {}
-	const user = await User.findOne({ id: data.user_id });
+	const user = await User.findById(data.user_id);
 	// invalid token
 	if (!user) {
 		return next();
@@ -55,13 +55,13 @@ app.use(async (req, res, next) => {
 		httpOnly: true,
 		sameSite: "None",
 		secure: true,
-		maxAge: 15 * 1000,
+		maxAge: 60 * 1000,
 	});
 	res.cookie("refreshToken", tokens.refreshToken, {
 		httpOnly: true,
 		sameSite: "None",
 		secure: true,
-		maxAge: 3 * 24 * 60 * 60 * 1000,
+		maxAge: 5 * 24 * 60 * 60 * 1000,
 	});
 	req.user_id = user.id;
 	next();

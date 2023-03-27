@@ -8,12 +8,14 @@ import { DISLIKE_POST } from "@/graphql/mutations/dislikePost";
 import { UNDISLIKE_POST } from "@/graphql/mutations/undislikePost";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
+import { likeDislikeBar } from "@/functions/likeDislikeBar";
 
 type Props = {
 	currentUser: IUser;
 	post: IPost;
 	timeNumber?: string;
 	timeWord?: string;
+	refreshUserData: () => Promise<void>;
 };
 
 const VideoSection: React.FunctionComponent<Props> = ({
@@ -21,87 +23,88 @@ const VideoSection: React.FunctionComponent<Props> = ({
 	post,
 	timeNumber,
 	timeWord,
+	refreshUserData,
 }) => {
 	const [postLikes, setPostLikes] = useState<number>(post.likes);
 	const [postDislikes, setPostDislikes] = useState<number>(post.dislikes);
 	const [postLiked, setPostLiked] = useState<boolean>(
-		currentUser.likedPostsIds.includes(post.id)
+		currentUser?.likedPostsIds.includes(post.id)
 	);
 	const [postDisliked, setPostDisliked] = useState<boolean>(
-		currentUser.dislikedPostsIds.includes(post.id)
+		currentUser?.dislikedPostsIds.includes(post.id)
 	);
 	const [postLikePercentage, setPostLikePercentage] = useState<number>(0);
 	const [likePost] = useMutation(LIKE_POST);
 	const [unlikePost] = useMutation(UNLIKE_POST);
 	const [dislikePost] = useMutation(DISLIKE_POST);
 	const [undislikePost] = useMutation(UNDISLIKE_POST);
-	const onLikePost = () => {
+	const onLikePost = async () => {
 		if (postLiked) {
-			unlikePost({
+			await unlikePost({
 				variables: {
 					postId: post.id,
-					userId: currentUser.id,
+					userId: currentUser?.id,
 				},
 			});
 			setPostLikes((likes) => likes - 1);
 			setPostLiked(false);
 		} else {
 			if (postDisliked) {
-				undislikePost({
+				await undislikePost({
 					variables: {
 						postId: post.id,
-						userId: currentUser.id,
+						userId: currentUser?.id,
 					},
 				});
 				setPostDislikes((dislikes) => dislikes - 1);
 				setPostDisliked(false);
 			}
-			likePost({
+			await likePost({
 				variables: {
 					postId: post.id,
-					userId: currentUser.id,
+					userId: currentUser?.id,
 				},
 			});
 			setPostLikes((likes) => likes + 1);
 			setPostLiked(true);
 		}
+		refreshUserData();
 	};
-	const onDislikePost = () => {
+	const onDislikePost = async () => {
 		if (postDisliked) {
-			undislikePost({
+			await undislikePost({
 				variables: {
 					postId: post.id,
-					userId: currentUser.id,
+					userId: currentUser?.id,
 				},
 			});
 			setPostDislikes((dislikes) => dislikes - 1);
 			setPostDisliked(false);
 		} else {
 			if (postLiked) {
-				unlikePost({
+				await unlikePost({
 					variables: {
 						postId: post.id,
-						userId: currentUser.id,
+						userId: currentUser?.id,
 					},
 				});
 				setPostLikes((likes) => likes - 1);
 				setPostLiked(false);
 			}
-			dislikePost({
+			await dislikePost({
 				variables: {
 					postId: post.id,
-					userId: currentUser.id,
+					userId: currentUser?.id,
 				},
 			});
 			setPostDislikes((dislikes) => dislikes + 1);
 			setPostDisliked(true);
 		}
+		refreshUserData();
 	};
 	useEffect(() => {
 		setPostLikePercentage(
-			postDislikes
-				? Math.floor(postLikes / (postLikes + postDislikes)) * 100
-				: 100
+			postDislikes ? (postLikes / (postLikes + postDislikes)) * 100 : 100
 		);
 	}, [postLikes, postDislikes]);
 	return (
@@ -157,11 +160,19 @@ const VideoSection: React.FunctionComponent<Props> = ({
 							<div className="w-full flex flex-row justify-center items-center">
 								<div
 									className={`
-									w-[${postLikePercentage}%] py-1 bg-blue-600 rounded-l-full`}
+									 ${
+											likeDislikeBar[
+												Math.trunc(postLikePercentage)
+											][0]
+										} py-1 bg-blue-600 rounded-l-full`}
 								></div>
 								<div
 									className={`
-									 w-[${100 - postLikePercentage}%] py-1 bg-red-600 rounded-r-full`}
+									 ${
+											likeDislikeBar[
+												Math.trunc(postLikePercentage)
+											][1]
+										} py-1 bg-red-600 rounded-r-full`}
 								></div>
 							</div>
 						</div>
