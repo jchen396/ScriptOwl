@@ -9,16 +9,33 @@ const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: `${__dirname}/uploads` });
+const { spawn } = require("child_process");
 import { authenticateTokens } from "./modules/auth";
 import { connectDB } from "../config/db";
+import { downloadVideo } from "./modules/fs";
 const {
 	uploadImage,
 	getImageFileStream,
 	uploadVideo,
 } = require("./modules/s3");
-
 const app = express();
+
+app.get("/script1", (req, res) => {
+	let data1;
+	console.log(__dirname);
+	const pythonOne = spawn("python", [
+		`${__dirname}/uploads/video_to_text.py`,
+	]);
+	pythonOne.stdout.on("data", (data) => {
+		data1 = data.toString();
+	});
+	pythonOne.on("close", (code) => {
+		console.log(code);
+		res.send(data1);
+	});
+});
+
 app.use(
 	cors({
 		credentials: true,
