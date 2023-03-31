@@ -1,6 +1,5 @@
 import { getTimeDiff } from "@/functions/getTimeDiff";
 import { COMMENT_POST } from "@/graphql/mutations/commentPost";
-import { GET_POST_BY_ID } from "@/graphql/queries/getPostById";
 import { useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { IPost, IUser } from "../../../../types/types";

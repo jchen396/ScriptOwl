@@ -8,12 +8,32 @@ const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 const cookieParser = require("cookie-parser");
+
+// setting up multer environments
 const multer = require("multer");
-const upload = multer({ dest: `${__dirname}/uploads` });
+const path = require("path");
+const storage = multer.diskStorage({
+	destination: (req, res, cb) => {
+		cb(null, "src/uploads");
+	},
+	filename: function (req, file, cb) {
+		const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+		cb(
+			null,
+			file.fieldname +
+				"-" +
+				uniqueSuffix +
+				path.extname(file.originalname)
+		);
+	},
+});
+const upload = multer({ storage: storage });
+
+// package for setting up python script calls
 const { spawn } = require("child_process");
+
 import { authenticateTokens } from "./modules/auth";
 import { connectDB } from "../config/db";
-import { downloadVideo } from "./modules/fs";
 const {
 	uploadImage,
 	getImageFileStream,
@@ -75,7 +95,6 @@ app.get("/images/:key", async (req, res) => {
 app.post("/images", upload.single("image"), async (req, res) => {
 	try {
 		const result = await uploadImage(req.file);
-		await unlinkFile(req.file.path);
 		res.send({ key: `${result}` });
 	} catch (e) {}
 });

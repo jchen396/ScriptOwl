@@ -18,9 +18,6 @@ const Post: FunctionComponent<Props> = () => {
 	const [addPost, { loading }] = useMutation(ADD_POST);
 	const [success, setSuccess] = useState<boolean>();
 	const { currentUser } = useSelector((state: any) => state.user);
-	if (!currentUser) {
-		router.push("/login");
-	}
 	const onSubmitHandler = async (e: FormEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		setPosted(true);
@@ -43,6 +40,11 @@ const Post: FunctionComponent<Props> = () => {
 		setSuccess(true);
 		setPosted(false);
 	};
+	useEffect(() => {
+		if (!currentUser) {
+			router.push("/login");
+		}
+	}, [currentUser, router]);
 	return (
 		<>
 			<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono">
