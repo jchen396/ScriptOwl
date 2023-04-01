@@ -43,7 +43,6 @@ const app = express();
 
 app.get("/script1", (req, res) => {
 	let data1;
-	console.log(__dirname);
 	const pythonOne = spawn("python", [
 		`${__dirname}/uploads/video_to_text.py`,
 	]);
@@ -52,7 +51,7 @@ app.get("/script1", (req, res) => {
 	});
 	pythonOne.on("close", (code) => {
 		console.log(code);
-		res.send(data1);
+		console.log(data1);
 	});
 });
 
