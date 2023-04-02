@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { updateUser } from "@/redux/apiCalls";
 import { useMutation } from "@apollo/client";
 import { InferGetServerSidePropsType, NextPage } from "next";
+import TranscriptSection from "@/components/Watch/TranscriptSection";
 
 interface Props {
 	post: IPost;
@@ -23,6 +24,7 @@ const Watch: NextPage<
 > = ({ post }) => {
 	const dispatch = useDispatch();
 	const router = useRouter();
+	const [section, setSection] = useState<string>("transcript");
 	const [updateUserMutate] = useMutation(UPDATE_USER);
 	const [isSSR, setIsSSR] = useState(true);
 	const { currentUser } = useSelector((state: any) => state.user);
@@ -40,13 +42,28 @@ const Watch: NextPage<
 		updateUser(dispatch, data.updateUser);
 		refreshSSRProps();
 	};
+	const getSectionComponent = () => {
+		if (section === "comment") {
+			return (
+				<CommentSection
+					post={post}
+					currentUser={currentUser}
+					refreshUserData={refreshUserData}
+					refreshSSRProps={refreshSSRProps}
+				/>
+			);
+		}
+		if (section === "transcript") {
+			return <TranscriptSection transcript={post.transcript} />;
+		}
+	};
 	useEffect(() => {
 		setIsSSR(false);
 	}, []);
 	return (
 		<>
 			{!isSSR && (
-				<div className="h-screen w-screen flex flex-row items-center justify-start space-y-10 font-mono p-6 pt-20 ">
+				<div className="h-screen w-screen flex flex-row items-center justify-center space-y-10 font-mono p-6 pt-20 ">
 					<VideoSection
 						currentUser={currentUser}
 						post={post}
@@ -54,12 +71,24 @@ const Watch: NextPage<
 						timeWord={timeWord}
 						refreshUserData={refreshUserData}
 					/>
-					<CommentSection
-						post={post}
-						currentUser={currentUser}
-						refreshUserData={refreshUserData}
-						refreshSSRProps={refreshSSRProps}
-					/>
+					<div className="basis-1/3 h-full w-full flex flex-col justify-center items-center text-white">
+						<div className="flex flex-row justify-center items-center">
+							<button
+								className="text-2xl border-gray-800 border-2 p-2 px-4 rounded-t-xl"
+								onClick={() => setSection("comment")}
+							>
+								{post.comments.length} Comments
+							</button>
+							<button
+								className="text-2xl border-gray-800 border-2 p-2 px-4 rounded-t-xl"
+								onClick={() => setSection("transcript")}
+							>
+								Transcript
+							</button>
+						</div>
+
+						{getSectionComponent()}
+					</div>
 				</div>
 			)}
 		</>

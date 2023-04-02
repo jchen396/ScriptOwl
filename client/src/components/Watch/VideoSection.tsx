@@ -134,73 +134,70 @@ const VideoSection: React.FunctionComponent<Props> = ({
 		);
 	}, [postLikes, postDislikes]);
 	return (
-		<div>
-			<div className="basis-2/3 w-full h-full flex justify-center items-center">
-				<div className="flex flex-col justify-center items-center space-y-2">
-					<ReactPlayer
-						url={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}
-						width="90%"
-						height="auto"
-						controls={true}
-					/>
-					<div className="w-[90%] flex flex-row justify-between items-center text-white text-2xl">
-						<div className="flex flex-col items-start">
-							<div className="flex flex-row space-x-4">
-								<p>{post.views} views</p>
-								<span>&middot;</span>
-								<p>
-									{timeNumber} {timeWord} ago
-								</p>
-							</div>
+		<div className="basis-2/3 w-full h-full flex justify-center items-center">
+			<div className="flex flex-col justify-center items-center space-y-2">
+				<ReactPlayer
+					url={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}
+					width="90%"
+					height="auto"
+					controls={true}
+				/>
+
+				<div className="w-[90%] flex flex-row justify-between items-center text-white text-2xl">
+					<div className="flex flex-col items-start">
+						<div className="flex flex-row space-x-4">
+							<p>{post.views} views</p>
+							<span>&middot;</span>
+							<p>
+								{timeNumber} {timeWord} ago
+							</p>
 						</div>
+					</div>
 
-						<div className="flex flex-col space-y-2">
-							<div className="flex flex-row space-x-4 text-4xl">
-								<div
-									className={`hover:cursor-pointer ${
-										postLiked
-											? "hover:text-blue-400 text-blue-600 "
-											: "hover:text-white text-gray-400"
-									}`}
-									onClick={onLikePost}
-								>
-									<ThumbUpOffAltIcon sx={{ fontSize: 40 }} />
-								</div>
-
-								<p>{postLikes}</p>
-								<div
-									className={`hover:cursor-pointer ${
-										postDisliked
-											? "hover:text-red-400 text-red-600 "
-											: "hover:text-white text-gray-400"
-									}`}
-									onClick={onDislikePost}
-								>
-									<ThumbDownOffAltIcon
-										sx={{ fontSize: 40 }}
-									/>
-								</div>
-
-								<p>{postDislikes}</p>
+					<div className="flex flex-col space-y-2">
+						<div className="flex flex-row space-x-4 text-4xl">
+							<div
+								className={`hover:cursor-pointer ${
+									postLiked
+										? "hover:text-blue-400 text-blue-600 "
+										: "hover:text-white text-gray-400"
+								}`}
+								onClick={onLikePost}
+							>
+								<ThumbUpOffAltIcon sx={{ fontSize: 40 }} />
 							</div>
-							<div className="w-full flex flex-row justify-center items-center">
-								<div
-									className={`
+
+							<p>{postLikes}</p>
+							<div
+								className={`hover:cursor-pointer ${
+									postDisliked
+										? "hover:text-red-400 text-red-600 "
+										: "hover:text-white text-gray-400"
+								}`}
+								onClick={onDislikePost}
+							>
+								<ThumbDownOffAltIcon sx={{ fontSize: 40 }} />
+							</div>
+
+							<p>{postDislikes}</p>
+						</div>
+						<div className="w-full flex flex-row justify-center items-center">
+							<div
+								className={`
 									 ${
 											likeDislikeBar[
 												Math.trunc(postLikePercentage)
 											][0]
 										} py-1 bg-blue-600 rounded-l-full`}
-								></div>
-								<div
-									className={`
+							></div>
+							<div
+								className={`
 									 ${
 											likeDislikeBar[
 												Math.trunc(postLikePercentage)
 											][1]
 										} py-1 bg-red-600 rounded-r-full`}
-								></div>
-							</div>
+							></div>
 						</div>
 					</div>
 				</div>
