@@ -35,6 +35,7 @@ const Post: FunctionComponent<Props> = () => {
 				description,
 				category,
 				publisher: currentUser.id,
+				transcript: result.transcript,
 			},
 		});
 		setSuccess(true);

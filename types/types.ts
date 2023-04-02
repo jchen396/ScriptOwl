@@ -40,6 +40,7 @@ export interface IPost {
 	likes: number;
 	dislikes: number;
 	views: number;
+	transcript: string;
 	createdAt: IDate;
 	comments: IComment[];
 }

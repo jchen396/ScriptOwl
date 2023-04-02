@@ -29,31 +29,15 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// package for setting up python script calls
-const { spawn } = require("child_process");
-
 import { authenticateTokens } from "./modules/auth";
 import { connectDB } from "../config/db";
+import { getVideoTranscript } from "./modules/getVideoTranscript";
 const {
 	uploadImage,
 	getImageFileStream,
 	uploadVideo,
 } = require("./modules/s3");
 const app = express();
-
-app.get("/script1", (req, res) => {
-	let data1;
-	const pythonOne = spawn("python", [
-		`${__dirname}/uploads/video_to_text.py`,
-	]);
-	pythonOne.stdout.on("data", (data) => {
-		data1 = data.toString();
-	});
-	pythonOne.on("close", (code) => {
-		console.log(code);
-		console.log(data1);
-	});
-});
 
 app.use(
 	cors({
@@ -93,16 +77,17 @@ app.get("/images/:key", async (req, res) => {
 
 app.post("/images", upload.single("image"), async (req, res) => {
 	try {
-		const result = await uploadImage(req.file);
-		res.send({ key: `${result}` });
+		const key = await uploadImage(req.file);
+		res.send({ key });
 	} catch (e) {}
 });
 
 app.post("/videos", upload.single("video"), async (req, res) => {
 	try {
-		const result = await uploadVideo(req.file);
+		const key = await uploadVideo(req.file);
+		const transcript = await getVideoTranscript(req.file.filename);
 		await unlinkFile(req.file.path);
-		res.send({ key: `${result}` });
+		res.send({ key, transcript });
 	} catch (e) {}
 });
 

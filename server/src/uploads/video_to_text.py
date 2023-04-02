@@ -41,27 +41,28 @@ def get_large_audio_transcription(path):
             # try converting it to text
             try:
                 text = r.recognize_google(audio_listened)
-            except sr.UnknownValueError as e:
-                print("Error:", str(e))
+            except Exception as e:
+                print(e)
             else:
                 text = f"{text.capitalize()}. "
                 whole_text += text
+        os.remove(f"{folder_name}/chunk{i}.wav")
     # return the text for all chunks detected
     return whole_text
 
 
 def main(argv):
     try:
-        #file_name = sys.argv[1]
+        file_name = sys.argv[1].split(".")[0]
         os.chdir("./src/uploads")
         # Load the video file
         video = AudioSegment.from_file(
-            "videoplayback.mp4", format="mp4")
+            f"{file_name}.mp4", format="mp4")
         audio = video.set_channels(1).set_frame_rate(16000).set_sample_width(2)
-        audio.export("videoplayback.wav", format="wav")
+        audio.export(f"{file_name}.wav", format="wav")
         # Initialize recognizer class (for recognizing the speech)
-
-        text = get_large_audio_transcription("videoplayback.wav")
+        text = get_large_audio_transcription(f"{file_name}.wav")
+        os.remove(f"{file_name}.wav")
         print(text)
 
     except:

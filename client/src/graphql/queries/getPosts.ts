@@ -6,7 +6,6 @@ export const GET_POSTS = gql`
 			id
 			videoKey
 			title
-			description
 			category
 			views
 			likes

@@ -14,6 +14,7 @@ const postSchema = new Schema<IPost>(
 		likes: { type: Number, required: true },
 		dislikes: { type: Number, required: true },
 		views: { type: Number, required: true },
+		transcript: { type: String },
 		comments: { type: [Object] },
 	},
 	{

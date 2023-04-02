@@ -7,6 +7,7 @@ export const ADD_POST = gql`
 		$description: String
 		$category: String
 		$publisher: ID!
+		$transcript: String
 	) {
 		addPost(
 			videoKey: $videoKey
@@ -14,6 +15,7 @@ export const ADD_POST = gql`
 			description: $description
 			category: $category
 			publisher: $publisher
+			transcript: $transcript
 		) {
 			videoKey
 			title

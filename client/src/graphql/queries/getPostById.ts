@@ -11,6 +11,7 @@ export const GET_POST_BY_ID = gql`
 			likes
 			dislikes
 			views
+			transcript
 			createdAt {
 				date
 			}
