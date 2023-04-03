@@ -33,7 +33,11 @@ const VideoPost: React.FunctionComponent<Props> = ({
 					/>
 				</div>
 				<div className="flex flex-row justify-between items-center">
-					<p className="text-white text-xl bold">{post.title}</p>
+					<p className="text-white text-xl bold">
+						{post.title.length > 20
+							? post.title.slice(0, 20) + "..."
+							: post.title}
+					</p>
 					<p
 						className={`${
 							postLikeRatio > 50

@@ -45,7 +45,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 				>
 					<ul
 						className={`flex 
-						flex-col p-4 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 items-center md:mt-0 md:text-lg md:font-mono md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700`}
+						flex-col p-4 mt-4 border-b border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 items-center md:mt-0 md:text-lg md:font-mono md:border-0 md:bg-white dark:bg-black md:dark:bg-transparent dark:border-gray-700 `}
 					>
 						<li>
 							<Link
@@ -176,7 +176,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 					<button
 						data-collapse-toggle="mobile-menu-2"
 						type="button"
-						className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+						className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none dark:text-gray-400 dark:hover:bg-black dark:focus:ring-gray-600"
 						aria-controls="mobile-menu-2"
 						aria-expanded="false"
 						onClick={() => setNavToggle(!navToggle)}
