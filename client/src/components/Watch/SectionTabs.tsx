@@ -5,9 +5,15 @@ interface Props {
 	post: IPost;
 	section: string;
 	setSection: React.Dispatch<React.SetStateAction<string>>;
+	wordSelected: string | null;
 }
 
-const SectionTabs: React.FC<Props> = ({ post, section, setSection }) => {
+const SectionTabs: React.FC<Props> = ({
+	post,
+	section,
+	setSection,
+	wordSelected,
+}) => {
 	return (
 		<div className="flex flex-row justify-center items-center">
 			<button
@@ -29,6 +35,16 @@ const SectionTabs: React.FC<Props> = ({ post, section, setSection }) => {
 				onClick={() => setSection("transcript")}
 			>
 				Transcript
+			</button>
+			<button
+				className={`text-xl border-2 p-2 px-4 rounded-t-xl ${
+					section === "ChatGPT"
+						? "border-white opacity-100"
+						: "border-gray-800 opacity-50"
+				} hover:opacity-100 ${wordSelected ? "block" : "hidden"}`}
+				onClick={() => setSection("ChatGPT")}
+			>
+				ChatGPT
 			</button>
 		</div>
 	);

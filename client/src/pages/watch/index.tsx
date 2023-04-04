@@ -15,6 +15,7 @@ import { useMutation } from "@apollo/client";
 import { InferGetServerSidePropsType, NextPage } from "next";
 import TranscriptSection from "@/components/Watch/TranscriptSection";
 import SectionTabs from "@/components/Watch/SectionTabs";
+import ChatGPTSection from "@/components/Watch/ChatGPTSection";
 
 interface Props {
 	post: IPost;
@@ -30,6 +31,7 @@ const Watch: NextPage<
 	const [isSSR, setIsSSR] = useState(true);
 	const { currentUser } = useSelector((state: any) => state.user);
 	const { timeNumber, timeWord } = getTimeDiff(parseInt(post.createdAt.date));
+	const [wordSelected, setWordSelected] = useState<string | null>("");
 	const refreshSSRProps = () => {
 		router.replace(router.asPath);
 	};
@@ -55,7 +57,16 @@ const Watch: NextPage<
 			);
 		}
 		if (section === "transcript") {
-			return <TranscriptSection transcript={post.transcript} />;
+			return (
+				<TranscriptSection
+					transcript={post.transcript}
+					setWordSelected={setWordSelected}
+					setSection={setSection}
+				/>
+			);
+		}
+		if (section === "ChatGPT") {
+			return <ChatGPTSection wordSelected={wordSelected} />;
 		}
 	};
 	useEffect(() => {
@@ -64,7 +75,7 @@ const Watch: NextPage<
 	return (
 		<>
 			{!isSSR && (
-				<div className="h-screen w-screen flex flex-row flex-wrap items-center justify-center space-y-10 font-mono p-6 pt-20 ">
+				<div className="h-screen w-screen flex flex-row flex-wrap items-center justify-center space-y-10 font-mono p-10 pt-20 overflow-y-scroll">
 					<VideoSection
 						currentUser={currentUser}
 						post={post}
@@ -77,6 +88,7 @@ const Watch: NextPage<
 							post={post}
 							section={section}
 							setSection={setSection}
+							wordSelected={wordSelected}
 						/>
 						{getSectionComponent()}
 					</div>

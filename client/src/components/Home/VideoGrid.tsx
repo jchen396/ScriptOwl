@@ -14,7 +14,7 @@ const VideoGrid: React.FunctionComponent<Props> = ({ posts }) => {
 	return (
 		<div>
 			<h1 className="text-4xl font-medium text-slate-100">Home</h1>
-			<div className="grid xl:grid-cols-5 gap-4 lg: grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-2">
+			<div className="grid xl:grid-cols-5 gap-4 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
 				{posts &&
 					posts.map((post: IPost, key: number) => {
 						const { timeNumber, timeWord } = getTimeDiff(

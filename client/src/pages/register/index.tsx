@@ -66,7 +66,7 @@ const Register: FunctionComponent<Props> = () => {
 	}
 	return (
 		<>
-			<div className="w-full h-full flex flex-col justify-center items-center space-y-10 font-mono">
+			<div className="w-full h-full flex flex-col justify-center items-center space-y-10 font-mono overflow-y-scroll">
 				<RegisterForm
 					error={error}
 					loading={loading}

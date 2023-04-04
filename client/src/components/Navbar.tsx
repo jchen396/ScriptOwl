@@ -50,7 +50,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 						<li>
 							<Link
 								href="/"
-								className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:hover:text-blue-500"
+								className="block py-2 pl-3 pr-4 rounded md:bg-transparent md:p-0 md:hover:text-blue-500 text-gray-600 hover:text-white "
 								aria-current="page"
 							>
 								Home
@@ -59,12 +59,12 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 						<li>
 							<Link
 								href="/about"
-								className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+								className="block py-2 pl-3 pr-4 rounded md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:hover:text-white md:hover:bg-transparent text-gray-600 hover:text-white"
 							>
 								About
 							</Link>
 						</li>
-						<li className="block p-1 px-2 rounded-lg text-blue-600 hover:text-white border-2 border-blue-600 hover:text-black hover:bg-blue-600 hover:cursor-pointer flex flex-row items-center">
+						<li className="block p-1 px-2 rounded-lg text-blue-600 hover:text-white md:border-2 border-blue-600 md:hover:text-black md:hover:bg-blue-600 hover:cursor-pointer flex flex-row items-center text-gray-600 hover:text-white md:text-blue-600">
 							<Link href={userData ? "/post" : "/login"}>
 								<UploadIcon />
 								<span>Post</span>
@@ -73,7 +73,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 						<li>
 							<Link
 								href="/pricing"
-								className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+								className="block py-2 pl-3 pr-4 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:hover:text-white md:hover:bg-transparent text-gray-600 hover:text-white"
 							>
 								Pricing
 							</Link>
@@ -81,7 +81,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 						<li>
 							<Link
 								href="#"
-								className="block py-2 pl-3 pr-4 text-gray-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-gray-400 md:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+								className="block py-2 pl-3 pr-4 rounded md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:hover:text-white hover:text-white md:hover:bg-transparent text-gray-600 hover:text-white"
 							>
 								Contact
 							</Link>
@@ -176,7 +176,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 					<button
 						data-collapse-toggle="mobile-menu-2"
 						type="button"
-						className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none dark:text-gray-400 dark:hover:bg-black dark:focus:ring-gray-600"
+						className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none dark:text-gray-400 dark:hover:bg-transparent dark:focus:ring-gray-600"
 						aria-controls="mobile-menu-2"
 						aria-expanded="false"
 						onClick={() => setNavToggle(!navToggle)}

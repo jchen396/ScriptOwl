@@ -24,7 +24,7 @@ const Login: FunctionComponent<Props> = () => {
 	}
 	return (
 		<>
-			<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono">
+			<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono overflow-y-scroll">
 				<LoginForm
 					error={error}
 					validateForm={validateForm}

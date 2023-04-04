@@ -1,10 +1,6 @@
 import { FunctionComponent, useEffect, useState } from "react";
 import { GET_POSTS } from "@/graphql/queries/getPosts";
 import client from "../../apollo-client";
-import Link from "next/link";
-import { getTimeDiff } from "@/functions/getTimeDiff";
-import { INCREMENT_VIEW_COUNT } from "@/graphql/mutations/incrementViewCount";
-import { useMutation } from "@apollo/client";
 import VideoGrid from "@/components/Home/VideoGrid";
 import { IPost } from "../../../types/types";
 
@@ -20,7 +16,7 @@ const Home: FunctionComponent<Props> = ({ posts }) => {
 	return posts ? (
 		<>
 			{!isSSR && (
-				<div className="h-screen w-screen flex flex-col items-center justify-start space-y-10 font-mono pt-40">
+				<div className="h-screen w-screen flex flex-col items-center justify-start space-y-10 font-mono pt-40 overflow-y-scroll">
 					<VideoGrid posts={posts} />
 				</div>
 			)}{" "}

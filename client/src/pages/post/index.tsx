@@ -48,7 +48,7 @@ const Post: FunctionComponent<Props> = () => {
 	}, [currentUser, router]);
 	return (
 		<>
-			<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono">
+			<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono overflow-y-scroll">
 				<h1 className="text-4xl font-medium text-slate-100">
 					Post a video
 				</h1>
