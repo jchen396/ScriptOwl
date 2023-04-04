@@ -46,13 +46,13 @@ const CommentSection: React.FunctionComponent<Props> = ({
 					post.comments
 						.slice(0)
 						.reverse()
-						.map((comment, key) => {
+						.map((comment) => {
 							// convert time difference between current time and time when comment was posted
 							const { timeNumber, timeWord } = getTimeDiff(
 								parseInt(comment.createdAt.date)
 							);
 							return (
-								<div key={key}>
+								<div key={comment.id}>
 									<Comment
 										timeNumber={timeNumber}
 										timeWord={timeWord}
