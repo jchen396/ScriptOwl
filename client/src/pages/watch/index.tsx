@@ -32,6 +32,8 @@ const Watch: NextPage<
 	const { currentUser } = useSelector((state: any) => state.user);
 	const { timeNumber, timeWord } = getTimeDiff(parseInt(post.createdAt.date));
 	const [wordSelected, setWordSelected] = useState<string | null>("");
+	const [chatReply, setChatReply] = useState<string | null>("");
+	const [chatLoading, setChatLoading] = useState<boolean>(false);
 	const refreshSSRProps = () => {
 		router.replace(router.asPath);
 	};
@@ -62,11 +64,19 @@ const Watch: NextPage<
 					transcript={post.transcript}
 					setWordSelected={setWordSelected}
 					setSection={setSection}
+					setChatReply={setChatReply}
+					setChatLoading={setChatLoading}
 				/>
 			);
 		}
 		if (section === "ChatGPT") {
-			return <ChatGPTSection wordSelected={wordSelected} />;
+			return (
+				<ChatGPTSection
+					wordSelected={wordSelected}
+					chatReply={chatReply}
+					chatLoading={chatLoading}
+				/>
+			);
 		}
 	};
 	useEffect(() => {

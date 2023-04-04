@@ -8,6 +8,7 @@ const fs = require("fs");
 const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 
 // setting up multer environments
 const multer = require("multer");
@@ -39,6 +40,8 @@ const {
 	uploadVideo,
 } = require("./modules/s3");
 const app = express();
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.use(
 	cors({
@@ -73,14 +76,18 @@ app.get("/images/:key", async (req, res) => {
 		const key = req.params.key;
 		const { Body } = await getImageFileStream(key);
 		Body.pipe(res);
-	} catch (e) {}
+	} catch (e) {
+		res.json(e).status(400);
+	}
 });
 
 app.post("/images", upload.single("image"), async (req, res) => {
 	try {
 		const key = await uploadImage(req.file);
-		res.send({ key });
-	} catch (e) {}
+		res.send({ key }).status(200);
+	} catch (e) {
+		res.json(e).status(400);
+	}
 });
 
 app.post("/videos", upload.single("video"), async (req, res) => {
@@ -88,13 +95,19 @@ app.post("/videos", upload.single("video"), async (req, res) => {
 		const key = await uploadVideo(req.file);
 		const transcript = await getVideoTranscript(req.file.filename);
 		await unlinkFile(req.file.path);
-		res.send({ key, transcript });
-	} catch (e) {}
+		res.send({ key, transcript }).status(200);
+	} catch (e) {
+		res.json(e).status(400);
+	}
 });
 
 app.post("/chatgpt", async (req, res) => {
-	const reply = generateDefintion(req.params.word);
-	return res.json(reply).status(200);
+	try {
+		const reply = await generateDefintion(req.body.word);
+		return res.json(reply).status(200);
+	} catch (e) {
+		res.json(e).status(400);
+	}
 });
 
 app.listen(port, () => {

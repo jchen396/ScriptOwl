@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "@/redux/apiCalls";
 import { useMutation } from "@apollo/client";
 import { UPDATE_USER } from "@/graphql/mutations/updateUser";
-import { postImage } from "@/functions/s3functions/postImage";
+import { postImage } from "@/functions/s3_functions/postImage";
 import AccountView from "@/components/Account/AccountView";
 
 interface Props {}

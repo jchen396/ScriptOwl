@@ -16,5 +16,5 @@ export const generateDefintion = async (word) => {
 			},
 		],
 	});
-	return completion.data.choices[0].message.content;
+	return await completion.data.choices[0].message.content;
 };

@@ -4,7 +4,7 @@ import { FormEvent, FunctionComponent, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useRouter } from "next/router";
-import { postVideo } from "@/functions/s3functions/postVideo";
+import { postVideo } from "@/functions/s3_functions/postVideo";
 
 type Props = {};
 
