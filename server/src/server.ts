@@ -32,6 +32,7 @@ const upload = multer({ storage: storage });
 import { authenticateTokens } from "./modules/auth";
 import { connectDB } from "../config/db";
 import { getVideoTranscript } from "./modules/getVideoTranscript";
+import { generateDefintion } from "./modules/openai";
 const {
 	uploadImage,
 	getImageFileStream,
@@ -89,6 +90,11 @@ app.post("/videos", upload.single("video"), async (req, res) => {
 		await unlinkFile(req.file.path);
 		res.send({ key, transcript });
 	} catch (e) {}
+});
+
+app.post("/chatgpt", async (req, res) => {
+	const reply = generateDefintion(req.params.word);
+	return res.json(reply).status(200);
 });
 
 app.listen(port, () => {
