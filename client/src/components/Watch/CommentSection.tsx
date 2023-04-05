@@ -19,6 +19,7 @@ const CommentSection: React.FunctionComponent<Props> = ({
 	refreshSSRProps,
 }) => {
 	const [isCommenting, setIsCommenting] = useState<boolean>(false);
+	const [visibleComments, setVisibleComments] = useState<number>(3);
 	const [hasInput, setHasInput] = useState<boolean>();
 	const [commentPost] = useMutation(COMMENT_POST);
 	const onCommentHandler = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,6 +37,13 @@ const CommentSection: React.FunctionComponent<Props> = ({
 		setIsCommenting(true);
 		refreshSSRProps();
 	};
+	const loadComments = () => {
+		let loadAmount = 3;
+		if (post.comments.length < visibleComments + 3) {
+			loadAmount = post.comments.length - visibleComments;
+		}
+		setVisibleComments((state) => state + loadAmount);
+	};
 	useEffect(() => {
 		setIsCommenting(false);
 	}, [post]);
@@ -44,7 +52,7 @@ const CommentSection: React.FunctionComponent<Props> = ({
 			<div className="basis-4/5 text-white border-2 bg-transparent border-gray-800 rounded-lg overflow-auto">
 				{post.comments.length ? (
 					post.comments
-						.slice(0)
+						.slice(post.comments.length - visibleComments, -1)
 						.reverse()
 						.map((comment) => {
 							// convert time difference between current time and time when comment was posted
@@ -68,6 +76,15 @@ const CommentSection: React.FunctionComponent<Props> = ({
 					<div className="w-full h-full flex justify-center items-center text-gray-600">
 						<p>No comments yet</p>
 					</div>
+				)}
+				{visibleComments < post.comments.length && (
+					<button
+						className="w-full p-2 text-gray-400 flex items-center justify-center bg-gray-900 hover:bg-gray-800 hover:text-white rounded"
+						onClick={loadComments}
+					>
+						Load more comments (
+						{post.comments.length - visibleComments})
+					</button>
 				)}
 			</div>
 			<form
