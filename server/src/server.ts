@@ -10,6 +10,10 @@ const unlinkFile = util.promisify(fs.unlink);
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 
+// MongoDB configurations
+import { Post } from "../models/Post";
+import mongoose from "mongoose";
+
 // setting up multer environments
 const multer = require("multer");
 const path = require("path");
@@ -81,6 +85,7 @@ app.get("/images/:key", async (req, res) => {
 	}
 });
 
+// Post image to AWS S3 Bucket
 app.post("/images", upload.single("image"), async (req, res) => {
 	try {
 		const key = await uploadImage(req.file);
@@ -90,6 +95,7 @@ app.post("/images", upload.single("image"), async (req, res) => {
 	}
 });
 
+// Post video to AWS S3 Bucket
 app.post("/videos", upload.single("video"), async (req, res) => {
 	try {
 		const key = await uploadVideo(req.file);
@@ -101,10 +107,20 @@ app.post("/videos", upload.single("video"), async (req, res) => {
 	}
 });
 
+// Ask ChatGPT to define a word from transcript
 app.post("/chatgpt", async (req, res) => {
 	try {
 		const reply = await generateDefintion(req.body.word);
 		return res.json(reply).status(200);
+	} catch (e) {
+		res.json(e).status(400);
+	}
+});
+
+app.get("/postCount", async (req, res) => {
+	try {
+		const count = await Post.find().count();
+		res.json(count).status(200);
 	} catch (e) {
 		res.json(e).status(400);
 	}

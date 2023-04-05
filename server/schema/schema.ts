@@ -99,8 +99,13 @@ const RootQuery = new GraphQLObjectType({
 		// Return all posts in db
 		posts: {
 			type: new GraphQLList(PostType),
+			args: { page: { type: GraphQLInt } },
 			resolve(parent, args) {
-				return Post.find();
+				// limit 20
+				const limit = 20;
+				return Post.find()
+					.limit(limit)
+					.skip((args.page - 1) * limit);
 			},
 		},
 		// Return a post by post id

@@ -4,12 +4,15 @@ import client from "../../apollo-client";
 import VideoGrid from "@/components/Home/VideoGrid";
 import { IPost } from "../../../types/types";
 import PaginationBar from "@/components/Home/PaginationBar";
+import { getPageCount } from "@/functions/getPageCount";
 
 interface Props {
 	posts: IPost[];
+	pageCount: number;
+	currentPage: string;
 }
 
-const Home: FunctionComponent<Props> = ({ posts }) => {
+const Home: FunctionComponent<Props> = ({ posts, pageCount, currentPage }) => {
 	const [isSSR, setIsSSR] = useState<boolean>(true);
 	useEffect(() => {
 		setIsSSR(false);
@@ -19,7 +22,10 @@ const Home: FunctionComponent<Props> = ({ posts }) => {
 			{!isSSR && (
 				<div className="h-screen w-screen flex flex-col items-center justify-start space-y-10 font-mono pt-40 overflow-y-scroll">
 					<VideoGrid posts={posts} />
-					<PaginationBar />
+					<PaginationBar
+						pageCount={pageCount}
+						currentPage={currentPage}
+					/>
 				</div>
 			)}{" "}
 		</>
@@ -34,15 +40,16 @@ const Home: FunctionComponent<Props> = ({ posts }) => {
 
 export async function getServerSideProps(context: any) {
 	// get page number
-	const page = context.query.page ? context.query.page : 1;
+	const currentPage = context.query.page ? context.query.page : 1;
 	const { data } = await client.query({
 		query: GET_POSTS,
 		variables: {
-			page: parseInt(page),
+			page: parseInt(currentPage),
 		},
 	});
+	const pageCount = await getPageCount();
 	return {
-		props: { posts: data.posts },
+		props: { posts: data.posts, pageCount, currentPage },
 	};
 }
 
