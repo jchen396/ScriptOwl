@@ -19,7 +19,7 @@ const CommentSection: React.FunctionComponent<Props> = ({
 	refreshSSRProps,
 }) => {
 	const [isCommenting, setIsCommenting] = useState<boolean>(false);
-	const [visibleComments, setVisibleComments] = useState<number>(3);
+	const [visibleComments, setVisibleComments] = useState<number>(0);
 	const [hasInput, setHasInput] = useState<boolean>();
 	const [commentPost] = useMutation(COMMENT_POST);
 	const onCommentHandler = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -38,7 +38,7 @@ const CommentSection: React.FunctionComponent<Props> = ({
 		refreshSSRProps();
 	};
 	const loadComments = () => {
-		let loadAmount = 3;
+		let loadAmount = 5;
 		if (post.comments.length < visibleComments + 3) {
 			loadAmount = post.comments.length - visibleComments;
 		}
@@ -47,12 +47,18 @@ const CommentSection: React.FunctionComponent<Props> = ({
 	useEffect(() => {
 		setIsCommenting(false);
 	}, [post]);
+	useEffect(() => {
+		loadComments();
+	}, []);
 	return (
 		<div className="h-4/5 w-full flex flex-col space-y-4">
 			<div className="basis-4/5 text-white border-2 bg-transparent border-gray-800 rounded-lg overflow-auto">
 				{post.comments.length ? (
 					post.comments
-						.slice(post.comments.length - visibleComments, -1)
+						.slice(
+							post.comments.length - visibleComments,
+							post.comments.length
+						)
 						.reverse()
 						.map((comment) => {
 							// convert time difference between current time and time when comment was posted

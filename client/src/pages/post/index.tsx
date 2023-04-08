@@ -28,6 +28,7 @@ const Post: FunctionComponent<Props> = () => {
 			console.log("No file selected...");
 			return;
 		}
+		const videoData = JSON.parse(result.result);
 		await addPost({
 			variables: {
 				videoKey: result.key,
@@ -35,7 +36,8 @@ const Post: FunctionComponent<Props> = () => {
 				description,
 				category,
 				publisher: currentUser.id,
-				transcript: result.transcript,
+				transcript: videoData.text,
+				duration: videoData.duration,
 			},
 		});
 		setSuccess(true);

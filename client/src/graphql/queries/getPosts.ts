@@ -10,6 +10,7 @@ export const GET_POSTS = gql`
 			views
 			likes
 			dislikes
+			duration
 			createdAt {
 				date
 			}

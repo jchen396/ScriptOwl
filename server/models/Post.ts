@@ -16,6 +16,7 @@ const postSchema = new Schema<IPost>(
 		views: { type: Number, required: true },
 		transcript: { type: String },
 		comments: { type: [Object] },
+		duration: { type: Number, required: true },
 	},
 	{
 		timestamps: true,

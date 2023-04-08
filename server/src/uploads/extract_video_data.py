@@ -3,9 +3,24 @@ import sys
 import speech_recognition as sr
 from pydub import AudioSegment
 from pydub.silence import split_on_silence
+import cv2
+import json
+
 sys.path.append("modules")
 
 r = sr.Recognizer()
+
+
+def get_video_length(filename):
+    video = cv2.VideoCapture(filename)
+
+    # calculate the video duration and amount of frames
+    fps = video.get(cv2.CAP_PROP_FPS)
+    frame_count = video.get(cv2.CAP_PROP_FRAME_COUNT)
+
+    # Calculate duration in seconds
+    duration = int(frame_count / fps)
+    return duration
 
 
 def get_large_audio_transcription(path):
@@ -62,8 +77,13 @@ def main(argv):
         audio.export(f"{file_name}.wav", format="wav")
         # Initialize recognizer class (for recognizing the speech)
         text = get_large_audio_transcription(f"{file_name}.wav")
+        duration = get_video_length(f"{file_name}.mp4")
         os.remove(f"{file_name}.wav")
-        print(text)
+        result = {
+            "text": text,
+            "duration": duration
+        }
+        print(json.dumps(result))
 
     except:
         print("Error occured...")

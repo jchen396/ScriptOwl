@@ -25,7 +25,7 @@ const VideoGrid: React.FunctionComponent<Props> = ({ posts }) => {
 						return (
 							<div
 								key={key}
-								className="hover:bg-gray-800 p-2 hover:cursor-pointer rounded-lg"
+								className="group hover:bg-gray-800 p-2 hover:cursor-pointer rounded-lg"
 								onClick={() => {
 									incrementViewCount({
 										variables: {

@@ -1,12 +1,12 @@
 // package for setting up python script calls
 const { spawn } = require("child_process");
 
-export const getVideoTranscript = (filename: string) => {
+export const getVideoData = (filename: string) => {
 	return new Promise<string>((resolve, reject) => {
 		try {
 			let result;
 			const pythonScript = spawn("python", [
-				`${__dirname}/../uploads/video_to_text.py`,
+				`${__dirname}/../uploads/extract_video_data.py`,
 				filename,
 			]);
 			pythonScript.stdout.on("data", (data) => {

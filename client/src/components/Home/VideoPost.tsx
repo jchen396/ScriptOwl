@@ -25,12 +25,16 @@ const VideoPost: React.FunctionComponent<Props> = ({
 					query: { v: post.id },
 				}}
 			>
-				<div className="border-2 border-gray-800 rounded">
+				<div className="relative border-2 border-gray-800 rounded">
 					<ReactPlayer
 						url={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}
 						width="100%"
 						height="150px"
+						light={true}
 					/>
+					<div className="group-hover:opacity-50 absolute right-0 bottom-0 bg-black text-white text-md self-end">
+						{Math.floor(post.duration / 60)}:{post.duration % 60}
+					</div>
 				</div>
 				<div className="flex flex-row justify-between items-center">
 					<p className="text-white text-xl bold">

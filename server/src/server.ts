@@ -36,7 +36,7 @@ const upload = multer({ storage: storage });
 
 import { authenticateTokens } from "./modules/auth";
 import { connectDB } from "../config/db";
-import { getVideoTranscript } from "./modules/getVideoTranscript";
+import { getVideoData } from "./modules/getVideoData";
 import { generateDefintion } from "./modules/openai";
 const {
 	uploadImage,
@@ -99,9 +99,9 @@ app.post("/images", upload.single("image"), async (req, res) => {
 app.post("/videos", upload.single("video"), async (req, res) => {
 	try {
 		const key = await uploadVideo(req.file);
-		const transcript = await getVideoTranscript(req.file.filename);
+		const result = await getVideoData(req.file.filename);
 		await unlinkFile(req.file.path);
-		res.send({ key, transcript }).status(200);
+		res.send({ key, result }).status(200);
 	} catch (e) {
 		res.json(e).status(400);
 	}

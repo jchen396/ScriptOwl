@@ -43,4 +43,5 @@ export interface IPost {
 	transcript: string;
 	createdAt: IDate;
 	comments: IComment[];
+	duration: number;
 }
