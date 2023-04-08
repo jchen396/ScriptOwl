@@ -60,3 +60,27 @@ async function uploadVideo(file) {
 	return file.filename;
 }
 exports.uploadVideo = uploadVideo;
+
+async function uploadThumbnail(file) {
+	const fileStream = fs.createReadStream(`src\\uploads\\${file}`);
+	const uploadParams = {
+		Bucket: process.env.AWS_BUCKET2_THUMBNAILS_NAME,
+		Body: fileStream,
+		Key: file,
+		BucketKeyEnabled: true,
+	};
+	let putCommand = new PutObjectCommand(uploadParams);
+	await s3ClientVideos.send(putCommand);
+	return file;
+}
+exports.uploadThumbnail = uploadThumbnail;
+
+async function getThumbnailFileStream(fileKey) {
+	const downloadParams = {
+		Key: fileKey,
+		Bucket: process.env.AWS_BUCKET2_THUMBNAILS_NAME,
+	};
+	let getCommand = new GetObjectCommand(downloadParams);
+	return s3ClientVideos.send(getCommand);
+}
+exports.getThumbnailFileStream = getThumbnailFileStream;

@@ -82,6 +82,7 @@ const PostType = new GraphQLObjectType({
 		comments: { type: GraphQLList(CommentType) },
 		transcript: { type: GraphQLString },
 		duration: { type: GraphQLInt },
+		thumbnail: { type: GraphQLID },
 		createdAt: {
 			type: DateType,
 		},
@@ -273,6 +274,7 @@ const mutation = new GraphQLObjectType({
 				publisher: { type: GraphQLNonNull(GraphQLID) },
 				transcript: { type: GraphQLString },
 				duration: { type: GraphQLInt },
+				thumbnail: { type: GraphQLNonNull(GraphQLID) },
 			},
 			resolve(parent, args) {
 				const post = new Post({
@@ -283,6 +285,7 @@ const mutation = new GraphQLObjectType({
 					category: args.category,
 					transcript: args.transcript ? args.transcript : "",
 					duration: args.duration,
+					thumbnail: args.thumbnail,
 					likes: 0,
 					dislikes: 0,
 					views: 0,

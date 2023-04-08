@@ -11,6 +11,7 @@ export const GET_POSTS = gql`
 			likes
 			dislikes
 			duration
+			thumbnail
 			createdAt {
 				date
 			}

@@ -2,6 +2,7 @@ import Link from "next/link";
 import React from "react";
 import ReactPlayer from "react-player";
 import { IPost } from "../../../../types/types";
+import Image from "next/image";
 
 type Props = {
 	post: IPost;
@@ -25,12 +26,20 @@ const VideoPost: React.FunctionComponent<Props> = ({
 					query: { v: post.id },
 				}}
 			>
-				<div className="relative border-2 border-gray-800 rounded">
+				<div className="relative w-full border-2 border-gray-800 rounded">
 					<ReactPlayer
 						url={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}
 						width="100%"
 						height="150px"
-						light={true}
+						light={
+							<Image
+								height={100}
+								width={100}
+								className="object-fill w-full h-full"
+								src={`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}thumbnails/${post.thumbnail}`}
+								alt="thumbnail"
+							/>
+						}
 					/>
 					<div className="group-hover:opacity-50 absolute right-0 bottom-0 bg-black text-white text-md self-end">
 						{Math.floor(post.duration / 60)}:{post.duration % 60}

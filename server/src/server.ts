@@ -12,7 +12,6 @@ const bodyParser = require("body-parser");
 
 // MongoDB configurations
 import { Post } from "../models/Post";
-import mongoose from "mongoose";
 
 // setting up multer environments
 const multer = require("multer");
@@ -42,6 +41,8 @@ const {
 	uploadImage,
 	getImageFileStream,
 	uploadVideo,
+	uploadThumbnail,
+	getThumbnailFileStream,
 } = require("./modules/s3");
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -98,10 +99,23 @@ app.post("/images", upload.single("image"), async (req, res) => {
 // Post video to AWS S3 Bucket
 app.post("/videos", upload.single("video"), async (req, res) => {
 	try {
+		const filename = req.file.filename.split(".")[0];
 		const key = await uploadVideo(req.file);
-		const result = await getVideoData(req.file.filename);
+		const result = await getVideoData(filename);
+		const thumbnailKey = await uploadThumbnail(`${filename}.jpg`);
 		await unlinkFile(req.file.path);
-		res.send({ key, result }).status(200);
+		await unlinkFile(`src\\uploads\\${filename}.jpg`);
+		res.send({ key, result, thumbnailKey }).status(200);
+	} catch (e) {
+		res.json(e).status(400);
+	}
+});
+
+app.get("/thumbnails/:key", async (req, res) => {
+	try {
+		const key = req.params.key;
+		const { Body } = await getThumbnailFileStream(key);
+		Body.pipe(res);
 	} catch (e) {
 		res.json(e).status(400);
 	}

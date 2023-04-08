@@ -19,29 +19,36 @@ const Post: FunctionComponent<Props> = () => {
 	const [success, setSuccess] = useState<boolean>();
 	const { currentUser } = useSelector((state: any) => state.user);
 	const onSubmitHandler = async (e: FormEvent<HTMLButtonElement>) => {
-		e.preventDefault();
-		setPosted(true);
-		let result;
-		if (videoFile) {
-			result = await postVideo({ videoFile });
-		} else {
-			console.log("No file selected...");
-			return;
+		try {
+			e.preventDefault();
+			setPosted(true);
+			let result;
+			if (videoFile) {
+				result = await postVideo({ videoFile });
+			} else {
+				console.log("No file selected...");
+				return;
+			}
+			const videoData = JSON.parse(
+				result.result.replace(/(\r\n|\n|\r)/gm, "")
+			);
+			const { data } = await addPost({
+				variables: {
+					videoKey: result.key,
+					title,
+					description,
+					category,
+					publisher: currentUser.id,
+					transcript: videoData.text,
+					duration: videoData.duration,
+					thumbnail: result.thumbnailKey,
+				},
+			});
+			setSuccess(true);
+			setPosted(false);
+		} catch (e) {
+			console.log(e);
 		}
-		const videoData = JSON.parse(result.result);
-		await addPost({
-			variables: {
-				videoKey: result.key,
-				title,
-				description,
-				category,
-				publisher: currentUser.id,
-				transcript: videoData.text,
-				duration: videoData.duration,
-			},
-		});
-		setSuccess(true);
-		setPosted(false);
 	};
 	useEffect(() => {
 		if (!currentUser) {

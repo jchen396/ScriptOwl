@@ -9,6 +9,7 @@ export const ADD_POST = gql`
 		$publisher: ID!
 		$transcript: String
 		$duration: Int
+		$thumbnail: ID!
 	) {
 		addPost(
 			videoKey: $videoKey
@@ -18,9 +19,11 @@ export const ADD_POST = gql`
 			publisher: $publisher
 			transcript: $transcript
 			duration: $duration
+			thumbnail: $thumbnail
 		) {
 			videoKey
 			title
+			thumbnail
 			description
 			category
 			publisher {

@@ -11,6 +11,21 @@ sys.path.append("modules")
 r = sr.Recognizer()
 
 
+def get_video_thumbnail(video_path, thumbnail_path):
+    # Load the video using cv2.VideoCapture
+    cap = cv2.VideoCapture(video_path)
+
+    # Set the frame position to 0 seconds
+    cap.set(cv2.CAP_PROP_POS_MSEC, 0)
+
+    # Read the next frame and save it as a thumbnail image
+    ret, frame = cap.read()
+    cv2.imwrite(thumbnail_path, frame)
+
+    # Release the video capture object
+    cap.release()
+
+
 def get_video_length(filename):
     video = cv2.VideoCapture(filename)
 
@@ -68,7 +83,7 @@ def get_large_audio_transcription(path):
 
 def main(argv):
     try:
-        file_name = sys.argv[1].split(".")[0]
+        file_name = sys.argv[1]
         os.chdir("./src/uploads")
         # Load the video file
         video = AudioSegment.from_file(
@@ -78,6 +93,9 @@ def main(argv):
         # Initialize recognizer class (for recognizing the speech)
         text = get_large_audio_transcription(f"{file_name}.wav")
         duration = get_video_length(f"{file_name}.mp4")
+
+        # Set a thumbnail snapshot at 0 seconds mark
+        get_video_thumbnail(f"{file_name}.mp4", f"{file_name}.jpg")
         os.remove(f"{file_name}.wav")
         result = {
             "text": text,

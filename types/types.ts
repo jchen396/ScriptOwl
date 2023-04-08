@@ -44,4 +44,5 @@ export interface IPost {
 	createdAt: IDate;
 	comments: IComment[];
 	duration: number;
+	thumbnail: string;
 }
