@@ -20,7 +20,7 @@ const Home: FunctionComponent<Props> = ({ posts, pageCount, currentPage }) => {
 	return posts ? (
 		<>
 			{!isSSR && (
-				<div className="h-screen w-screen flex flex-col items-center justify-start space-y-10 font-mono pt-40 overflow-y-scroll">
+				<div className="h-screen w-screen flex flex-col items-center justify-start space-y-10 font-mono p-4 py-28 overflow-y-scroll">
 					<VideoGrid posts={posts} />
 					<PaginationBar
 						pageCount={pageCount}
