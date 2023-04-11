@@ -58,10 +58,10 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 						</li>
 						<li>
 							<Link
-								href="/about"
+								href="/explore"
 								className="block py-2 pl-3 pr-4 rounded md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:hover:text-white md:hover:bg-transparent text-gray-600 hover:text-white"
 							>
-								About
+								Explore
 							</Link>
 						</li>
 						<li className="block p-1 px-2 rounded-lg text-blue-600 hover:text-white md:border-2 border-blue-600 md:hover:text-black md:hover:bg-blue-600 hover:cursor-pointer flex flex-row items-center text-gray-600 hover:text-white md:text-blue-600">

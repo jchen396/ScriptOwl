@@ -24,7 +24,7 @@ const PaginationBar: React.FC<Props> = ({ pageCount, currentPage }) => {
 						}`}
 						key={key}
 						href={{
-							pathname: "/",
+							pathname: "/explore",
 							query: { page },
 						}}
 					>
