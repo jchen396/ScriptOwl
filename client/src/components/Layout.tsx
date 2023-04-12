@@ -18,7 +18,7 @@ const Layout = ({ children }: PropsWithChildren) => {
 	}, [currentUser]);
 	return (
 		<>
-			<div className="bg-black w-screen h-screen">
+			<div className="bg-black">
 				<Navbar userData={userData} />
 				{children}
 			</div>

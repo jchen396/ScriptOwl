@@ -1,9 +1,13 @@
 import React from "react";
+import HeroSection from "@/components/Home/HeroSection";
+import Info from "@/components/Home/Info";
 
 const index = () => {
 	return (
-		<div className="w-screen h-screen flex items-center justify-center text-white">
-			Welcome
+		<div className="flex flex-wrap items-center justify-center text-white space-y-10">
+			<HeroSection />
+			<hr className="border border-gray-700 w-3/4 " />
+			<Info />
 		</div>
 	);
 };
