@@ -1,5 +1,8 @@
-import { getReply } from "@/functions/openai_function/getReply";
-import React from "react";
+import {
+	getDefinition,
+	getTranscriptServices,
+} from "@/functions/openai_function/getReply";
+import React, { useState } from "react";
 
 interface Props {
 	transcript: string;
@@ -7,6 +10,7 @@ interface Props {
 	setSection: React.Dispatch<React.SetStateAction<string>>;
 	setChatReply: React.Dispatch<React.SetStateAction<string | null>>;
 	setChatLoading: React.Dispatch<React.SetStateAction<boolean>>;
+	setShowGPTSection: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const TranscriptSection: React.FC<Props> = ({
@@ -15,6 +19,7 @@ const TranscriptSection: React.FC<Props> = ({
 	setSection,
 	setChatReply,
 	setChatLoading,
+	setShowGPTSection,
 }) => {
 	const handleWordSelect = async (
 		e: React.MouseEvent<HTMLSpanElement, MouseEvent>
@@ -33,11 +38,23 @@ const TranscriptSection: React.FC<Props> = ({
 				);
 			}
 			setWordSelected(highlightedWord);
+			setShowGPTSection(true);
 			setSection("ChatGPT");
-			const reply = await getReply(highlightedWord);
+			const reply = await getDefinition(highlightedWord);
 			setChatReply(reply);
 			setChatLoading(false);
 		}
+	};
+	const handleOptionSelect = async (option: string) => {
+		setChatLoading(true);
+		setShowGPTSection(true);
+		setSection("ChatGPT");
+		const reply = await getTranscriptServices(
+			transcript.replace(/(\r\n|\n|\r)/gm, ""),
+			option
+		);
+		setChatReply(reply);
+		setChatLoading(false);
 	};
 	return (
 		<div className="h-4/5 w-full flex flex-col space-y-4">
@@ -63,6 +80,26 @@ const TranscriptSection: React.FC<Props> = ({
 			<p className="text-white self-center">
 				Click on word to search on ChatGPT.{" "}
 			</p>
+			<div className="flex flex-row justify-center items-center space-x-4">
+				<button
+					className="text-xl p-2 px-4 border border-white rounded-full opacity-75 hover:opacity-100"
+					onClick={() => handleOptionSelect("translate")}
+				>
+					Translate
+				</button>
+				<button
+					className="text-xl p-2 px-4 border border-white rounded-full opacity-75 hover:opacity-100"
+					onClick={() => handleOptionSelect("summarize")}
+				>
+					Summarize
+				</button>
+				<button
+					className="text-xl p-2 px-4 border border-white rounded-full opacity-75 hover:opacity-100"
+					onClick={() => handleOptionSelect("assess")}
+				>
+					Assess
+				</button>
+			</div>
 		</div>
 	);
 };

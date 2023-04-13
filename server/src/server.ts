@@ -36,7 +36,12 @@ const upload = multer({ storage: storage });
 import { authenticateTokens } from "./modules/auth";
 import { connectDB } from "../config/db";
 import { getVideoData } from "./modules/getVideoData";
-import { generateDefintion } from "./modules/openai";
+import {
+	generateAssessment,
+	generateDefintion,
+	generateTranslation,
+	generatetSummary,
+} from "./modules/openai";
 const {
 	uploadImage,
 	getImageFileStream,
@@ -122,9 +127,25 @@ app.get("/thumbnails/:key", async (req, res) => {
 });
 
 // Ask ChatGPT to define a word from transcript
-app.post("/chatgpt", async (req, res) => {
+app.post("/chatgpt/define", async (req, res) => {
 	try {
 		const reply = await generateDefintion(req.body.word);
+		return res.json(reply).status(200);
+	} catch (e) {
+		res.json(e).status(400);
+	}
+});
+
+app.post("/chatgpt/services", async (req, res) => {
+	try {
+		let reply;
+		if (req.body.option === "translate") {
+			reply = await generateTranslation(req.body.transcript, "chinese");
+		} else if (req.body.option === "summarize") {
+			reply = await generatetSummary(req.body.transcript);
+		} else if (req.body.option === "assess") {
+			reply = await generateAssessment(req.body.transcript);
+		}
 		return res.json(reply).status(200);
 	} catch (e) {
 		res.json(e).status(400);
