@@ -11,13 +11,15 @@ export const getDefinition = async (word: string | null) => {
 
 export const getTranscriptServices = async (
 	transcript: string,
-	option: string
+	option: string,
+	language?: string
 ) => {
 	const reply = await axios.post(
 		`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}chatgpt/services`,
 		{
 			transcript,
 			option,
+			language,
 		}
 	);
 	return reply.data;

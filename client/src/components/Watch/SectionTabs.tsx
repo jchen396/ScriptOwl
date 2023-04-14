@@ -5,15 +5,14 @@ interface Props {
 	post: IPost;
 	section: string;
 	setSection: React.Dispatch<React.SetStateAction<string>>;
-	showGPTSection: boolean;
+	service: string;
 }
 
 const SectionTabs: React.FC<Props> = ({
 	post,
 	section,
 	setSection,
-
-	showGPTSection,
+	service,
 }) => {
 	return (
 		<div className="flex flex-row justify-center items-center">
@@ -42,7 +41,7 @@ const SectionTabs: React.FC<Props> = ({
 					section === "ChatGPT"
 						? "border-white opacity-100"
 						: "border-gray-800 opacity-50"
-				} hover:opacity-100 ${showGPTSection}`}
+				} hover:opacity-100 ${service ? "block" : "hidden"}`}
 				onClick={() => setSection("ChatGPT")}
 			>
 				ChatGPT

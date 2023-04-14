@@ -10,7 +10,7 @@ interface Props {
 	setSection: React.Dispatch<React.SetStateAction<string>>;
 	setChatReply: React.Dispatch<React.SetStateAction<string | null>>;
 	setChatLoading: React.Dispatch<React.SetStateAction<boolean>>;
-	setShowGPTSection: React.Dispatch<React.SetStateAction<boolean>>;
+	setService: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const TranscriptSection: React.FC<Props> = ({
@@ -19,7 +19,7 @@ const TranscriptSection: React.FC<Props> = ({
 	setSection,
 	setChatReply,
 	setChatLoading,
-	setShowGPTSection,
+	setService,
 }) => {
 	const handleWordSelect = async (
 		e: React.MouseEvent<HTMLSpanElement, MouseEvent>
@@ -38,7 +38,7 @@ const TranscriptSection: React.FC<Props> = ({
 				);
 			}
 			setWordSelected(highlightedWord);
-			setShowGPTSection(true);
+			setService("define");
 			setSection("ChatGPT");
 			const reply = await getDefinition(highlightedWord);
 			setChatReply(reply);
@@ -46,14 +46,17 @@ const TranscriptSection: React.FC<Props> = ({
 		}
 	};
 	const handleOptionSelect = async (option: string) => {
+		let reply;
 		setChatLoading(true);
-		setShowGPTSection(true);
+		setService(option);
 		setSection("ChatGPT");
-		const reply = await getTranscriptServices(
-			transcript.replace(/(\r\n|\n|\r)/gm, ""),
-			option
-		);
-		setChatReply(reply);
+		if (option === "summarize" || option === "assess") {
+			reply = await getTranscriptServices(
+				transcript.replace(/(\r\n|\n|\r)/gm, ""),
+				option
+			);
+			setChatReply(reply);
+		}
 		setChatLoading(false);
 	};
 	return (

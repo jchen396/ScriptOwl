@@ -34,7 +34,7 @@ const Watch: NextPage<
 	const [wordSelected, setWordSelected] = useState<string | null>("");
 	const [chatReply, setChatReply] = useState<string | null>("");
 	const [chatLoading, setChatLoading] = useState<boolean>(false);
-	const [showGPTSection, setShowGPTSection] = useState<boolean>(false);
+	const [service, setService] = useState<string>("");
 	const refreshSSRProps = () => {
 		router.replace(router.asPath);
 	};
@@ -67,16 +67,20 @@ const Watch: NextPage<
 					setSection={setSection}
 					setChatReply={setChatReply}
 					setChatLoading={setChatLoading}
-					setShowGPTSection={setShowGPTSection}
+					setService={setService}
 				/>
 			);
 		}
 		if (section === "ChatGPT") {
 			return (
 				<ChatGPTSection
+					transcript={post.transcript}
 					wordSelected={wordSelected}
 					chatReply={chatReply}
+					setChatReply={setChatReply}
 					chatLoading={chatLoading}
+					setChatLoading={setChatLoading}
+					service={service}
 				/>
 			);
 		}
@@ -84,7 +88,6 @@ const Watch: NextPage<
 	useEffect(() => {
 		setIsSSR(false);
 	}, []);
-	console.log(chatReply);
 	return (
 		<>
 			{!isSSR && (
@@ -101,7 +104,7 @@ const Watch: NextPage<
 							post={post}
 							section={section}
 							setSection={setSection}
-							showGPTSection={showGPTSection}
+							service={service}
 						/>
 						{getSectionComponent()}
 					</div>

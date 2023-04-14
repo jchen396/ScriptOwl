@@ -140,7 +140,10 @@ app.post("/chatgpt/services", async (req, res) => {
 	try {
 		let reply;
 		if (req.body.option === "translate") {
-			reply = await generateTranslation(req.body.transcript, "chinese");
+			reply = await generateTranslation(
+				req.body.transcript,
+				req.body.language
+			);
 		} else if (req.body.option === "summarize") {
 			reply = await generatetSummary(req.body.transcript);
 		} else if (req.body.option === "assess") {
