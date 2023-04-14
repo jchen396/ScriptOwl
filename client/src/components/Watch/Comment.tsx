@@ -162,7 +162,7 @@ const Comment: React.FunctionComponent<Props> = ({
 						)}
 					</div>
 
-					<p>{comment.comment}</p>
+					<p className="break-all">{comment.comment}</p>
 					<div className="text-sm flex flex-row items-center space-x-2">
 						<div
 							className={`hover:cursor-pointer ${

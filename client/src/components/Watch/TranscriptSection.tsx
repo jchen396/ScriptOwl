@@ -61,12 +61,12 @@ const TranscriptSection: React.FC<Props> = ({
 	};
 	return (
 		<div className="h-4/5 w-full flex flex-col space-y-4">
-			<div className="basis-4/5 text-gray-600 flex flex-wrap border-2 bg-transparent border-gray-800 rounded-lg overflow-auto p-4 hover:cursor-default">
-				{transcript ? (
+			<div className="basis-4/5 text-gray-600 flex flex-wrap border-2 bg-transparent border-gray-800 rounded-lg overflow-y-scroll p-4 hover:cursor-default">
+				{transcript.replace(/(\r\n|\n|\r)/gm, "") ? (
 					transcript.split(" ").map((word, key) => {
 						return (
 							<span
-								className="hover:text-white"
+								className="flex items-center justify-center hover:text-white"
 								key={key}
 								onClick={(e) => handleWordSelect(e)}
 							>

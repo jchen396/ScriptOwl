@@ -101,7 +101,11 @@ const ChatGPTSection: React.FC<Props> = ({
 				) : (
 					<div className="h-full flex flex-col space-y-4 p-4 text-gray-400 break-words overflow-y-scroll">
 						{getChatQuery()}
-						<p>{chatReply}</p>
+						{service === "assess" ? (
+							<p className="whitespace-pre-line">{chatReply}</p>
+						) : (
+							<p>{chatReply}</p>
+						)}
 					</div>
 				)}
 			</div>

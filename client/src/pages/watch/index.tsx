@@ -88,6 +88,7 @@ const Watch: NextPage<
 	useEffect(() => {
 		setIsSSR(false);
 	}, []);
+	console.log(chatReply);
 	return (
 		<>
 			{!isSSR && (

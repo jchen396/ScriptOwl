@@ -38,8 +38,8 @@ const CommentSection: React.FunctionComponent<Props> = ({
 		refreshSSRProps();
 	};
 	const loadComments = () => {
-		let loadAmount = 5;
-		if (post.comments.length < visibleComments + 3) {
+		let loadAmount = 20;
+		if (post.comments.length < visibleComments + 40) {
 			loadAmount = post.comments.length - visibleComments;
 		}
 		setVisibleComments((state) => state + loadAmount);
@@ -52,7 +52,7 @@ const CommentSection: React.FunctionComponent<Props> = ({
 	}, []);
 	return (
 		<div className="h-4/5 w-full flex flex-col space-y-4">
-			<div className="basis-4/5 text-white border-2 bg-transparent border-gray-800 rounded-lg overflow-auto">
+			<div className="basis-4/5 text-white border-2 bg-transparent border-gray-800 rounded-lg overflow-y-scroll">
 				{post.comments.length ? (
 					post.comments
 						.slice(
