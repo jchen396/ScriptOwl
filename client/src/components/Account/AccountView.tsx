@@ -70,12 +70,20 @@ const AccountView: React.FunctionComponent<Props> = ({
 			{(newPassword || imageKey) && (
 				<div>
 					<button
-						className={`bg-white text-black text-2xl hover:bg-gray-300 p-2 px-4 rounded-lg text-bold items-center justify-center ${
-							loading
-								? "hover:cursor-not-allowed bg-gray-300"
-								: "hover:cursor-pointer"
-						}`}
+						className={`bg-white text-black text-2xl p-2 px-4 rounded-lg text-bold items-center justify-center
+						 ${
+								currentUser.isVerfied
+									? `
+							${
+								loading
+									? "hover:cursor-not-allowed bg-gray-300"
+									: "hover:bg-gray-300 hover:cursor-pointer"
+							}
+						`
+									: "border-gray-600 bg-gray-600 text-white  hover:cursor-not-allowed"
+							}`}
 						onClick={onSaveChanges}
+						disabled={!currentUser.isVerfied}
 					>
 						{loading ? (
 							<div className="w-full flex flex-row justify-center items-center space-x-4">

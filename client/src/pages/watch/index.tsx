@@ -68,6 +68,7 @@ const Watch: NextPage<
 					setChatReply={setChatReply}
 					setChatLoading={setChatLoading}
 					setService={setService}
+					currentUser={currentUser}
 				/>
 			);
 		}

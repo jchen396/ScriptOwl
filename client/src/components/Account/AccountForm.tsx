@@ -19,7 +19,6 @@ const AccountForm: React.FunctionComponent<Props> = ({
 	changePassword,
 	setChangePassword,
 	setNewPassword,
-	confirmNewPassword,
 	setConfirmNewPassword,
 }) => {
 	return (

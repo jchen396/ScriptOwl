@@ -139,12 +139,19 @@ const Post: FunctionComponent<Props> = () => {
 					</div>
 					<button
 						type="button"
-						className={`text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center hover:bg-blue-700 ${
-							loading || posted
-								? "hover:cursor-not-allowed bg-blue-700"
-								: "hover:cursor-pointer"
+						className={`text-white bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center 
+						${
+							currentUser.isVerified
+								? `hover:bg-blue-700 
+							${
+								loading || posted
+									? "hover:cursor-not-allowed bg-blue-700"
+									: "hover:cursor-pointer"
+							} 
+								`
+								: "border-gray-600 bg-gray-600 hover:cursor-not-allowed"
 						} `}
-						disabled={loading}
+						disabled={loading || !currentUser.isVerified}
 						onClick={(e) => onSubmitHandler(e)}
 					>
 						{loading || posted ? (
