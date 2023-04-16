@@ -270,6 +270,24 @@ const mutation = new GraphQLObjectType({
 				return User.findByIdAndRemove(args.id);
 			},
 		},
+		verifyUser: {
+			type: UserType,
+			args: {
+				id: { type: GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				const user = await User.findByIdAndUpdate(
+					args.id,
+					{
+						$set: {
+							isVerified: true,
+						},
+					},
+					{ new: true }
+				);
+				return user;
+			},
+		},
 		// Add a post
 		addPost: {
 			type: PostType,
@@ -537,7 +555,7 @@ const mutation = new GraphQLObjectType({
 				avatarKey: { type: GraphQLString },
 				password: { type: GraphQLID },
 			},
-			resolve(_, args) {
+			async resolve(_, args) {
 				let encryptedPassword;
 				if (args.password) {
 					encryptedPassword = CryptoJS.AES.encrypt(
@@ -545,7 +563,7 @@ const mutation = new GraphQLObjectType({
 						process.env.PASS_SEC
 					).toString();
 				}
-				return User.findByIdAndUpdate(
+				return await User.findByIdAndUpdate(
 					args.id,
 					{
 						$set: {
