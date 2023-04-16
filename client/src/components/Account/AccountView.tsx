@@ -4,6 +4,7 @@ import { ParsedUrlQuery } from "querystring";
 import AccountForm from "./AccountForm";
 import Avatar from "./Avatar";
 import Points from "./Points";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface Props {
 	imageKey: string;
@@ -23,6 +24,7 @@ interface Props {
 	confirmNewPassword: string;
 	setConfirmNewPassword: React.Dispatch<React.SetStateAction<string>>;
 	loading: boolean;
+	errorMessage: string;
 }
 const AccountView: React.FunctionComponent<Props> = ({
 	imageKey,
@@ -40,13 +42,20 @@ const AccountView: React.FunctionComponent<Props> = ({
 	confirmNewPassword,
 	setConfirmNewPassword,
 	loading,
+	errorMessage,
 }) => {
 	return (
 		<>
 			<h1 className="text-4xl font-medium text-slate-100">Account</h1>
-			<div className="flex flex-col space-y-4 border-2 border-slate-100 bg-transparent text-slate-100 w-2/3 h-2/3 md:py-20 md:px-0">
+			<div className="flex flex-col space-y-4 border-2 border-slate-100 bg-transparent text-slate-100 w-2/3 h-2/3 md:px-0">
+				{errorMessage && (
+					<div className="m-2 flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4">
+						<p>{errorMessage}</p>
+						<CloseIcon />
+					</div>
+				)}
 				<div className="w-full h-full flex flex-col justify-between items-center md:flex-row space-y-10">
-					<div className="h-full flex flex-col justify-between items-center basis-1/2 space-y-10">
+					<div className="h-full flex flex-col justify-between items-center basis-1/2 space-y-10 md:py-20  ">
 						<Avatar
 							imageKey={imageKey}
 							currentUser={currentUser}

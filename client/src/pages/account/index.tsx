@@ -6,6 +6,7 @@ import { useMutation } from "@apollo/client";
 import { UPDATE_USER } from "@/graphql/mutations/updateUser";
 import { postImage } from "@/functions/s3_functions/postImage";
 import AccountView from "@/components/Account/AccountView";
+import { validatePassword } from "@/functions/validateForm";
 
 interface Props {}
 
@@ -16,6 +17,7 @@ const Account: FunctionComponent<Props> = () => {
 	const [newPassword, setNewPassword] = useState<string>("");
 	const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
 	const [imageKey, setImageKey] = useState<string>("");
+	const [errorMessage, setErrorMessage] = useState<string>("");
 	const [editToggle, setEditToggle] = useState<boolean>(false);
 	const { currentUser } = useSelector((state: any) => state.user);
 	const userData = router.query;
@@ -44,6 +46,11 @@ const Account: FunctionComponent<Props> = () => {
 	};
 	const onSaveChanges = async () => {
 		try {
+			if (!validatePassword(newPassword)) {
+				throw new Error(
+					"Password must be eight or more characters, including upper and lowercase letters, and at least one number. "
+				);
+			}
 			if (newPassword !== confirmNewPassword) {
 				throw new Error("Passwords do not match.");
 			}
@@ -59,7 +66,7 @@ const Account: FunctionComponent<Props> = () => {
 			setNewPassword("");
 			setImageKey("");
 		} catch (err) {
-			console.log(err);
+			setErrorMessage(err);
 		}
 	};
 	return (
@@ -81,6 +88,7 @@ const Account: FunctionComponent<Props> = () => {
 					confirmNewPassword={confirmNewPassword}
 					setConfirmNewPassword={setConfirmNewPassword}
 					loading={loading}
+					errorMessage={errorMessage}
 				/>
 			</div>
 		</>
