@@ -1,8 +1,12 @@
 import React from "react";
 import HeroSection from "@/components/Home/HeroSection";
 import Info from "@/components/Home/Info";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
-const index = () => {
+interface Props {}
+
+const Home: React.FunctionComponent<Props> = ({}) => {
 	return (
 		<div className="flex flex-wrap items-center justify-center text-white space-y-10 font-mono">
 			<HeroSection />
@@ -12,4 +16,4 @@ const index = () => {
 	);
 };
 
-export default index;
+export default Home;

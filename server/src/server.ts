@@ -95,6 +95,7 @@ app.get("/images/:key", async (req, res) => {
 app.post("/images", upload.single("image"), async (req, res) => {
 	try {
 		const key = await uploadImage(req.file);
+		await unlinkFile(req.file.path);
 		res.send({ key }).status(200);
 	} catch (e) {
 		res.json(e).status(400);

@@ -3,7 +3,7 @@ export interface IDate {
 }
 
 export interface IUser {
-	[key: string]: Array<string> | string | number;
+	[key: string]: Array<string> | string | number | boolean;
 	username: string;
 	password: string;
 	readonly id: string;
@@ -14,6 +14,8 @@ export interface IUser {
 	dislikedCommentsIds: Array<string>;
 	likedPostsIds: Array<string>;
 	dislikedPostsIds: Array<string>;
+	isVerfied: boolean;
+	verificationCode: number;
 }
 
 export interface IPublisher {

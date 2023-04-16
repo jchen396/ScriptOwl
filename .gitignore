@@ -23,6 +23,9 @@
 /client/*.pem
 /server/.env
 /client/.env
+/server/.env.swp
+/client/.env.swp
+
 
 # debug
 /client/npm-debug.log*

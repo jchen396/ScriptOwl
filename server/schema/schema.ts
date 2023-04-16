@@ -13,6 +13,7 @@ import {
 	GraphQLString,
 	GraphQLNonNull,
 	GraphQLError,
+	GraphQLBoolean,
 } from "graphql";
 import { createTokens } from "../src/modules/auth";
 
@@ -42,6 +43,8 @@ const UserType = new GraphQLObjectType({
 		dislikedCommentsIds: { type: GraphQLList(GraphQLID) },
 		likedPostsIds: { type: GraphQLList(GraphQLID) },
 		dislikedPostsIds: { type: GraphQLList(GraphQLID) },
+		isVerified: { type: GraphQLBoolean },
+		verificationCode: { type: GraphQLInt },
 		createdAt: {
 			type: DateType,
 		},
@@ -242,6 +245,10 @@ const mutation = new GraphQLObjectType({
 								dislikedCommentsIds: [],
 								likedPostsIds: [],
 								dislikedPostsIds: [],
+								isVerified: false,
+								verificationCode: Math.floor(
+									100000 + Math.random() * 900000
+								),
 							});
 							user.save();
 							const { password, ...others } = user;

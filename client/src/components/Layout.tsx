@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticate } from "@/redux/apiCalls";
 import { IUser } from "../../../types/types";
+import { useRouter } from "next/router";
 
 interface LayoutProps {}
 

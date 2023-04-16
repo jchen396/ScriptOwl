@@ -37,7 +37,7 @@ const Avatar: React.FunctionComponent<Props> = ({
 						height={100}
 						width={100}
 						className="w-32 h-32 rounded-full"
-						src={`http://localhost:8080/images/${currentUser.avatarKey}`}
+						src={`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${currentUser.avatarKey}`}
 						alt="user photo"
 					/>
 				)}

@@ -12,6 +12,8 @@ export const LOG_IN_USER = gql`
 			dislikedCommentsIds
 			likedPostsIds
 			dislikedPostsIds
+			isVerified
+			verificationCode
 		}
 	}
 `;
