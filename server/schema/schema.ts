@@ -17,6 +17,10 @@ import {
 } from "graphql";
 import { createTokens } from "../src/modules/auth";
 
+// set up sendgrid for e-mail verifications
+import sendgrid from "@sendgrid/mail";
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
+
 const DateType = new GraphQLObjectType({
 	name: "Date",
 	fields: () => ({
@@ -223,7 +227,7 @@ const mutation = new GraphQLObjectType({
 					User.findOne({ username: args.username.toLowerCase() }),
 					User.findOne({ email: args.email.toLowerCase() }),
 				])
-					.then((res) => {
+					.then(async (res) => {
 						if (res[0]) {
 							throw new GraphQLError(
 								"Username is already taken."
@@ -235,6 +239,9 @@ const mutation = new GraphQLObjectType({
 								args.password,
 								process.env.PASS_SEC
 							).toString();
+							const verificationCode = Math.floor(
+								100000 + Math.random() * 900000
+							);
 							const user = new User({
 								username: args.username.toLowerCase(),
 								password: encryptedPassword,
@@ -246,9 +253,17 @@ const mutation = new GraphQLObjectType({
 								likedPostsIds: [],
 								dislikedPostsIds: [],
 								isVerified: false,
-								verificationCode: Math.floor(
-									100000 + Math.random() * 900000
-								),
+								verificationCode,
+							});
+							await sendgrid.send({
+								to: `${args.email}`, // Your email where you'll receive emails
+								from: "support@jackiedev.com", // your website email address here
+								subject: `vod_app Account Sign-Up Verification Code`,
+								html: `<div>
+                <h2>Your vod_app verification code is: </h2>
+                <br/>
+                <h3>${verificationCode}</h3>
+            </div>`,
 							});
 							user.save();
 							const { password, ...others } = user;
