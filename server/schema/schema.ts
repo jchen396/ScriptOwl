@@ -303,6 +303,40 @@ const mutation = new GraphQLObjectType({
 				return user;
 			},
 		},
+		resendCode: {
+			type: UserType,
+			args: {
+				id: { type: GraphQLID },
+				email: {
+					type: GraphQLID,
+				},
+			},
+			async resolve(_, args) {
+				const verificationCode = Math.floor(
+					100000 + Math.random() * 900000
+				);
+				const user = await User.findByIdAndUpdate(
+					args.id,
+					{
+						$set: {
+							verificationCode,
+						},
+					},
+					{ new: true }
+				);
+				await sendgrid.send({
+					to: `${args.email}`, // Your email where you'll receive emails
+					from: "support@jackiedev.com", // your website email address here
+					subject: `vod_app Account Sign-Up Verification Code`,
+					html: `<div>
+                <h2>Your vod_app verification code is: </h2>
+                <br/>
+                <h3>${verificationCode}</h3>
+            </div>`,
+				});
+				return user;
+			},
+		},
 		// Add a post
 		addPost: {
 			type: PostType,
