@@ -72,24 +72,26 @@ const Account: FunctionComponent<Props> = () => {
 	return (
 		<>
 			<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono">
-				<AccountView
-					imageKey={imageKey}
-					currentUser={currentUser}
-					userData={userData}
-					onResetPhoto={onResetPhoto}
-					onFileSelect={onFileSelect}
-					onSaveChanges={onSaveChanges}
-					editToggle={editToggle}
-					onEditToggle={onEditToggle}
-					changePassword={changePassword}
-					setChangePassword={setChangePassword}
-					newPassword={newPassword}
-					setNewPassword={setNewPassword}
-					confirmNewPassword={confirmNewPassword}
-					setConfirmNewPassword={setConfirmNewPassword}
-					loading={loading}
-					errorMessage={errorMessage}
-				/>
+				{currentUser && (
+					<AccountView
+						imageKey={imageKey}
+						currentUser={currentUser}
+						userData={userData}
+						onResetPhoto={onResetPhoto}
+						onFileSelect={onFileSelect}
+						onSaveChanges={onSaveChanges}
+						editToggle={editToggle}
+						onEditToggle={onEditToggle}
+						changePassword={changePassword}
+						setChangePassword={setChangePassword}
+						newPassword={newPassword}
+						setNewPassword={setNewPassword}
+						confirmNewPassword={confirmNewPassword}
+						setConfirmNewPassword={setConfirmNewPassword}
+						loading={loading}
+						errorMessage={errorMessage}
+					/>
+				)}
 			</div>
 		</>
 	);

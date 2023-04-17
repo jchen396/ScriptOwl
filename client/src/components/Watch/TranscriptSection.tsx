@@ -29,7 +29,7 @@ const TranscriptSection: React.FC<Props> = ({
 	const handleWordSelect = async (
 		e: React.MouseEvent<HTMLSpanElement, MouseEvent>
 	) => {
-		if (!currentUser.isVerfied) {
+		if (!currentUser || !currentUser.isVerfied) {
 			return;
 		}
 		setChatLoading(true);
@@ -75,7 +75,7 @@ const TranscriptSection: React.FC<Props> = ({
 						return (
 							<span
 								className={`flex items-center justify-center ${
-									currentUser.isVerfied
+									currentUser && currentUser.isVerfied
 										? "hover:text-white hover:cursor-default"
 										: ""
 								}`}
@@ -92,57 +92,63 @@ const TranscriptSection: React.FC<Props> = ({
 					</div>
 				)}
 			</div>
-			{currentUser.isVerfied ? (
-				<p className="text-white self-center">
-					Click on word to search on ChatGPT.{" "}
-				</p>
+			{currentUser ? (
+				<>
+					{currentUser.isVerfied ? (
+						<p className="text-white self-center">
+							Click on word to search on ChatGPT.{" "}
+						</p>
+					) : (
+						<p className="text-red-600 self-center">
+							Please{" "}
+							<span
+								className="text-blue-600 hover:text-blue-200 hover:cursor-pointer"
+								onClick={() => router.push("/verify")}
+							>
+								verify your account
+							</span>{" "}
+							to use this service.
+						</p>
+					)}
+					<div className="flex flex-row justify-center items-center space-x-4">
+						<button
+							className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 ${
+								currentUser.isVerified
+									? "hover:opacity-100 "
+									: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
+							}`}
+							onClick={() => handleOptionSelect("translate")}
+							disabled={!currentUser.isVerfied}
+						>
+							Translate
+						</button>
+						<button
+							className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 ${
+								currentUser.isVerified
+									? "hover:opacity-100 "
+									: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
+							}`}
+							onClick={() => handleOptionSelect("summarize")}
+							disabled={!currentUser.isVerfied}
+						>
+							Summarize
+						</button>
+						<button
+							className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 ${
+								currentUser.isVerified
+									? "hover:opacity-100 "
+									: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
+							}`}
+							onClick={() => handleOptionSelect("assess")}
+							disabled={!currentUser.isVerfied}
+						>
+							Assess
+						</button>
+					</div>
+				</>
 			) : (
-				<p className="text-red-600 self-center">
-					Please{" "}
-					<span
-						className="text-blue-600 hover:text-blue-200 hover:cursor-pointer"
-						onClick={() => router.push("/verify")}
-					>
-						verify your account
-					</span>{" "}
-					to use this service.
-				</p>
+				<></>
 			)}
-			<div className="flex flex-row justify-center items-center space-x-4">
-				<button
-					className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 ${
-						currentUser.isVerified
-							? "hover:opacity-100 "
-							: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
-					}`}
-					onClick={() => handleOptionSelect("translate")}
-					disabled={!currentUser.isVerfied}
-				>
-					Translate
-				</button>
-				<button
-					className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 ${
-						currentUser.isVerified
-							? "hover:opacity-100 "
-							: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
-					}`}
-					onClick={() => handleOptionSelect("summarize")}
-					disabled={!currentUser.isVerfied}
-				>
-					Summarize
-				</button>
-				<button
-					className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 ${
-						currentUser.isVerified
-							? "hover:opacity-100 "
-							: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
-					}`}
-					onClick={() => handleOptionSelect("assess")}
-					disabled={!currentUser.isVerfied}
-				>
-					Assess
-				</button>
-			</div>
 		</div>
 	);
 };

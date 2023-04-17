@@ -93,48 +93,52 @@ const CommentSection: React.FunctionComponent<Props> = ({
 					</button>
 				)}
 			</div>
-			<form
-				onSubmit={(e) => onCommentHandler(e)}
-				className="basis-auto w-full flex flex-row justify-center items-center space-x-2"
-			>
-				<input
-					type="text"
-					id="comment"
-					name="comment"
-					placeholder="Add a comment..."
-					className="w-full h-auto p-2 bg-transparent border-gray-800 border-b-2"
-					onChange={(e) => {
-						e.target.value ? setHasInput(true) : setHasInput(false);
-					}}
-				/>
-				<button
-					className={`border-2 py-2 px-4 rounded-full ${
-						hasInput && currentUser.isVerfied
-							? "border-blue-700 hover:bg-blue-700 text-white "
-							: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
-					} `}
-					type="submit"
-					disabled={!hasInput || !currentUser.isVerfied}
+			{currentUser && (
+				<form
+					onSubmit={(e) => onCommentHandler(e)}
+					className="basis-auto w-full flex flex-row justify-center items-center space-x-2"
 				>
-					{isCommenting ? (
-						<div className="w-full flex flex-row justify-center items-center space-x-4">
-							<div role="status">
-								<div
-									className="inline-block h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-neutral-100 motion-reduce:animate-[spin_1.5s_linear_infinite]"
-									role="status"
-								>
-									<span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-										Loading...
-									</span>
+					<input
+						type="text"
+						id="comment"
+						name="comment"
+						placeholder="Add a comment..."
+						className="w-full h-auto p-2 bg-transparent border-gray-800 border-b-2"
+						onChange={(e) => {
+							e.target.value
+								? setHasInput(true)
+								: setHasInput(false);
+						}}
+					/>
+					<button
+						className={`border-2 py-2 px-4 rounded-full ${
+							hasInput && currentUser.isVerfied
+								? "border-blue-700 hover:bg-blue-700 text-white "
+								: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
+						} `}
+						type="submit"
+						disabled={!hasInput || !currentUser.isVerfied}
+					>
+						{isCommenting ? (
+							<div className="w-full flex flex-row justify-center items-center space-x-4">
+								<div role="status">
+									<div
+										className="inline-block h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-neutral-100 motion-reduce:animate-[spin_1.5s_linear_infinite]"
+										role="status"
+									>
+										<span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+											Loading...
+										</span>
+									</div>
+									<span className="sr-only">Loading...</span>
 								</div>
-								<span className="sr-only">Loading...</span>
 							</div>
-						</div>
-					) : (
-						<span>Comment</span>
-					)}
-				</button>
-			</form>
+						) : (
+							<span>Comment</span>
+						)}
+					</button>
+				</form>
+			)}
 		</div>
 	);
 };
