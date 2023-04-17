@@ -45,6 +45,7 @@ const AccountView: React.FunctionComponent<Props> = ({
 	loading,
 	errorMessage,
 }) => {
+	console.log(currentUser);
 	return (
 		<>
 			<h1 className="text-4xl font-medium text-slate-100">Account</h1>
@@ -84,20 +85,20 @@ const AccountView: React.FunctionComponent<Props> = ({
 			{(newPassword || imageKey) && (
 				<div>
 					<button
-						className={`bg-white text-black text-2xl p-2 px-4 rounded-lg text-bold items-center justify-center
+						className={`text-2xl text-black p-2 px-4 rounded-lg text-bold items-center justify-center
 						 ${
-								currentUser.isVerfied
+								currentUser.isVerified
 									? `
 							${
 								loading
 									? "hover:cursor-not-allowed bg-gray-300"
-									: "hover:bg-gray-300 hover:cursor-pointer"
+									: "bg-white hover:bg-gray-300 hover:cursor-pointer"
 							}
 						`
-									: "border-gray-600 bg-gray-600 text-white  hover:cursor-not-allowed"
+									: "border-gray-600 bg-gray-600 text-white hover:cursor-not-allowed"
 							}`}
 						onClick={onSaveChanges}
-						disabled={!currentUser.isVerfied}
+						disabled={!currentUser.isVerified}
 					>
 						{loading ? (
 							<div className="w-full flex flex-row justify-center items-center space-x-4">

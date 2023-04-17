@@ -29,7 +29,7 @@ const TranscriptSection: React.FC<Props> = ({
 	const handleWordSelect = async (
 		e: React.MouseEvent<HTMLSpanElement, MouseEvent>
 	) => {
-		if (!currentUser || !currentUser.isVerfied) {
+		if (!currentUser || !currentUser.isVerified) {
 			return;
 		}
 		setChatLoading(true);
@@ -75,7 +75,7 @@ const TranscriptSection: React.FC<Props> = ({
 						return (
 							<span
 								className={`flex items-center justify-center ${
-									currentUser && currentUser.isVerfied
+									currentUser && currentUser.isVerified
 										? "hover:text-white hover:cursor-default"
 										: ""
 								}`}
@@ -94,7 +94,7 @@ const TranscriptSection: React.FC<Props> = ({
 			</div>
 			{currentUser ? (
 				<>
-					{currentUser.isVerfied ? (
+					{currentUser.isVerified ? (
 						<p className="text-white self-center">
 							Click on word to search on ChatGPT.{" "}
 						</p>
@@ -118,7 +118,7 @@ const TranscriptSection: React.FC<Props> = ({
 									: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
 							}`}
 							onClick={() => handleOptionSelect("translate")}
-							disabled={!currentUser.isVerfied}
+							disabled={!currentUser.isVerified}
 						>
 							Translate
 						</button>
@@ -129,7 +129,7 @@ const TranscriptSection: React.FC<Props> = ({
 									: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
 							}`}
 							onClick={() => handleOptionSelect("summarize")}
-							disabled={!currentUser.isVerfied}
+							disabled={!currentUser.isVerified}
 						>
 							Summarize
 						</button>
@@ -140,7 +140,7 @@ const TranscriptSection: React.FC<Props> = ({
 									: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
 							}`}
 							onClick={() => handleOptionSelect("assess")}
-							disabled={!currentUser.isVerfied}
+							disabled={!currentUser.isVerified}
 						>
 							Assess
 						</button>

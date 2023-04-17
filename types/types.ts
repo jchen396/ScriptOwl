@@ -14,7 +14,7 @@ export interface IUser {
 	dislikedCommentsIds: Array<string>;
 	likedPostsIds: Array<string>;
 	dislikedPostsIds: Array<string>;
-	isVerfied: boolean;
+	isVerified: boolean;
 	verificationCode: number;
 }
 

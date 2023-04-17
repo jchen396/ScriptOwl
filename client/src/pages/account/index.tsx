@@ -46,13 +46,13 @@ const Account: FunctionComponent<Props> = () => {
 	};
 	const onSaveChanges = async () => {
 		try {
-			if (!validatePassword(newPassword)) {
-				throw new Error(
+			if (newPassword && !validatePassword(newPassword)) {
+				setErrorMessage(
 					"Password must be eight or more characters, including upper and lowercase letters, and at least one number. "
 				);
 			}
 			if (newPassword !== confirmNewPassword) {
-				throw new Error("Passwords do not match.");
+				setErrorMessage("Passwords do not match.");
 			}
 			const id = currentUser.id;
 			const { data } = await userUpdateMutate({

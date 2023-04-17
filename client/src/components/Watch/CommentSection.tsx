@@ -112,12 +112,12 @@ const CommentSection: React.FunctionComponent<Props> = ({
 					/>
 					<button
 						className={`border-2 py-2 px-4 rounded-full ${
-							hasInput && currentUser.isVerfied
+							hasInput && currentUser.isVerified
 								? "border-blue-700 hover:bg-blue-700 text-white "
 								: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
 						} `}
 						type="submit"
-						disabled={!hasInput || !currentUser.isVerfied}
+						disabled={!hasInput || !currentUser.isVerified}
 					>
 						{isCommenting ? (
 							<div className="w-full flex flex-row justify-center items-center space-x-4">

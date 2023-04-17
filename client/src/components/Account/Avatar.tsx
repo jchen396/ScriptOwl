@@ -20,6 +20,7 @@ const Avatar: React.FunctionComponent<Props> = ({
 	onFileSelect,
 	editToggle,
 }) => {
+	console.log(currentUser.isVerified);
 	return (
 		<>
 			<div className="flex flex-col space-y-4 justify-center items-center">
@@ -45,11 +46,11 @@ const Avatar: React.FunctionComponent<Props> = ({
 					<button
 						onClick={onEditToggle}
 						className={`p-1 px-2 space-x-1 rounded-lg flex flex-row items-center bg-gray-800 ${
-							currentUser.isVerfied
+							currentUser.isVerified
 								? "hover:bg-gray-500 hover:cursor-pointer"
 								: "hover:cursor-not-allowed"
 						}`}
-						disabled={!currentUser.isVerfied}
+						disabled={!currentUser.isVerified}
 					>
 						<EditIcon />
 						<span>Edit</span>

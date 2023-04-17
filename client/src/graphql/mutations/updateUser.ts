@@ -12,6 +12,8 @@ export const UPDATE_USER = gql`
 			dislikedCommentsIds
 			likedPostsIds
 			dislikedPostsIds
+			isVerified
+			verificationCode
 		}
 	}
 `;
