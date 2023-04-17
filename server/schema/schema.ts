@@ -39,8 +39,10 @@ const UserType = new GraphQLObjectType({
 	fields: () => ({
 		id: { type: GraphQLID },
 		username: { type: GraphQLString },
+		usernameLower: { type: GraphQLString },
 		password: { type: GraphQLID },
 		email: { type: GraphQLID },
+		emailLower: { type: GraphQLString },
 		points: { type: GraphQLInt },
 		avatarKey: { type: GraphQLString },
 		likedCommentsIds: { type: GraphQLList(GraphQLID) },
@@ -167,7 +169,7 @@ const RootQuery = new GraphQLObjectType({
 			},
 			resolve(_, args, { res }) {
 				return User.findOne({
-					username: args.username.toLowerCase(),
+					username: args.username,
 				}).then((user: any) => {
 					try {
 						if (user === null) {
@@ -224,8 +226,10 @@ const mutation = new GraphQLObjectType({
 			},
 			resolve(parent, args) {
 				return Promise.all([
-					User.findOne({ username: args.username.toLowerCase() }),
-					User.findOne({ email: args.email.toLowerCase() }),
+					User.findOne({
+						usernameLower: args.username.toLowerCase(),
+					}),
+					User.findOne({ emailLower: args.email.toLowerCase() }),
 				])
 					.then(async (res) => {
 						if (res[0]) {
@@ -243,11 +247,13 @@ const mutation = new GraphQLObjectType({
 								100000 + Math.random() * 900000
 							);
 							const user = new User({
-								username: args.username.toLowerCase(),
+								username: args.username,
+								usernameLower: args.username.toLowerCase(),
 								password: encryptedPassword,
-								email: args.email.toLowerCase(),
+								email: args.email,
+								emailLower: args.email.toLowerCase(),
 								points: 0,
-								avatarKey: "d3b74dbd159a95a0cd27dc875a9aa104",
+								avatarKey: "1b22841673b252b100e68a9b0fc8aaeb",
 								likedCommentsIds: [],
 								dislikedCommentsIds: [],
 								likedPostsIds: [],
