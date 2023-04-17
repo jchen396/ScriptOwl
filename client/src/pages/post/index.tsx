@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useRouter } from "next/router";
 import { postVideo } from "@/functions/s3_functions/postVideo";
+import CloseIcon from "@mui/icons-material/Close";
+import ErrorIcon from "@mui/icons-material/Error";
 
 type Props = {};
 
@@ -16,7 +18,8 @@ const Post: FunctionComponent<Props> = () => {
 	const [description, setDescription] = useState<string>();
 	const [category, setCategory] = useState<string>();
 	const [addPost, { loading }] = useMutation(ADD_POST);
-	const [success, setSuccess] = useState<boolean>();
+	const [successMessage, setSuccessMessage] = useState<string>("");
+	const [errorMessage, setErrorMessage] = useState<string>("");
 	const { currentUser } = useSelector((state: any) => state.user);
 	const onSubmitHandler = async (e: FormEvent<HTMLButtonElement>) => {
 		try {
@@ -26,13 +29,19 @@ const Post: FunctionComponent<Props> = () => {
 			if (videoFile) {
 				result = await postVideo({ videoFile });
 			} else {
-				console.log("No file selected...");
+				setPosted(false);
+				setErrorMessage("Please select a file to upload.");
+				return;
+			}
+			if (title === undefined || title === "") {
+				setPosted(false);
+				setErrorMessage("Please provide a title for the post.");
 				return;
 			}
 			const videoData = JSON.parse(
 				result.result.replace(/(\r\n|\n|\r)/gm, "")
 			);
-			const { data } = await addPost({
+			await addPost({
 				variables: {
 					videoKey: result.key,
 					title,
@@ -44,10 +53,12 @@ const Post: FunctionComponent<Props> = () => {
 					thumbnail: result.thumbnailKey,
 				},
 			});
-			setSuccess(true);
+			setSuccessMessage("Uploaded successfully!");
+			setErrorMessage("");
 			setPosted(false);
 		} catch (e) {
-			console.log(e);
+			setErrorMessage(e);
+			setSuccessMessage("");
 		}
 	};
 	useEffect(() => {
@@ -62,12 +73,26 @@ const Post: FunctionComponent<Props> = () => {
 					Post a video
 				</h1>
 				<form className="flex flex-col space-y-4 border-2 rounded border-slate-100 bg-transparent text-slate-100 w-100 p-10 w-3/4 lg:w-1/3 md:p-16">
-					{success && (
-						<div className="bg-green-500 p-4 rounded flex flex-row justify-start items-center space-x-2">
+					{successMessage && (
+						<div className="bg-green-500 p-4 rounded flex flex-row justify-between items-center space-x-2">
 							<CheckCircleIcon className="text-green-900" />
 							<span className="text-black ">
 								Uploaded successfully!
 							</span>
+							<CloseIcon
+								className="hover:cursor-pointer text-green-900"
+								onClick={() => setSuccessMessage("")}
+							/>
+						</div>
+					)}
+					{errorMessage && (
+						<div className="w-full flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4 space-x-2">
+							<ErrorIcon />
+							<p>{errorMessage}</p>
+							<CloseIcon
+								className="hover:cursor-pointer"
+								onClick={() => setErrorMessage("")}
+							/>
 						</div>
 					)}
 					<div>

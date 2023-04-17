@@ -2,17 +2,20 @@ import Link from "next/link";
 import CloseIcon from "@mui/icons-material/Close";
 import React from "react";
 import { ApolloError } from "@apollo/client";
+import ErrorIcon from "@mui/icons-material/Error";
 
-type Props = {
-	error: ApolloError;
+interface Props {
 	validateForm: (e: React.FormEvent<HTMLFormElement>) => void;
 	isFetching: boolean;
-};
+	errorMessage: string;
+	setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+}
 
 const LoginForm: React.FunctionComponent<Props> = ({
-	error,
 	validateForm,
 	isFetching,
+	errorMessage,
+	setErrorMessage,
 }) => {
 	return (
 		<>
@@ -22,10 +25,14 @@ const LoginForm: React.FunctionComponent<Props> = ({
 				action="/"
 				onSubmit={(e) => validateForm(e)}
 			>
-				{error && (
-					<div className="flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4">
-						<p>Invalid username or password.</p>
-						<CloseIcon />
+				{errorMessage && (
+					<div className="flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4 space-x-2">
+						<ErrorIcon />
+						<p>{errorMessage}</p>
+						<CloseIcon
+							className="hover:cursor-pointer"
+							onClick={() => setErrorMessage("")}
+						/>
 					</div>
 				)}
 				<div className="relative">

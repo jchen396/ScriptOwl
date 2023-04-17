@@ -58,6 +58,7 @@ const Register: FunctionComponent<Props> = () => {
 			setErrorMessage("");
 			setSuccessMessage("Successfully created an account.");
 		} catch (err) {
+			setErrorMessage(err);
 			setSuccessMessage("");
 		}
 	};
@@ -68,11 +69,12 @@ const Register: FunctionComponent<Props> = () => {
 		<>
 			<div className="w-screen h-screen flex flex-col justify-center items-center space-y-10 font-mono overflow-y-scroll">
 				<RegisterForm
-					error={error}
 					loading={loading}
 					errorMessage={errorMessage}
 					successMessage={successMessage}
 					signUpForm={signUpForm}
+					setErrorMessage={setErrorMessage}
+					setSuccessMessage={setSuccessMessage}
 				/>
 			</div>
 		</>

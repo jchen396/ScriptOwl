@@ -8,13 +8,14 @@ import { useMutation } from "@apollo/client";
 import { updateUser } from "@/redux/apiCalls";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { RESEND_CODE } from "@/graphql/mutations/resendCode";
+import ErrorIcon from "@mui/icons-material/Error";
 
 interface Props {}
 
 const Verify: NextPage<Props> = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const [error, setError] = useState<string>("");
+	const [errorMessage, setErrorMessage] = useState<string>("");
 	const [success, setSuccess] = useState<boolean>(false);
 	const [redirectCounter, setRedirectCounter] = useState<number>(3);
 	const [resendMessage, setResendMessage] = useState<string>("");
@@ -66,10 +67,12 @@ const Verify: NextPage<Props> = () => {
 				updateUser(dispatch, data.verifyUser);
 				setSuccess(true);
 			} else {
-				setError("Invalid code entered. Please check and try again.");
+				setErrorMessage(
+					"Invalid code entered. Please check and try again."
+				);
 			}
 		} catch (e) {
-			setError(e);
+			setErrorMessage(e);
 		}
 		setResendMessage("");
 	};
@@ -86,9 +89,9 @@ const Verify: NextPage<Props> = () => {
 			setResendMessage(
 				"Verification code sent! Please check your e-mail for the new code."
 			);
-			setError("");
+			setErrorMessage("");
 		} catch (e) {
-			setError(e);
+			setErrorMessage(e);
 		}
 	};
 	useEffect(() => {
@@ -135,10 +138,16 @@ const Verify: NextPage<Props> = () => {
 							<div className="relative bg-gray-900 px-6 pt-10 pb-9 shadow-xl mx-auto w-full max-w-lg rounded-2xl">
 								<div className="mx-auto flex w-full max-w-md flex-col space-y-16">
 									<div className="flex flex-col items-center justify-center text-center space-y-2">
-										{error && (
-											<div className="w-full flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4">
-												<p>{error}</p>
-												<CloseIcon />
+										{errorMessage && (
+											<div className="w-full flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4 space-x-2">
+												<ErrorIcon />
+												<p>{errorMessage}</p>
+												<CloseIcon
+													className="hover:cursor-pointer"
+													onClick={() =>
+														setErrorMessage("")
+													}
+												/>
 											</div>
 										)}
 										{resendMessage && (
@@ -147,6 +156,12 @@ const Verify: NextPage<Props> = () => {
 												<span className="text-black ">
 													{resendMessage}
 												</span>
+												<CloseIcon
+													className="hover:cursor-pointer"
+													onClick={() =>
+														setResendMessage("")
+													}
+												/>
 											</div>
 										)}
 										<div className="font-semibold text-3xl text-white">

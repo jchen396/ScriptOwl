@@ -5,6 +5,7 @@ import AccountForm from "./AccountForm";
 import Avatar from "./Avatar";
 import Points from "./Points";
 import CloseIcon from "@mui/icons-material/Close";
+import ErrorIcon from "@mui/icons-material/Error";
 
 interface Props {
 	imageKey: string;
@@ -50,8 +51,12 @@ const AccountView: React.FunctionComponent<Props> = ({
 			<div className="flex flex-col space-y-4 border-2 border-slate-100 bg-transparent text-slate-100 w-2/3 h-2/3 md:px-0">
 				{errorMessage && (
 					<div className="m-2 flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4">
+						<ErrorIcon />
 						<p>{errorMessage}</p>
-						<CloseIcon />
+						<CloseIcon
+							className="hover:cursor-pointer"
+							onClick={() => errorMessage}
+						/>
 					</div>
 				)}
 				<div className="w-full h-full flex flex-col justify-between items-center md:flex-row space-y-10">
