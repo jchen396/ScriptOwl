@@ -20,6 +20,7 @@ export interface IUser {
 
 export interface IPublisher {
 	username: string;
+	avatarKey: string;
 }
 
 export interface IComment {

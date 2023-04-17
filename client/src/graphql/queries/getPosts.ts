@@ -17,6 +17,7 @@ export const GET_POSTS = gql`
 			}
 			publisher {
 				username
+				avatarKey
 			}
 		}
 	}

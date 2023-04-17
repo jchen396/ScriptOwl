@@ -17,6 +17,7 @@ export const GET_POST_BY_ID = gql`
 			}
 			publisher {
 				username
+				avatarKey
 			}
 			comments {
 				id
