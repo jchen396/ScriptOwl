@@ -12,6 +12,7 @@ export const LOG_IN_USER = gql`
 			dislikedCommentsIds
 			likedPostsIds
 			dislikedPostsIds
+			uploadedPostIds
 			isVerified
 			verificationCode
 		}

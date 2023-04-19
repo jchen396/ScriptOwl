@@ -49,6 +49,7 @@ const UserType = new GraphQLObjectType({
 		dislikedCommentsIds: { type: GraphQLList(GraphQLID) },
 		likedPostsIds: { type: GraphQLList(GraphQLID) },
 		dislikedPostsIds: { type: GraphQLList(GraphQLID) },
+		uploadedPostIds: { type: GraphQLList(GraphQLID) },
 		isVerified: { type: GraphQLBoolean },
 		verificationCode: { type: GraphQLInt },
 		createdAt: {
@@ -345,7 +346,7 @@ const mutation = new GraphQLObjectType({
 		},
 		// Add a post
 		addPost: {
-			type: PostType,
+			type: UserType,
 			args: {
 				videoKey: { type: GraphQLNonNull(GraphQLID) },
 				title: { type: GraphQLNonNull(GraphQLString) },
@@ -356,7 +357,7 @@ const mutation = new GraphQLObjectType({
 				duration: { type: GraphQLInt },
 				thumbnail: { type: GraphQLNonNull(GraphQLID) },
 			},
-			resolve(parent, args) {
+			async resolve(_, args) {
 				const post = new Post({
 					videoKey: args.videoKey,
 					title: args.title,
@@ -370,7 +371,17 @@ const mutation = new GraphQLObjectType({
 					dislikes: 0,
 					views: 0,
 				});
-				return post.save();
+				const user = await User.findByIdAndUpdate(
+					args.publisher,
+					{
+						$push: {
+							uploadedPostIds: post._id.toString(),
+						},
+					},
+					{ new: true }
+				);
+				post.save();
+				return user;
 			},
 		},
 		// Comment a post

@@ -21,14 +21,18 @@ export const ADD_POST = gql`
 			duration: $duration
 			thumbnail: $thumbnail
 		) {
-			videoKey
-			title
-			thumbnail
-			description
-			category
-			publisher {
-				id
-			}
+			id
+			username
+			email
+			points
+			avatarKey
+			likedCommentsIds
+			dislikedCommentsIds
+			likedPostsIds
+			dislikedPostsIds
+			uploadedPostIds
+			isVerified
+			verificationCode
 		}
 	}
 `;

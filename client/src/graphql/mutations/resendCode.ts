@@ -12,6 +12,7 @@ export const RESEND_CODE = gql`
 			dislikedCommentsIds
 			likedPostsIds
 			dislikedPostsIds
+			uploadedPostIds
 			isVerified
 			verificationCode
 		}

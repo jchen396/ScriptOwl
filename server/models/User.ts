@@ -15,6 +15,7 @@ const userSchema = new Schema<IUser>(
 		dislikedCommentsIds: { type: [String] },
 		likedPostsIds: { type: [String] },
 		dislikedPostsIds: { type: [String] },
+		uploadedPostIds: { type: [String] },
 		verificationCode: { type: Number },
 		isVerified: { type: Boolean },
 	},

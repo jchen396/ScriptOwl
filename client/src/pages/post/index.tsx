@@ -1,14 +1,16 @@
 import { ADD_POST } from "@/graphql/mutations/addPost";
 import { useMutation } from "@apollo/client";
 import { FormEvent, FunctionComponent, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { postVideo } from "@/functions/s3_functions/postVideo";
 import PostForm from "@/components/Post/PostForm";
+import { updateUser } from "@/redux/apiCalls";
 
 type Props = {};
 
 const Post: FunctionComponent<Props> = () => {
+	const dispatch = useDispatch();
 	const router = useRouter();
 	const [posted, setPosted] = useState<boolean>(false);
 	const [videoFile, setVideoFile] = useState<File>();
@@ -39,7 +41,7 @@ const Post: FunctionComponent<Props> = () => {
 			const videoData = JSON.parse(
 				result.result.replace(/(\r\n|\n|\r)/gm, "")
 			);
-			await addPost({
+			const { data } = await addPost({
 				variables: {
 					videoKey: result.key,
 					title,
@@ -52,6 +54,7 @@ const Post: FunctionComponent<Props> = () => {
 				},
 			});
 			setSuccessMessage("Uploaded successfully!");
+			updateUser(dispatch, data.addPost);
 			setErrorMessage("");
 			setPosted(false);
 		} catch (e) {

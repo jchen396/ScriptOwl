@@ -12,6 +12,9 @@ export const CHECK_TOKENS = gql`
 			dislikedCommentsIds
 			likedPostsIds
 			dislikedPostsIds
+			uploadedPostIds
+			isVerified
+			verificationCode
 		}
 	}
 `;
