@@ -2,6 +2,8 @@ import React from "react";
 import TranslateIcon from "@mui/icons-material/Translate";
 import SummarizeIcon from "@mui/icons-material/Summarize";
 import QuizIcon from "@mui/icons-material/Quiz";
+import Link from "next/link";
+import { IUser } from "../../../../types/types";
 
 interface Props {
 	setService: React.Dispatch<React.SetStateAction<string>>;
@@ -10,9 +12,15 @@ interface Props {
 
 const Services: React.FC<Props> = ({ setService, service }) => {
 	return (
-		<div className="basis-1/2 flex flex-col items-center justify-center space-y-4">
+		<div className="basis-1/2 flex flex-col items-center justify-center space-y-10">
 			<h4 className="text-4xl">
-				Join now and gain access to our platform services!{" "}
+				<Link
+					className="italic underline hover:text-blue-600"
+					href={"/register"}
+				>
+					Join now
+				</Link>{" "}
+				and gain access to our platform services!{" "}
 			</h4>
 			<div className="w-full grid grid-cols-3 gap-10 ">
 				<div

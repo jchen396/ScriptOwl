@@ -39,7 +39,12 @@ const Showcase: React.FC<Props> = ({ service }) => {
 	return (
 		<div className="basis-1/2 w-1/2 flex justify-center items-center text-gray-200 text-lg">
 			{service ? (
-				<>{getServiceInformation()} </>
+				<div className="w-full h-full flex ">
+					<div className="basis-1/2 w-full h-full"></div>
+					<div className="basis-1/2 flex justify-center items-center p-4">
+						{getServiceInformation()}
+					</div>
+				</div>
 			) : (
 				<p>
 					Click on one of the service above to view more information.

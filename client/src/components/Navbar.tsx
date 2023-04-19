@@ -26,14 +26,14 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 				<div>
 					<Link href="/" className="flex items-center">
 						<Image
-							width={50}
-							height={50}
-							src="https://flowbite.com/docs/images/logo.svg"
+							width={100}
+							height={100}
+							src="/img/ScriptOwl_logo_transparent.png"
 							className="h-10 w-10 mr-3 sm:h-9"
 							alt="Flowbite Logo"
 						/>
 						<span className="self-center text-xl whitespace-nowrap dark:text-white">
-							vod_app
+							ScriptOwl
 						</span>
 					</Link>
 				</div>
