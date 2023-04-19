@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticate } from "@/redux/apiCalls";
 import { IUser } from "../../../types/types";
-import { useRouter } from "next/router";
+import Footer from "./Footer";
 
 interface LayoutProps {}
 
@@ -22,6 +22,7 @@ const Layout = ({ children }: PropsWithChildren) => {
 			<div className="bg-black">
 				<Navbar userData={userData} />
 				{children}
+				<Footer />
 			</div>
 		</>
 	);

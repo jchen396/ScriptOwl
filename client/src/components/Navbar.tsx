@@ -29,7 +29,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 							width={100}
 							height={100}
 							src="/img/ScriptOwl_logo_transparent.png"
-							className="h-10 w-10 mr-3 sm:h-9"
+							className="h-12 w-12 mr-3 "
 							alt="Flowbite Logo"
 						/>
 						<span className="self-center text-xl whitespace-nowrap dark:text-white">
