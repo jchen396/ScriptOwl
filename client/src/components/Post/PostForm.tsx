@@ -34,7 +34,7 @@ const PostForm: React.FC<Props> = ({
 	currentUser,
 }) => {
 	return (
-		<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono overflow-y-scroll">
+		<div className="min-h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
 			<h1 className="text-4xl font-medium text-slate-100">
 				Post a video
 			</h1>

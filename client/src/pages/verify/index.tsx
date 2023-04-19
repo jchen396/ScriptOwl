@@ -108,7 +108,7 @@ const Verify: NextPage<Props> = () => {
 		}
 	}, [redirectCounter]);
 	useEffect(() => {
-		if (currentUser && currentUser.isVerifed) {
+		if (currentUser && currentUser.isVerified) {
 			router.replace("/");
 		}
 	}, [currentUser]);
@@ -118,7 +118,7 @@ const Verify: NextPage<Props> = () => {
 				<VerifySuccess redirectCounter={redirectCounter} />
 			) : (
 				<>
-					{currentUser ? (
+					{currentUser && !currentUser.isVerified ? (
 						<VerifyCode
 							onHandleInputChange={onHandleInputChange}
 							onHandleVerifyAccount={onHandleVerifyAccount}

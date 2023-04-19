@@ -40,7 +40,7 @@ const Login: FunctionComponent<Props> = () => {
 	}, [error]);
 	return (
 		<>
-			<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono overflow-y-scroll">
+			<div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
 				<LoginForm
 					validateForm={validateForm}
 					isFetching={isFetching}

@@ -20,7 +20,6 @@ const Avatar: React.FunctionComponent<Props> = ({
 	onFileSelect,
 	editToggle,
 }) => {
-	console.log(currentUser.isVerified);
 	return (
 		<>
 			<div className="flex flex-col space-y-4 justify-center items-center">

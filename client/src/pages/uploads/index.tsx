@@ -9,11 +9,11 @@ const Uploads: NextPage<
 > = ({ data }) => {
 	return (
 		<>
-			<div className="w-screen h-screen bg-black flex flex-col justify-center items-center text-white space-y-10">
+			<div className="w-full h-full bg-black flex flex-col justify-center items-center text-white space-y-10 py-10">
 				<h1 className="text-4xl font-medium text-slate-100">Uploads</h1>
-				<div className="border-2 border-gray-700 w-3/4 h-3/5 rounded overflow-scroll-y ">
+				<div className="w-3/4 h-3/5 rounded ">
 					{data.userPosts ? (
-						<div className="h-full w-full flex items-center justify-start font-mono p-4 overflow-y-scroll ">
+						<div className="h-full w-full flex items-center justify-start font-mono p-4 overflow-y-auto">
 							<VideoGrid posts={data.userPosts} />
 						</div>
 					) : (

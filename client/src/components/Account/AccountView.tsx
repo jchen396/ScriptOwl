@@ -45,7 +45,6 @@ const AccountView: React.FunctionComponent<Props> = ({
 	loading,
 	errorMessage,
 }) => {
-	console.log(currentUser);
 	return (
 		<>
 			<h1 className="text-4xl font-medium text-slate-100">Account</h1>

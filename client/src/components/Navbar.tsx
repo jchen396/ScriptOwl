@@ -21,7 +21,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 		signOut(dispatch);
 	};
 	return (
-		<nav className="absolute w-full border-gray-200 px-2 sm:px-4 py-2.5 rounded bg-black z-20 font-mono border-b border-gray-800">
+		<nav className="w-full border-gray-200 px-2 sm:px-4 py-2.5 bg-black z-20 font-mono border-b border-gray-800">
 			<div className="container flex flex-wrap items-center justify-between mx-auto">
 				<div>
 					<Link href="/" className="flex items-center">

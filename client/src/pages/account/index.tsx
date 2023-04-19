@@ -71,7 +71,7 @@ const Account: FunctionComponent<Props> = () => {
 	};
 	return (
 		<>
-			<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono overflow-y-scroll">
+			<div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
 				{currentUser && (
 					<AccountView
 						imageKey={imageKey}

@@ -28,7 +28,7 @@ const VerifyCode: React.FC<Props> = ({
 	currentUser,
 }) => {
 	return (
-		<div className="h-screen w-screen flex flex-col items-center justify-center space-y-10 font-mono overflow-y-scroll">
+		<div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-20">
 			<div className="relative bg-gray-900 px-6 pt-10 pb-9 shadow-xl mx-auto w-full max-w-lg rounded-2xl">
 				<div className="mx-auto flex w-full max-w-md flex-col space-y-16">
 					<div className="flex flex-col items-center justify-center text-center space-y-2">

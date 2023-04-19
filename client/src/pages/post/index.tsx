@@ -69,20 +69,22 @@ const Post: FunctionComponent<Props> = () => {
 	}, [currentUser, router]);
 	return (
 		<>
-			<PostForm
-				onSubmitHandler={onSubmitHandler}
-				posted={posted}
-				setVideoFile={setVideoFile}
-				setTitle={setTitle}
-				setDescription={setDescription}
-				setCategory={setCategory}
-				loading={loading}
-				successMessage={successMessage}
-				setSuccessMessage={setSuccessMessage}
-				errorMessage={errorMessage}
-				setErrorMessage={setErrorMessage}
-				currentUser={currentUser}
-			/>
+			{currentUser && (
+				<PostForm
+					onSubmitHandler={onSubmitHandler}
+					posted={posted}
+					setVideoFile={setVideoFile}
+					setTitle={setTitle}
+					setDescription={setDescription}
+					setCategory={setCategory}
+					loading={loading}
+					successMessage={successMessage}
+					setSuccessMessage={setSuccessMessage}
+					errorMessage={errorMessage}
+					setErrorMessage={setErrorMessage}
+					currentUser={currentUser}
+				/>
+			)}
 		</>
 	);
 };
