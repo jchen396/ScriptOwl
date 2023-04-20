@@ -147,7 +147,7 @@ const RootQuery = new GraphQLObjectType({
 			type: GraphQLList(PostType),
 			args: { postIds: { type: GraphQLList(GraphQLString) } },
 			async resolve(_, args) {
-				const postObjIds = args.postIds.map((postId) => {
+				const postObjIds = args.postIds?.map((postId) => {
 					return new mongoose.Types.ObjectId(postId);
 				});
 				const post = await Post.find({ _id: { $in: postObjIds } });

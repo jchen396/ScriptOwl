@@ -51,7 +51,7 @@ const CommentSection: React.FunctionComponent<Props> = ({
 		loadComments();
 	}, []);
 	return (
-		<div className="h-4/5 w-full flex flex-col space-y-4">
+		<div className="h-3/4 w-full flex flex-col space-y-4">
 			<div className="basis-4/5 text-white border-2 bg-transparent border-gray-800 rounded-lg overflow-y-scroll">
 				{post.comments.length ? (
 					post.comments
