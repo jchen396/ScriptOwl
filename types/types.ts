@@ -20,6 +20,7 @@ export interface IUser {
 }
 
 export interface IPublisher {
+	id: string;
 	username: string;
 	avatarKey: string;
 }

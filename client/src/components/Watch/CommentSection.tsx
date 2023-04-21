@@ -29,6 +29,7 @@ const CommentSection: React.FunctionComponent<Props> = ({
 		await commentPost({
 			variables: {
 				postId: post.id,
+				publisherId: post.publisher.id,
 				commenter: currentUser.id,
 				comment,
 			},

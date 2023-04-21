@@ -50,6 +50,7 @@ const Comment: React.FunctionComponent<Props> = ({
 					postId: post.id,
 					userId: currentUser?.id,
 					commentId: comment.id,
+					commenterId: comment.commenter.id,
 				},
 			});
 			setCommentLikes((likes) => likes - 1);
@@ -61,6 +62,7 @@ const Comment: React.FunctionComponent<Props> = ({
 						postId: post.id,
 						userId: currentUser?.id,
 						commentId: comment.id,
+						commenterId: comment.commenter.id,
 					},
 				}),
 				likeComment({
@@ -68,6 +70,7 @@ const Comment: React.FunctionComponent<Props> = ({
 						postId: post.id,
 						userId: currentUser?.id,
 						commentId: comment.id,
+						commenterId: comment.commenter.id,
 					},
 				}),
 			]);
@@ -81,6 +84,7 @@ const Comment: React.FunctionComponent<Props> = ({
 					postId: post.id,
 					userId: currentUser?.id,
 					commentId: comment.id,
+					commenterId: comment.commenter.id,
 				},
 			});
 			setCommentLikes((likes) => likes + 1);
@@ -98,6 +102,7 @@ const Comment: React.FunctionComponent<Props> = ({
 					postId: post.id,
 					userId: currentUser?.id,
 					commentId: comment.id,
+					commenterId: comment.commenter.id,
 				},
 			});
 			setCommentDislikes((dislikes) => dislikes - 1);
@@ -109,6 +114,7 @@ const Comment: React.FunctionComponent<Props> = ({
 						postId: post.id,
 						userId: currentUser?.id,
 						commentId: comment.id,
+						commenterId: comment.commenter.id,
 					},
 				}),
 				dislikeComment({
@@ -116,6 +122,7 @@ const Comment: React.FunctionComponent<Props> = ({
 						postId: post.id,
 						userId: currentUser?.id,
 						commentId: comment.id,
+						commenterId: comment.commenter.id,
 					},
 				}),
 			]);
@@ -129,6 +136,7 @@ const Comment: React.FunctionComponent<Props> = ({
 					postId: post.id,
 					userId: currentUser?.id,
 					commentId: comment.id,
+					commenterId: comment.commenter.id,
 				},
 			});
 			setCommentDislikes((dislikes) => dislikes + 1);

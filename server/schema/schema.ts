@@ -388,6 +388,9 @@ const mutation = new GraphQLObjectType({
 						$push: {
 							uploadedPostIds: post._id.toString(),
 						},
+						$inc: {
+							points: 10,
+						},
 					},
 					{ new: true }
 				);
@@ -400,24 +403,33 @@ const mutation = new GraphQLObjectType({
 			type: PostType,
 			args: {
 				postId: { type: GraphQLNonNull(GraphQLID) },
+				publisherId: { type: GraphQLNonNull(GraphQLID) },
 				commenter: { type: GraphQLNonNull(GraphQLID) },
 				comment: { type: GraphQLNonNull(GraphQLString) },
 				timestamp: { type: GraphQLString },
 			},
-			resolve(parent, args) {
-				return Post.findByIdAndUpdate(args.postId, {
-					$push: {
-						comments: {
-							id: new mongoose.Types.ObjectId(),
-							commenter: args.commenter,
-							comment: args.comment,
-							timestamp: args.timestamp,
-							likes: 0,
-							dislikes: 0,
-							createdAt: new Date(),
+			async resolve(parent, args) {
+				await Promise.all([
+					Post.findByIdAndUpdate(args.postId, {
+						$push: {
+							comments: {
+								id: new mongoose.Types.ObjectId(),
+								commenter: args.commenter,
+								comment: args.comment,
+								timestamp: args.timestamp,
+								likes: 0,
+								dislikes: 0,
+								createdAt: new Date(),
+							},
 						},
-					},
-				});
+					}),
+					User.findByIdAndUpdate(args.commenter, {
+						$inc: { points: 5 },
+					}),
+					User.findByIdAndUpdate(args.publisherId, {
+						$inc: { points: 5 },
+					}),
+				]);
 			},
 		},
 		// Increase like count when pressed thumbs up button on post
@@ -426,6 +438,7 @@ const mutation = new GraphQLObjectType({
 			args: {
 				postId: { type: GraphQLNonNull(GraphQLID) },
 				userId: { type: GraphQLNonNull(GraphQLID) },
+				publisherId: { type: GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				await Promise.all([
@@ -439,6 +452,9 @@ const mutation = new GraphQLObjectType({
 					User.findByIdAndUpdate(args.userId, {
 						$push: { likedPostsIds: args.postId },
 					}),
+					User.findByIdAndUpdate(args.publisherId, {
+						$inc: { points: 3 },
+					}),
 				]);
 			},
 		},
@@ -448,6 +464,7 @@ const mutation = new GraphQLObjectType({
 			args: {
 				postId: { type: GraphQLNonNull(GraphQLID) },
 				userId: { type: GraphQLNonNull(GraphQLID) },
+				publisherId: { type: GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				await Promise.all([
@@ -456,6 +473,9 @@ const mutation = new GraphQLObjectType({
 					}),
 					User.findByIdAndUpdate(args.userId, {
 						$pull: { likedPostsIds: args.postId },
+					}),
+					User.findByIdAndUpdate(args.publisherId, {
+						$inc: { points: -3 },
 					}),
 				]);
 			},
@@ -466,6 +486,7 @@ const mutation = new GraphQLObjectType({
 			args: {
 				postId: { type: GraphQLNonNull(GraphQLID) },
 				userId: { type: GraphQLNonNull(GraphQLID) },
+				publisherId: { type: GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				await Promise.all([
@@ -474,6 +495,9 @@ const mutation = new GraphQLObjectType({
 					}),
 					User.findByIdAndUpdate(args.userId, {
 						$push: { dislikedPostsIds: args.postId },
+					}),
+					User.findByIdAndUpdate(args.publisherId, {
+						$inc: { points: -3 },
 					}),
 				]);
 			},
@@ -484,6 +508,7 @@ const mutation = new GraphQLObjectType({
 			args: {
 				postId: { type: GraphQLNonNull(GraphQLID) },
 				userId: { type: GraphQLNonNull(GraphQLID) },
+				publisherId: { type: GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				await Promise.all([
@@ -492,6 +517,9 @@ const mutation = new GraphQLObjectType({
 					}),
 					User.findByIdAndUpdate(args.userId, {
 						$pull: { dislikedPostsIds: args.postId },
+					}),
+					User.findByIdAndUpdate(args.publisherId, {
+						$inc: { points: 3 },
 					}),
 				]);
 			},
@@ -503,6 +531,9 @@ const mutation = new GraphQLObjectType({
 				postId: { type: GraphQLNonNull(GraphQLID) },
 				userId: { type: GraphQLNonNull(GraphQLID) },
 				commentId: { type: GraphQLNonNull(GraphQLID) },
+				commenterId: {
+					type: GraphQLNonNull(GraphQLID),
+				},
 			},
 			async resolve(_, args) {
 				const objId = new mongoose.Types.ObjectId(args.commentId);
@@ -519,6 +550,9 @@ const mutation = new GraphQLObjectType({
 					User.findByIdAndUpdate(args.userId, {
 						$push: { likedCommentsIds: args.commentId },
 					}),
+					User.findByIdAndUpdate(args.commenterId, {
+						$inc: { points: 2 },
+					}),
 				]);
 			},
 		},
@@ -529,6 +563,9 @@ const mutation = new GraphQLObjectType({
 				postId: { type: GraphQLNonNull(GraphQLID) },
 				userId: { type: GraphQLNonNull(GraphQLID) },
 				commentId: { type: GraphQLNonNull(GraphQLID) },
+				commenterId: {
+					type: GraphQLNonNull(GraphQLID),
+				},
 			},
 			async resolve(_, args) {
 				const objId = new mongoose.Types.ObjectId(args.commentId);
@@ -545,6 +582,9 @@ const mutation = new GraphQLObjectType({
 					User.findByIdAndUpdate(args.userId, {
 						$pull: { likedCommentsIds: args.commentId },
 					}),
+					User.findByIdAndUpdate(args.commenterId, {
+						$inc: { points: -2 },
+					}),
 				]);
 			},
 		},
@@ -555,6 +595,7 @@ const mutation = new GraphQLObjectType({
 				postId: { type: GraphQLNonNull(GraphQLID) },
 				userId: { type: GraphQLNonNull(GraphQLID) },
 				commentId: { type: GraphQLNonNull(GraphQLID) },
+				commenterId: { type: GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				const objId = new mongoose.Types.ObjectId(args.commentId);
@@ -571,6 +612,9 @@ const mutation = new GraphQLObjectType({
 					User.findByIdAndUpdate(args.userId, {
 						$push: { dislikedCommentsIds: args.commentId },
 					}),
+					User.findByIdAndUpdate(args.commenterId, {
+						$inc: { points: -2 },
+					}),
 				]);
 			},
 		},
@@ -581,6 +625,7 @@ const mutation = new GraphQLObjectType({
 				postId: { type: GraphQLNonNull(GraphQLID) },
 				userId: { type: GraphQLNonNull(GraphQLID) },
 				commentId: { type: GraphQLNonNull(GraphQLID) },
+				commenterId: { type: GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				const objId = new mongoose.Types.ObjectId(args.commentId);
@@ -597,6 +642,9 @@ const mutation = new GraphQLObjectType({
 					User.findByIdAndUpdate(args.userId, {
 						$pull: { dislikedCommentsIds: args.commentId },
 					}),
+					User.findByIdAndUpdate(args.commenterId, {
+						$inc: { points: 2 },
+					}),
 				]);
 			},
 		},
@@ -606,13 +654,20 @@ const mutation = new GraphQLObjectType({
 			args: {
 				postId: { type: GraphQLNonNull(GraphQLID) },
 				views: { type: GraphQLNonNull(GraphQLInt) },
+				publisherId: { type: GraphQLNonNull(GraphQLID) },
 			},
-			resolve(_, args) {
-				return Post.findByIdAndUpdate(args.postId, {
-					$set: {
-						views: args.views,
-					},
-				});
+			async resolve(_, args) {
+				const [post, __] = await Promise.all([
+					Post.findByIdAndUpdate(args.postId, {
+						$set: {
+							views: args.views,
+						},
+					}),
+					User.findByIdAndUpdate(args.publisherId, {
+						inc: { points: 1 },
+					}),
+				]);
+				return post;
 			},
 		},
 		// Remove post by ID

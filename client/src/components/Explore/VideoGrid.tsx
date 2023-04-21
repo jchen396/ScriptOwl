@@ -28,6 +28,7 @@ const VideoGrid: React.FunctionComponent<Props> = ({ posts }) => {
 										variables: {
 											postId: post.id,
 											views: post.views + 1,
+											publisherId: post.publisher.id,
 										},
 									});
 								}}

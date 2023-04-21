@@ -3,12 +3,14 @@ import { gql } from "@apollo/client";
 export const COMMENT_POST = gql`
 	mutation CommentPost(
 		$postId: ID!
+		$publisherId: ID!
 		$commenter: ID!
 		$comment: String!
 		$timestamp: String
 	) {
 		commentPost(
 			postId: $postId
+			publisherId: $publisherId
 			commenter: $commenter
 			comment: $comment
 			timestamp: $timestamp
@@ -24,6 +26,7 @@ export const COMMENT_POST = gql`
 				date
 			}
 			publisher {
+				id
 				username
 			}
 			comments {

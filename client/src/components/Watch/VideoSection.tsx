@@ -47,6 +47,7 @@ const VideoSection: React.FunctionComponent<Props> = ({
 				variables: {
 					postId: post.id,
 					userId: currentUser?.id,
+					publisherId: post.publisher.id,
 				},
 			});
 			setPostLikes((likes) => likes - 1);
@@ -57,12 +58,14 @@ const VideoSection: React.FunctionComponent<Props> = ({
 					variables: {
 						postId: post.id,
 						userId: currentUser?.id,
+						publisherId: post.publisher.id,
 					},
 				}),
 				likePost({
 					variables: {
 						postId: post.id,
 						userId: currentUser?.id,
+						publisherId: post.publisher.id,
 					},
 				}),
 			]);
@@ -75,6 +78,7 @@ const VideoSection: React.FunctionComponent<Props> = ({
 				variables: {
 					postId: post.id,
 					userId: currentUser?.id,
+					publisherId: post.publisher.id,
 				},
 			});
 			setPostLikes((likes) => likes + 1);
@@ -92,6 +96,7 @@ const VideoSection: React.FunctionComponent<Props> = ({
 				variables: {
 					postId: post.id,
 					userId: currentUser?.id,
+					publisherId: post.publisher.id,
 				},
 			});
 			setPostDislikes((dislikes) => dislikes - 1);
@@ -102,12 +107,14 @@ const VideoSection: React.FunctionComponent<Props> = ({
 					variables: {
 						postId: post.id,
 						userId: currentUser?.id,
+						publisherId: post.publisher.id,
 					},
 				}),
 				dislikePost({
 					variables: {
 						postId: post.id,
 						userId: currentUser?.id,
+						publisherId: post.publisher.id,
 					},
 				}),
 			]);
@@ -120,6 +127,7 @@ const VideoSection: React.FunctionComponent<Props> = ({
 				variables: {
 					postId: post.id,
 					userId: currentUser?.id,
+					publisherId: post.publisher.id,
 				},
 			});
 			setPostDislikes((dislikes) => dislikes + 1);

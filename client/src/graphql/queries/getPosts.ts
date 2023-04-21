@@ -16,6 +16,7 @@ export const GET_POSTS = gql`
 				date
 			}
 			publisher {
+				id
 				username
 				avatarKey
 			}
