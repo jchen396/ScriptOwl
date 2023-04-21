@@ -17,7 +17,8 @@ const Home: FunctionComponent<Props> = ({ posts, pageCount, currentPage }) => {
 	useEffect(() => {
 		setIsSSR(false);
 	}, []);
-	return posts ? (
+	console.log(posts);
+	return posts && posts.length !== 0 ? (
 		<>
 			{!isSSR && (
 				<div className="h-full w-full flex flex-col items-center justify-start space-y-10 font-mono py-10">
@@ -34,8 +35,13 @@ const Home: FunctionComponent<Props> = ({ posts, pageCount, currentPage }) => {
 		</>
 	) : (
 		<>
-			<div className="h-screen w-screen flex flex-col items-center justify-start space-y-10 font-mono pt-40 text-white">
-				<p>No videos found</p>
+			<div className="h-full w-full flex flex-col items-center justify-start space-y-10 font-mono py-10 text-white ">
+				<h1 className="text-4xl font-medium text-slate-100 self-center">
+					Explore
+				</h1>
+				<p className="h-full flex justify-center items-center text-gray-700">
+					No videos found
+				</p>
 			</div>
 		</>
 	);

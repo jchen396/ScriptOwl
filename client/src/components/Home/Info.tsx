@@ -6,7 +6,7 @@ import { useState } from "react";
 const Info = () => {
 	const [service, setService] = useState<string>("");
 	return (
-		<div className="w-full h-screen flex flex-col justify-start items-center p-10">
+		<div className="w-full h-screen flex flex-col justify-start items-center p-10 ">
 			<Services setService={setService} service={service} />
 			<Showcase service={service} />
 		</div>

@@ -3,7 +3,6 @@ import TranslateIcon from "@mui/icons-material/Translate";
 import SummarizeIcon from "@mui/icons-material/Summarize";
 import QuizIcon from "@mui/icons-material/Quiz";
 import Link from "next/link";
-import { IUser } from "../../../../types/types";
 
 interface Props {
 	setService: React.Dispatch<React.SetStateAction<string>>;
@@ -12,8 +11,8 @@ interface Props {
 
 const Services: React.FC<Props> = ({ setService, service }) => {
 	return (
-		<div className="basis-1/2 flex flex-col items-center justify-center space-y-10">
-			<h4 className="text-4xl">
+		<div className="basis-1/3 flex flex-col items-center justify-center space-y-10 ">
+			<h4 className="text-2xl sm:text-4xl">
 				<Link
 					className="italic underline hover:text-blue-600"
 					href={"/register"}
@@ -22,9 +21,9 @@ const Services: React.FC<Props> = ({ setService, service }) => {
 				</Link>{" "}
 				and gain access to our platform services!{" "}
 			</h4>
-			<div className="w-full grid grid-cols-3 gap-10 ">
+			<div className="w-full flex flex-col lg:flex-row gap-10 ">
 				<div
-					className={`flex flex-col items-center justify-start space-y-4 rounded-lg p-4 bg-gray-700 hover:cursor-default ${
+					className={`basis-1/3 flex flex-row lg:flex-col items-center justify-center lg:justify-start space-y-4 rounded-lg p-2 sm:p-4 bg-gray-700 hover:cursor-default ${
 						service === "translation"
 							? "bg-white text-black"
 							: "hover:opacity-75 shadow-white shadow hover:shadow-none "
@@ -32,11 +31,11 @@ const Services: React.FC<Props> = ({ setService, service }) => {
 					onClick={() => setService("translation")}
 				>
 					<TranslateIcon sx={{ fontSize: 40 }} />
-					<h2 className="text-2xl">Translation</h2>
-					<hr className="border border-gray-400 w-full" />
+					<h2 className="text-xl sm:text-2xl">Translation</h2>
+					<hr className="hidden lg:block border border-gray-400 w-full" />
 				</div>
 				<div
-					className={`flex flex-col items-center justify-start space-y-4 rounded-lg p-4 bg-gray-700 hover:cursor-default ${
+					className={`basis-1/3 flex flex-row lg:flex-col items-center justify-center lg:justify-start space-y-4 rounded-lg p-2 sm:p-4 bg-gray-700 hover:cursor-default ${
 						service === "summarize"
 							? "bg-white text-black"
 							: "hover:opacity-75 shadow-white shadow hover:shadow-none "
@@ -44,11 +43,11 @@ const Services: React.FC<Props> = ({ setService, service }) => {
 					onClick={() => setService("summarize")}
 				>
 					<SummarizeIcon sx={{ fontSize: 40 }} />
-					<h2 className="text-2xl">Summarization</h2>
-					<hr className="border border-gray-400 w-full" />
+					<h2 className="text-xl sm:text-2xl">Summarization</h2>
+					<hr className="hidden lg:block border border-gray-400 w-full" />
 				</div>
 				<div
-					className={`flex flex-col items-center justify-start space-y-4 rounded-lg p-4 bg-gray-700 hover:cursor-default ${
+					className={`basis-1/3 flex flex-row lg:flex-col items-center justify-center lg:justify-start space-y-4 rounded-lg p-2 sm:p-4 bg-gray-700 hover:cursor-default ${
 						service === "assessment"
 							? "bg-white text-black"
 							: "hover:opacity-75 shadow-white shadow hover:shadow-none "
@@ -56,8 +55,8 @@ const Services: React.FC<Props> = ({ setService, service }) => {
 					onClick={() => setService("assessment")}
 				>
 					<QuizIcon sx={{ fontSize: 40 }} />
-					<h2 className="text-2xl">Assessment</h2>
-					<hr className="border border-gray-400 w-full" />
+					<h2 className="text-xl sm:text-2xl">Assessment</h2>
+					<hr className="hidden lg:block border border-gray-400 w-full" />
 				</div>
 			</div>
 		</div>

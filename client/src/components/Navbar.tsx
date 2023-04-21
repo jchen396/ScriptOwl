@@ -21,10 +21,10 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 		signOut(dispatch);
 	};
 	return (
-		<nav className="w-full border-gray-200 px-2 sm:px-4 py-2.5 bg-black z-20 font-mono border-b border-gray-800">
-			<div className="container flex flex-wrap items-center justify-between mx-auto">
+		<nav className="w-full px-2 sm:px-4 py-2.5 bg-black z-20 font-mono border-b border-gray-800">
+			<div className="flex flex-row items-center justify-between mx-auto ">
 				<div>
-					<Link href="/" className="flex items-center">
+					<Link href="/" className="flex items-center justify-center">
 						<Image
 							width={100}
 							height={100}
@@ -38,19 +38,19 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 					</Link>
 				</div>
 				<div
-					className={`absolute md:static top-14 left-0 items-center justify-between ${
+					className={`absolute lg:static top-14 left-0 items-center justify-between ${
 						navToggle ? "block" : "hidden"
-					} w-full md:w-fit md:flex md:w-auto md:order-1 z-20 `}
+					} w-full lg:w-fit lg:flex lg:w-auto lg:order-1 z-20 `}
 					id="mobile-menu-2"
 				>
 					<ul
 						className={`flex 
-						flex-col p-4 mt-4 border-b border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 items-center md:mt-0 md:text-lg md:font-mono md:border-0 md:bg-white dark:bg-black md:dark:bg-transparent dark:border-gray-700 `}
+						flex-col p-4 mt-4 border-b border-gray-100 rounded-lg bg-gray-50 lg:flex-row lg:space-x-8 items-center lg:mt-0 lg:text-lg lg:font-mono lg:border-0 lg:bg-white dark:bg-black lg:dark:bg-transparent dark:border-gray-700 `}
 					>
 						<li>
 							<Link
 								href="/"
-								className="block py-2 pl-3 pr-4 rounded md:bg-transparent md:p-0 md:hover:text-blue-500 text-gray-600 hover:text-white "
+								className="block py-2 pl-3 pr-4 rounded lg:bg-transparent lg:p-0 lg:hover:text-blue-500 text-gray-600 hover:text-white "
 								aria-current="page"
 							>
 								Home
@@ -59,13 +59,16 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 						<li>
 							<Link
 								href="/explore"
-								className="block py-2 pl-3 pr-4 rounded md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:hover:text-white md:hover:bg-transparent text-gray-600 hover:text-white"
+								className="block py-2 pl-3 pr-4 rounded lg:hover:bg-transparent lg:hover:text-blue-700 lg:p-0 lg:hover:text-white lg:hover:bg-transparent text-gray-600 hover:text-white"
 							>
 								Explore
 							</Link>
 						</li>
-						<li className="block p-1 px-2 rounded-lg text-blue-600 hover:text-white md:border-2 border-blue-600 md:hover:text-black md:hover:bg-blue-600 hover:cursor-pointer flex flex-row items-center text-gray-600 hover:text-white md:text-blue-600">
-							<Link href={userData ? "/post" : "/login"}>
+						<li className="block p-1 px-2 rounded-lg text-blue-600 hover:text-white lg:border-2 border-blue-600 lg:hover:text-black lg:hover:bg-blue-600 hover:cursor-pointer flex flex-row items-center text-gray-600 hover:text-white lg:text-blue-600">
+							<Link
+								className="whitespace-nowrap"
+								href={userData ? "/post" : "/login"}
+							>
 								<UploadIcon />
 								<span>Post</span>
 							</Link>
@@ -73,7 +76,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 						<li>
 							<Link
 								href="/pricing"
-								className="block py-2 pl-3 pr-4 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:hover:text-white md:hover:bg-transparent text-gray-600 hover:text-white"
+								className="block py-2 pl-3 pr-4 lg:hover:bg-transparent lg:hover:text-blue-700 lg:p-0 lg:hover:text-white lg:hover:bg-transparent text-gray-600 hover:text-white"
 							>
 								Pricing
 							</Link>
@@ -81,18 +84,34 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 						<li>
 							<Link
 								href="#"
-								className="block py-2 pl-3 pr-4 rounded md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:hover:text-white hover:text-white md:hover:bg-transparent text-gray-600 hover:text-white"
+								className="block py-2 pl-3 pr-4 rounded lg:hover:bg-transparent lg:hover:text-blue-700 lg:p-0 lg:hover:text-white hover:text-white lg:hover:bg-transparent text-gray-600 hover:text-white"
 							>
 								Contact
 							</Link>
 						</li>
+						<li>
+							<Link
+								href="/login"
+								className="block lg:hidden py-2 pl-3 pr-4 rounded lg:hover:bg-transparent lg:hover:text-blue-700 lg:p-0 lg:hover:text-white hover:text-white lg:hover:bg-transparent text-gray-600 hover:text-white whitespace-nowrap"
+							>
+								Log In
+							</Link>
+						</li>
+						<li>
+							<Link
+								href="/register"
+								className="block lg:hidden py-2 pl-3 pr-4 rounded lg:hover:bg-transparent lg:hover:text-blue-700 lg:p-0 lg:hover:text-white hover:text-white lg:hover:bg-transparent text-gray-600 hover:text-white whitespace-nowrap"
+							>
+								Sign Up
+							</Link>
+						</li>
 					</ul>
 				</div>
-				<div className="flex items-center md:order-2">
+				<div className="flex items-center lg:order-2">
 					{userData ? (
 						<button
 							type="button"
-							className="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+							className="flex mr-3 text-sm bg-gray-800 rounded-full lg:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
 							id="user-menu-button"
 							aria-expanded="false"
 							data-dropdown-toggle="user-dropdown"
@@ -113,13 +132,13 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 					) : (
 						<div>
 							<ul
-								className="flex flex-row py-2"
+								className="flex flex-row "
 								aria-labelledby="user-menu-button"
 							>
 								<li>
 									<Link
 										href="/login"
-										className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+										className="hidden lg:block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white whitespace-nowrap"
 									>
 										Log In
 									</Link>
@@ -127,7 +146,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 								<li>
 									<Link
 										href="/register"
-										className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-white dark:text-gray-200 dark:hover:text-black"
+										className="hidden lg:block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-white dark:text-gray-200 dark:hover:text-black whitespace-nowrap"
 									>
 										Sign Up
 									</Link>
@@ -136,7 +155,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 						</div>
 					)}
 					<div
-						className={`absolute top-16 right-6 md:right-[2em] 4xl:right-[8rem] ${
+						className={`absolute top-16 right-6 lg:right-[2em] 4xl:right-[8rem] ${
 							profToggle ? "block" : "hidden"
 						} z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
 						id="user-dropdown font-mono w-[12rem] h-[24rerm]`}
@@ -185,7 +204,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 					<button
 						data-collapse-toggle="mobile-menu-2"
 						type="button"
-						className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none dark:text-gray-400 dark:hover:bg-transparent dark:focus:ring-gray-600"
+						className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none dark:text-gray-400 dark:hover:bg-transparent dark:focus:ring-gray-600"
 						aria-controls="mobile-menu-2"
 						aria-expanded="false"
 						onClick={() => setNavToggle(!navToggle)}

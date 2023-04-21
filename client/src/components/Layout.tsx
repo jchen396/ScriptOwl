@@ -19,7 +19,7 @@ const Layout = ({ children }: PropsWithChildren) => {
 	}, [currentUser]);
 	return (
 		<>
-			<div className="bg-black min-w-full min-h-screen overflow-y-auto flex flex-col">
+			<div className="bg-black min-w-full min-h-screen flex flex-col">
 				<Navbar userData={userData} />
 				<main className="flex-1">{children}</main>
 				<Footer />
