@@ -59,7 +59,7 @@ app.use(
 		origin:
 			process.env.NODE_ENV === "developement"
 				? "http://localhost:3000"
-				: "scriptowl.vercel.app",
+				: "https://scriptowl.vercel.app",
 	})
 );
 
