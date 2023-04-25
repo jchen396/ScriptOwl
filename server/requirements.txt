@@ -1,0 +1,4 @@
+ffmpeg==1.4
+opencv-python==4.7.0.72
+SpeechRecognition==3.8.1
+pydub==0.25.1

@@ -102,9 +102,8 @@ def main(argv):
             "duration": duration
         }
         print(json.dumps(result))
-
     except:
-        print("Error occured...")
+        print("An error has occurred")
         sys.exit(2)
 
 
