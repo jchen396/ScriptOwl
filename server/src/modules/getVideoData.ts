@@ -13,6 +13,7 @@ export const getVideoData = (filename: string) => {
             });
             pythonScript.on("close", () => {
                 resolve(result);
+                console.log(result);
             });
             pythonScript.on("error", (err) => {
                 throw new Error(err.message);
