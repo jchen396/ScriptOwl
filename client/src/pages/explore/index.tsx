@@ -17,7 +17,6 @@ const Home: FunctionComponent<Props> = ({ posts, pageCount, currentPage }) => {
 	useEffect(() => {
 		setIsSSR(false);
 	}, []);
-	console.log(posts);
 	return posts && posts.length !== 0 ? (
 		<>
 			{!isSSR && (
