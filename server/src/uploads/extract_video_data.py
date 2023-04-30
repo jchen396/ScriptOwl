@@ -82,25 +82,31 @@ def get_large_audio_transcription(path):
 
 
 def main(argv):
-    file_name = sys.argv[1]
-    os.chdir("./src/uploads")
-    # Load the video file
-    video = AudioSegment.from_file(
-        f"{file_name}.mp4", format="mp4")
-    audio = video.set_channels(1).set_frame_rate(16000).set_sample_width(2)
-    audio.export(f"{file_name}.wav", format="wav")
-    # Initialize recognizer class (for recognizing the speech)
-    text = get_large_audio_transcription(f"{file_name}.wav")
-    duration = get_video_length(f"{file_name}.mp4")
+    try:
+        print("testing main script")
+        file_name = sys.argv[1]
+        os.chdir("./src/uploads")
+        # Load the video file
+        video = AudioSegment.from_file(
+            f"{file_name}.mp4", format="mp4")
+        print("testing audio segment passed")
+        audio = video.set_channels(1).set_frame_rate(16000).set_sample_width(2)
+        audio.export(f"{file_name}.wav", format="wav")
+        # Initialize recognizer class (for recognizing the speech)
+        text = get_large_audio_transcription(f"{file_name}.wav")
+        duration = get_video_length(f"{file_name}.mp4")
 
-    # Set a thumbnail snapshot at 0 seconds mark
-    get_video_thumbnail(f"{file_name}.mp4", f"{file_name}.jpg")
-    os.remove(f"{file_name}.wav")
-    result = {
-        "text": text,
-        "duration": duration
-    }
-    print(json.dumps(result))
+        # Set a thumbnail snapshot at 0 seconds mark
+        get_video_thumbnail(f"{file_name}.mp4", f"{file_name}.jpg")
+        os.remove(f"{file_name}.wav")
+        result = {
+            "text": text,
+            "duration": duration
+        }
+        print(json.dumps(result))
+    except:
+        print("An error has occured.")
+        sys.exit(2)
 
 
 if __name__ == "__main__":

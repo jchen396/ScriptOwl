@@ -168,6 +168,28 @@ app.get("/postCount", async (req, res) => {
 	}
 });
 
+const { spawn } = require("child_process");
+
+app.get("/script1", async (req, res) => {
+	try {
+		let result;
+		const scriptPath = `${__dirname}/uploads/test.py`;
+		console.log(scriptPath);
+		const pythonScript = spawn("python", [scriptPath]);
+		pythonScript.stdout.on("data", (data) => {
+			result = data.toString();
+		});
+		pythonScript.on("close", () => {
+			console.log(result);
+		});
+		pythonScript.on("error", (err) => {
+			console.log("Error: ", err);
+		});
+	} catch (e) {
+		console.log(e);
+	}
+});
+
 app.listen(port, () => {
 	console.log(`PORT ${port} is running.`);
 });
