@@ -6,7 +6,7 @@ export const getVideoData = (filename: string) => {
 	return new Promise<string>((resolve, reject) => {
 		try {
 			let result;
-			const scriptPath = `${process.cwd()}/src/uploads/test.py`;
+			const scriptPath = `${process.cwd()}/src/uploads/extract_video_data.py`;
 			const pythonScript = spawn("python", [scriptPath, filename]);
 			pythonScript.stdout.on("data", (data) => {
 				result = data.toString();
