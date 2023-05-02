@@ -83,13 +83,11 @@ def get_large_audio_transcription(path):
 
 def main(argv):
     try:
-        print("testing main script")
         file_name = sys.argv[1]
         os.chdir("./src/uploads")
         # Load the video file
         video = AudioSegment.from_file(
             f"{file_name}.mp4", format="mp4")
-        print("testing audio segment passed")
         audio = video.set_channels(1).set_frame_rate(16000).set_sample_width(2)
         audio.export(f"{file_name}.wav", format="wav")
         # Initialize recognizer class (for recognizing the speech)
