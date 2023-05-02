@@ -61,6 +61,9 @@ const PostForm: React.FC<Props> = ({
 						/>
 					</div>
 				)}
+				<p className="text-gray-700 self-center">
+					Make sure the video file is in .mp4 format
+				</p>
 				<div>
 					<label
 						htmlFor="video"
