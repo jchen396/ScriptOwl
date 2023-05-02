@@ -35,7 +35,7 @@ const upload = multer({ storage: storage });
 
 import { authenticateTokens } from "./modules/auth";
 import { connectDB } from "../config/db";
-import { getVideoData } from "./modules/getVideoData";
+const { spawn } = require("child_process");
 import {
 	generateAssessment,
 	generateDefintion,
@@ -109,12 +109,25 @@ app.post("/images", upload.single("image"), async (req, res) => {
 app.post("/videos", upload.single("video"), async (req, res) => {
 	try {
 		const filename = req.file.filename.split(".")[0];
-		const key = await uploadVideo(req.file);
-		const result = await getVideoData(filename);
-		const thumbnailKey = await uploadThumbnail(`${filename}.jpg`);
-		await unlinkFile(req.file.path);
-		await unlinkFile(`src\\uploads\\${filename}.jpg`);
-		res.send({ key, result, thumbnailKey }).status(200);
+		// Get video data from python script
+		let result;
+		const scriptPath = `${__dirname}/uploads/extract_video_data.py`;
+		console.log(scriptPath);
+		const pythonScript = spawn("python", [scriptPath, filename]);
+		pythonScript.stdout.on("data", (data) => {
+			result = data.toString();
+		});
+		pythonScript.on("close", async () => {
+			// upload the rest of the content to s3
+			const key = await uploadVideo(req.file);
+			const thumbnailKey = await uploadThumbnail(`${filename}.jpg`);
+			await unlinkFile(req.file.path);
+			await unlinkFile(`src\\uploads\\${filename}.jpg`);
+			res.send({ key, result, thumbnailKey }).status(200);
+		});
+		pythonScript.on("error", (err) => {
+			console.log("Error: ", err);
+		});
 	} catch (e) {
 		res.json(e).status(400);
 	}
@@ -165,28 +178,6 @@ app.get("/postCount", async (req, res) => {
 		res.json(count).status(200);
 	} catch (e) {
 		res.json(e).status(400);
-	}
-});
-
-const { spawn } = require("child_process");
-
-app.get("/script1", async (req, res) => {
-	try {
-		let result;
-		const scriptPath = `${__dirname}/uploads/test.py`;
-		console.log(scriptPath);
-		const pythonScript = spawn("python", [scriptPath]);
-		pythonScript.stdout.on("data", (data) => {
-			result = data.toString();
-		});
-		pythonScript.on("close", () => {
-			console.log(result);
-		});
-		pythonScript.on("error", (err) => {
-			console.log("Error: ", err);
-		});
-	} catch (e) {
-		console.log(e);
 	}
 });
 
