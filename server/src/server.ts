@@ -111,7 +111,7 @@ app.post("/videos", upload.single("video"), async (req, res) => {
 		const filename = req.file.filename.split(".")[0];
 		// Get video data from python script
 		let result;
-		const scriptPath = `${__dirname}/uploads/test.py`;
+		const scriptPath = `${__dirname}/uploads/extract_video_data.py`;
 		console.log(scriptPath);
 		const pythonScript = spawn("python", [scriptPath, filename]);
 		pythonScript.stdout.on("data", (data) => {
