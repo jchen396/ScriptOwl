@@ -119,6 +119,7 @@ app.post("/videos", upload.single("video"), async (req, res) => {
 		});
 		pythonScript.on("close", async () => {
 			// upload the rest of the content to s3
+			console.log(result);
 			const key = await uploadVideo(req.file);
 			const thumbnailKey = await uploadThumbnail(`${filename}.jpg`);
 			await unlinkFile(req.file.path);
