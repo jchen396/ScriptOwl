@@ -82,10 +82,10 @@ The video streaming website platform with ChatGPT 3.5 Turbo integration is built
 Follow these steps to set up the project locally:
 
 1. Clone the repository: git clone https://github.com/jchen396/ScriptOwl.git
-2. Navigate to the client and/or directory: cd client
-3. Install the required dependencies: npm install
-4. Start the development server: npm start
-5. Open your web browser and visit http://localhost:3000 to access the video streaming website.
+2. Navigate to the client and/or server directory: cd client
+4. Install the required dependencies: npm install
+5. Start the development server: npm start
+6. Open your web browser and visit http://localhost:3000 to access the video streaming website client.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
