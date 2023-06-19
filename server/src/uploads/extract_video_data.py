@@ -83,21 +83,17 @@ def get_large_audio_transcription(path):
 
 def main(argv):
     try:
-        print("starting file")
         file_name = sys.argv[1]
         os.chdir("./src/uploads")
         # Load the video file
-        print(AudioSegment)
         video = AudioSegment.from_file(
             f"{file_name}.mp4", format="mp4")
         audio = video.set_channels(1).set_frame_rate(16000).set_sample_width(2)
         audio.export(f"{file_name}.wav", format="wav")
-        print("initializing recognizer")
         # Initialize recognizer class (for recognizing the speech)
         text = get_large_audio_transcription(f"{file_name}.wav")
         duration = get_video_length(f"{file_name}.mp4")
 
-        print("setting a thumbnail")
         # Set a thumbnail snapshot at 0 seconds mark
         get_video_thumbnail(f"{file_name}.mp4", f"{file_name}.jpg")
         os.remove(f"{file_name}.wav")
@@ -105,7 +101,6 @@ def main(argv):
             "text": text,
             "duration": duration
         }
-        print("finished")
         print(json.dumps(result))
     except:
         print("An error has occured.")

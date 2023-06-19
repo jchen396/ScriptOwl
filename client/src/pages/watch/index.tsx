@@ -92,7 +92,7 @@ const Watch: NextPage<
 	return (
 		<>
 			{!isSSR && (
-				<div className="h-screen w-full flex flex-row flex-wrap items-center justify-center space-y-10 font-mono p-10">
+				<div className="h-full w-full flex flex-row flex-wrap items-center justify-center space-y-10 font-mono p-10">
 					<VideoSection
 						currentUser={currentUser}
 						post={post}
@@ -100,7 +100,7 @@ const Watch: NextPage<
 						timeWord={timeWord}
 						refreshUserData={refreshUserData}
 					/>
-					<div className="basis-1/3 h-full w-full flex flex-col justify-center items-center text-white ">
+					<div className="basis-1/3 h-screen w-full flex flex-col justify-center items-center text-white ">
 						<SectionTabs
 							post={post}
 							section={section}

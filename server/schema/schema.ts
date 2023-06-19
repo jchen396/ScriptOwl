@@ -265,7 +265,7 @@ const mutation = new GraphQLObjectType({
 								email: args.email,
 								emailLower: args.email.toLowerCase(),
 								points: 0,
-								avatarKey: "1b22841673b252b100e68a9b0fc8aaeb",
+								avatarKey: "image-1687139427335-802564121.png",
 								likedCommentsIds: [],
 								dislikedCommentsIds: [],
 								likedPostsIds: [],
@@ -276,9 +276,9 @@ const mutation = new GraphQLObjectType({
 							await sendgrid.send({
 								to: `${args.email}`, // Your email where you'll receive emails
 								from: "support@jackiedev.com", // your website email address here
-								subject: `vod_app Account Sign-Up Verification Code`,
+								subject: `ScriptOwl Account Sign-Up Verification Code`,
 								html: `<div>
-                <h2>Your vod_app verification code is: </h2>
+                <h2>Your ScriptOwl verification code is: </h2>
                 <br/>
                 <h3>${verificationCode}</h3>
             </div>`,
