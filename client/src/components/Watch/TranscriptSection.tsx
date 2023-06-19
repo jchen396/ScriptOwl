@@ -92,55 +92,32 @@ const TranscriptSection: React.FC<Props> = ({
 					</div>
 				)}
 			</div>
-			{currentUser ? (
+			{transcript.replace(/(\r\n|\n|\r)/gm, "") ? (
 				<>
-					{currentUser.isVerified ? (
-						<p className="text-white self-center">
-							Click on word to search on ChatGPT.{" "}
-						</p>
-					) : (
-						<p className="text-red-600 self-center">
-							Please{" "}
-							<span
-								className="text-blue-600 hover:text-blue-200 hover:cursor-pointer"
-								onClick={() => router.push("/verify")}
-							>
-								verify your account
-							</span>{" "}
-							to use this service.
-						</p>
-					)}
+					<p className="text-white self-center">
+						Click on word to search on ChatGPT.{" "}
+					</p>
+
 					<div className="flex flex-row justify-center items-center space-x-4">
 						<button
-							className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 ${
-								currentUser.isVerified
-									? "hover:opacity-100 "
-									: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
-							}`}
+							className={`text-xl p-2 px-4 border border-white rounded-full opacity-75
+									border-gray-600 text-gray-400 hover:cursor-pointer hover:opacity-100`}
 							onClick={() => handleOptionSelect("translate")}
-							disabled={!currentUser.isVerified}
 						>
 							Translate
 						</button>
 						<button
-							className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 ${
-								currentUser.isVerified
-									? "hover:opacity-100 "
-									: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
-							}`}
+							className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 
+									border-gray-600 text-gray-400 hover:cursor-pointer hover:opacity-100
+							`}
 							onClick={() => handleOptionSelect("summarize")}
-							disabled={!currentUser.isVerified}
 						>
 							Summarize
 						</button>
 						<button
-							className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 ${
-								currentUser.isVerified
-									? "hover:opacity-100 "
-									: "border-gray-600 text-gray-400 hover:cursor-not-allowed"
-							}`}
+							className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 
+									border-gray-600 text-gray-400 hover:cursor-pointer hover:opacity-100`}
 							onClick={() => handleOptionSelect("assess")}
-							disabled={!currentUser.isVerified}
 						>
 							Assess
 						</button>
