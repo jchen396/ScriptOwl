@@ -83,7 +83,7 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 						</li>
 						<li>
 							<Link
-								href="#"
+								href="/contact"
 								className="block py-2 pl-3 pr-4 rounded lg:hover:bg-transparent lg:hover:text-blue-700 lg:p-0 lg:hover:text-white hover:text-white lg:hover:bg-transparent text-gray-600 hover:text-white"
 							>
 								Contact
