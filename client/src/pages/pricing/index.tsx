@@ -3,7 +3,7 @@ import CheckIcon from "@mui/icons-material/Check";
 
 type Props = {};
 
-const index = (props: Props) => {
+const Pricing = (props: Props) => {
 	return (
 		<div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
 			<h1 className="text-4xl font-medium text-slate-100">Pricing</h1>
@@ -34,4 +34,4 @@ const index = (props: Props) => {
 	);
 };
 
-export default index;
+export default Pricing;
