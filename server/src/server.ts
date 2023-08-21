@@ -40,7 +40,7 @@ import {
 	generateAssessment,
 	generateDefintion,
 	generateTranslation,
-	generatetSummary,
+	generateSummary,
 } from "./modules/openai";
 const {
 	uploadImage,
@@ -163,7 +163,7 @@ app.post("/chatgpt/services", async (req, res) => {
 				req.body.language
 			);
 		} else if (req.body.option === "summarize") {
-			reply = await generatetSummary(req.body.transcript);
+			reply = await generateSummary(req.body.transcript);
 		} else if (req.body.option === "assess") {
 			reply = await generateAssessment(req.body.transcript);
 		}
@@ -178,6 +178,17 @@ app.get("/postCount", async (req, res) => {
 		const count = await Post.find().count();
 		res.json(count).status(200);
 	} catch (e) {
+		res.json(e).status(400);
+	}
+});
+
+const { sendEmail } = require("./modules/sendgrid");
+
+app.post("/sendgrid", async (req, res) => {
+	try {
+		const response = await sendEmail(req, res);
+	} catch (e) {
+		console.log(e);
 		res.json(e).status(400);
 	}
 });

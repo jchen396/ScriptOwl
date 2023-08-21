@@ -39,7 +39,7 @@ export const generateTranslation = async (transcript, language) => {
 	}
 };
 
-export const generatetSummary = async (transcript) => {
+export const generateSummary = async (transcript) => {
 	try {
 		const completion = await openai.createChatCompletion({
 			model: "gpt-3.5-turbo",
