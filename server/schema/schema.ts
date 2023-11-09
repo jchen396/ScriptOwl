@@ -154,6 +154,15 @@ const RootQuery = new GraphQLObjectType({
 				return post;
 			},
 		},
+		userByUsername: {
+			type: UserType,
+			args: { username: { type: GraphQLString } },
+			resolve(parent, args) {
+				console.log(args.username);
+				const user = User.findOne({ username: args.username });
+				return user;
+			},
+		},
 		// Check token data stored in cookies
 		checkTokens: {
 			type: UserType,
