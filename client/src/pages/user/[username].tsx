@@ -2,8 +2,10 @@ import { FunctionComponent, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { GET_USER_BY_USERNAME } from "@/graphql/queries/getUserbyUsername";
 import client from "../../../apollo-client";
-import { IUser } from "../../../../types/types";
+import { IPost, IUser } from "../../../../types/types";
 import Image from "next/image";
+import { USER_POSTS } from "@/graphql/queries/userPosts";
+import VideoGrid from "@/components/Explore/VideoGrid";
 
 type Props = {};
 
@@ -12,6 +14,7 @@ const Profile: FunctionComponent<Props> = () => {
 	const username = router.query.username;
 	const [targetUser, setTargetUser] = useState<IUser | null>(null);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [videosData, setVideosData] = useState<IPost[]>([]);
 	const fetchUserInfo = async () => {
 		try {
 			const { data } = await client.query({
@@ -23,14 +26,29 @@ const Profile: FunctionComponent<Props> = () => {
 			return await data.userByUsername;
 		} catch (e) {}
 	};
+	const getLikedVideos = async () => {
+		try {
+			const { data } = await client.query({
+				query: USER_POSTS,
+				variables: {
+					postIds: targetUser?.likedPostsIds,
+				},
+			});
+			return await data.userPosts;
+		} catch (e) {}
+	};
 	useEffect(() => {
 		if (username) {
 			fetchUserInfo().then((data) => {
 				setTargetUser(data);
 			});
+			getLikedVideos().then((data) => {
+				setVideosData(data);
+			});
 			setIsLoading(false);
 		}
 	}, [username]);
+	console.log(videosData);
 	return (
 		<>
 			<div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
@@ -65,15 +83,9 @@ const Profile: FunctionComponent<Props> = () => {
 									<div className="h-1/2 w-3/4 border-2 border-white">
 										{targetUser?.likedPostsIds.length >
 										0 ? (
-											targetUser?.likedPostsIds.map(
-												(id) => (
-													<>
-														<div className="p-2 m-2 text-white text-2xl border-2 rounded">
-															{id}
-														</div>
-													</>
-												)
-											)
+											<div className="">
+												<VideoGrid posts={videosData} />
+											</div>
 										) : (
 											<>
 												<h2 className="flex justify-center items-center text-xl text-slate-500">
