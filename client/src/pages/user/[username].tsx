@@ -83,7 +83,7 @@ const Profile: FunctionComponent<Props> = () => {
 									<div className="h-1/2 w-3/4 border-2 border-white">
 										{targetUser?.likedPostsIds.length >
 										0 ? (
-											<div className="">
+											<div className="h-full w-full flex flex-col items-center justify-start font-mono p-4 overflow-y-auto">
 												<VideoGrid posts={videosData} />
 											</div>
 										) : (

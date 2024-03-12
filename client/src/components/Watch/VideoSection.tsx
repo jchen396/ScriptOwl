@@ -9,6 +9,7 @@ import { UNDISLIKE_POST } from "@/graphql/mutations/undislikePost";
 import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import { likeDislikeBar } from "@/functions/likeDislikeBar";
+import { useRouter } from "next/router";
 
 type Props = {
 	currentUser: IUser;
@@ -25,6 +26,7 @@ const VideoSection: React.FunctionComponent<Props> = ({
 	timeWord,
 	refreshUserData,
 }) => {
+	const router = useRouter();
 	const [disabled, setDisabled] = useState<boolean>(false);
 	const [postLikes, setPostLikes] = useState<number>(post.likes);
 	const [postDislikes, setPostDislikes] = useState<number>(post.dislikes);
@@ -40,100 +42,107 @@ const VideoSection: React.FunctionComponent<Props> = ({
 	const [dislikePost] = useMutation(DISLIKE_POST);
 	const [undislikePost] = useMutation(UNDISLIKE_POST);
 	const onLikePost = async () => {
-		if (disabled) return;
-		setDisabled(true);
-		if (postLiked) {
-			await unlikePost({
-				variables: {
-					postId: post.id,
-					userId: currentUser?.id,
-					publisherId: post.publisher.id,
-				},
-			});
-			setPostLikes((likes) => likes - 1);
-			setPostLiked(false);
-		} else if (postDisliked) {
-			await Promise.all([
-				undislikePost({
-					variables: {
-						postId: post.id,
-						userId: currentUser?.id,
-						publisherId: post.publisher.id,
-					},
-				}),
-				likePost({
-					variables: {
-						postId: post.id,
-						userId: currentUser?.id,
-						publisherId: post.publisher.id,
-					},
-				}),
-			]);
-			setPostDislikes((dislikes) => dislikes - 1);
-			setPostDisliked(false);
-			setPostLikes((likes) => likes + 1);
-			setPostLiked(true);
+		if (!currentUser) {
+			router.push("/login");
 		} else {
-			await likePost({
-				variables: {
-					postId: post.id,
-					userId: currentUser?.id,
-					publisherId: post.publisher.id,
-				},
-			});
-			setPostLikes((likes) => likes + 1);
-			setPostLiked(true);
+			if (disabled) return;
+			setDisabled(true);
+			if (postLiked) {
+				await unlikePost({
+					variables: {
+						postId: post.id,
+						userId: currentUser?.id,
+						publisherId: post.publisher.id,
+					},
+				});
+				setPostLikes((likes) => likes - 1);
+				setPostLiked(false);
+			} else if (postDisliked) {
+				await Promise.all([
+					undislikePost({
+						variables: {
+							postId: post.id,
+							userId: currentUser?.id,
+							publisherId: post.publisher.id,
+						},
+					}),
+					likePost({
+						variables: {
+							postId: post.id,
+							userId: currentUser?.id,
+							publisherId: post.publisher.id,
+						},
+					}),
+				]);
+				setPostDislikes((dislikes) => dislikes - 1);
+				setPostDisliked(false);
+				setPostLikes((likes) => likes + 1);
+				setPostLiked(true);
+			} else {
+				await likePost({
+					variables: {
+						postId: post.id,
+						userId: currentUser?.id,
+						publisherId: post.publisher.id,
+					},
+				});
+				setPostLikes((likes) => likes + 1);
+				setPostLiked(true);
+			}
+			await refreshUserData();
 		}
-		await refreshUserData();
 		setDisabled(false);
 	};
 	const onDislikePost = async () => {
-		if (disabled) return;
-		setDisabled(true);
-		if (disabled) return;
-		if (postDisliked) {
-			await undislikePost({
-				variables: {
-					postId: post.id,
-					userId: currentUser?.id,
-					publisherId: post.publisher.id,
-				},
-			});
-			setPostDislikes((dislikes) => dislikes - 1);
-			setPostDisliked(false);
-		} else if (postLiked) {
-			await Promise.all([
-				unlikePost({
-					variables: {
-						postId: post.id,
-						userId: currentUser?.id,
-						publisherId: post.publisher.id,
-					},
-				}),
-				dislikePost({
-					variables: {
-						postId: post.id,
-						userId: currentUser?.id,
-						publisherId: post.publisher.id,
-					},
-				}),
-			]);
-			setPostLikes((likes) => likes - 1);
-			setPostLiked(false);
-			setPostDislikes((dislikes) => dislikes + 1);
-			setPostDisliked(true);
+		if (!currentUser) {
+			router.push("/login");
 		} else {
-			await dislikePost({
-				variables: {
-					postId: post.id,
-					userId: currentUser?.id,
-					publisherId: post.publisher.id,
-				},
-			});
-			setPostDislikes((dislikes) => dislikes + 1);
-			setPostDisliked(true);
+			if (disabled) return;
+			setDisabled(true);
+			if (postDisliked) {
+				await undislikePost({
+					variables: {
+						postId: post.id,
+						userId: currentUser?.id,
+						publisherId: post.publisher.id,
+					},
+				});
+				setPostDislikes((dislikes) => dislikes - 1);
+				setPostDisliked(false);
+			} else if (postLiked) {
+				await Promise.all([
+					unlikePost({
+						variables: {
+							postId: post.id,
+							userId: currentUser?.id,
+							publisherId: post.publisher.id,
+						},
+					}),
+					dislikePost({
+						variables: {
+							postId: post.id,
+							userId: currentUser?.id,
+							publisherId: post.publisher.id,
+						},
+					}),
+				]);
+				setPostLikes((likes) => likes - 1);
+				setPostLiked(false);
+				setPostDislikes((dislikes) => dislikes + 1);
+				setPostDisliked(true);
+			} else {
+				await dislikePost({
+					variables: {
+						postId: post.id,
+						userId: currentUser?.id,
+						publisherId: post.publisher.id,
+					},
+				});
+				setPostDislikes((dislikes) => dislikes + 1);
+				setPostDisliked(true);
+			}
+			await refreshUserData();
 		}
-		await refreshUserData();
 		setDisabled(false);
 	};
 	useEffect(() => {
