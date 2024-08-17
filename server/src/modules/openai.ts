@@ -1,13 +1,11 @@
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 
-const configuration = new Configuration({
+const openai = new OpenAI({
 	apiKey: process.env.OPENAI_API_KEY,
 });
-
-const openai = new OpenAIApi(configuration);
 export const generateDefintion = async (word) => {
 	try {
-		const completion = await openai.createChatCompletion({
+		const completion = await openai.chat.completions.create({
 			model: "gpt-3.5-turbo",
 			messages: [
 				{
@@ -16,7 +14,7 @@ export const generateDefintion = async (word) => {
 				},
 			],
 		});
-		return completion.data.choices[0].message.content;
+		return completion.choices[0].message.content;
 	} catch (e) {
 		console.log(e);
 	}
@@ -24,7 +22,7 @@ export const generateDefintion = async (word) => {
 
 export const generateTranslation = async (transcript, language) => {
 	try {
-		const completion = await openai.createChatCompletion({
+		const completion = await openai.chat.completions.create({
 			model: "gpt-3.5-turbo",
 			messages: [
 				{
@@ -33,7 +31,7 @@ export const generateTranslation = async (transcript, language) => {
 				},
 			],
 		});
-		return completion.data.choices[0].message.content;
+		return completion.choices[0].message.content;
 	} catch (e) {
 		console.log(e);
 	}
@@ -41,7 +39,7 @@ export const generateTranslation = async (transcript, language) => {
 
 export const generateSummary = async (transcript) => {
 	try {
-		const completion = await openai.createChatCompletion({
+		const completion = await openai.chat.completions.create({
 			model: "gpt-3.5-turbo",
 			messages: [
 				{
@@ -50,7 +48,7 @@ export const generateSummary = async (transcript) => {
 				},
 			],
 		});
-		return completion.data.choices[0].message.content;
+		return completion.choices[0].message.content;
 	} catch (e) {
 		console.log(e);
 	}
@@ -58,7 +56,7 @@ export const generateSummary = async (transcript) => {
 
 export const generateAssessment = async (transcript) => {
 	try {
-		const completion = await openai.createChatCompletion({
+		const completion = await openai.chat.completions.create({
 			model: "gpt-3.5-turbo",
 			messages: [
 				{
@@ -67,7 +65,7 @@ export const generateAssessment = async (transcript) => {
 				},
 			],
 		});
-		return completion.data.choices[0].message.content;
+		return completion.choices[0].message.content;
 	} catch (e) {
 		console.log(e);
 	}

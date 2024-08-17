@@ -175,7 +175,7 @@ app.post("/chatgpt/services", async (req, res) => {
 
 app.get("/postCount", async (req, res) => {
 	try {
-		const count = await Post.find().count();
+		const count = await Post.find().countDocuments();
 		res.json(count).status(200);
 	} catch (e) {
 		res.json(e).status(400);

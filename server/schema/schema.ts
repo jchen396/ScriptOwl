@@ -45,11 +45,11 @@ const UserType = new GraphQLObjectType({
 		emailLower: { type: GraphQLString },
 		points: { type: GraphQLInt },
 		avatarKey: { type: GraphQLString },
-		likedCommentsIds: { type: GraphQLList(GraphQLID) },
-		dislikedCommentsIds: { type: GraphQLList(GraphQLID) },
-		likedPostsIds: { type: GraphQLList(GraphQLID) },
-		dislikedPostsIds: { type: GraphQLList(GraphQLID) },
-		uploadedPostIds: { type: GraphQLList(GraphQLID) },
+		likedCommentsIds: { type: new GraphQLList(GraphQLID) },
+		dislikedCommentsIds: { type: new GraphQLList(GraphQLID) },
+		likedPostsIds: { type: new GraphQLList(GraphQLID) },
+		dislikedPostsIds: { type: new GraphQLList(GraphQLID) },
+		uploadedPostIds: { type: new GraphQLList(GraphQLID) },
 		isVerified: { type: GraphQLBoolean },
 		verificationCode: { type: GraphQLInt },
 		createdAt: {
@@ -89,7 +89,7 @@ const PostType = new GraphQLObjectType({
 		likes: { type: GraphQLInt },
 		dislikes: { type: GraphQLInt },
 		views: { type: GraphQLInt },
-		comments: { type: GraphQLList(CommentType) },
+		comments: { type: new GraphQLList(CommentType) },
 		transcript: { type: GraphQLString },
 		duration: { type: GraphQLInt },
 		thumbnail: { type: GraphQLID },
@@ -144,8 +144,8 @@ const RootQuery = new GraphQLObjectType({
 			},
 		},
 		userPosts: {
-			type: GraphQLList(PostType),
-			args: { postIds: { type: GraphQLList(GraphQLString) } },
+			type: new GraphQLList(PostType),
+			args: { postIds: { type: new GraphQLList(GraphQLString) } },
 			async resolve(_, args) {
 				const postObjIds = args.postIds?.map((postId) => {
 					return new mongoose.Types.ObjectId(postId);
@@ -185,8 +185,8 @@ const RootQuery = new GraphQLObjectType({
 		logInUser: {
 			type: UserType,
 			args: {
-				username: { type: GraphQLNonNull(GraphQLString) },
-				password: { type: GraphQLNonNull(GraphQLID) },
+				username: { type: new GraphQLNonNull(GraphQLString) },
+				password: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			resolve(_, args, { res }) {
 				return User.findOne({
@@ -241,9 +241,9 @@ const mutation = new GraphQLObjectType({
 		addUser: {
 			type: UserType,
 			args: {
-				username: { type: GraphQLNonNull(GraphQLString) },
-				password: { type: GraphQLNonNull(GraphQLID) },
-				email: { type: GraphQLNonNull(GraphQLID) },
+				username: { type: new GraphQLNonNull(GraphQLString) },
+				password: { type: new GraphQLNonNull(GraphQLID) },
+				email: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			resolve(parent, args) {
 				return Promise.all([
@@ -306,16 +306,16 @@ const mutation = new GraphQLObjectType({
 		deleteUser: {
 			type: UserType,
 			args: {
-				id: { type: GraphQLNonNull(GraphQLID) },
+				id: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			resolve(parent, args) {
-				return User.findByIdAndRemove(args.id);
+				return User.findByIdAndDelete(args.id);
 			},
 		},
 		verifyUser: {
 			type: UserType,
 			args: {
-				id: { type: GraphQLNonNull(GraphQLID) },
+				id: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				const user = await User.findByIdAndUpdate(
@@ -368,14 +368,14 @@ const mutation = new GraphQLObjectType({
 		addPost: {
 			type: UserType,
 			args: {
-				videoKey: { type: GraphQLNonNull(GraphQLID) },
-				title: { type: GraphQLNonNull(GraphQLString) },
+				videoKey: { type: new GraphQLNonNull(GraphQLID) },
+				title: { type: new GraphQLNonNull(GraphQLString) },
 				description: { type: GraphQLString },
 				category: { type: GraphQLString },
-				publisher: { type: GraphQLNonNull(GraphQLID) },
+				publisher: { type: new GraphQLNonNull(GraphQLID) },
 				transcript: { type: GraphQLString },
 				duration: { type: GraphQLInt },
-				thumbnail: { type: GraphQLNonNull(GraphQLID) },
+				thumbnail: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				const post = new Post({
@@ -411,10 +411,10 @@ const mutation = new GraphQLObjectType({
 		commentPost: {
 			type: PostType,
 			args: {
-				postId: { type: GraphQLNonNull(GraphQLID) },
-				publisherId: { type: GraphQLNonNull(GraphQLID) },
-				commenter: { type: GraphQLNonNull(GraphQLID) },
-				comment: { type: GraphQLNonNull(GraphQLString) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
+				publisherId: { type: new GraphQLNonNull(GraphQLID) },
+				commenter: { type: new GraphQLNonNull(GraphQLID) },
+				comment: { type: new GraphQLNonNull(GraphQLString) },
 				timestamp: { type: GraphQLString },
 			},
 			async resolve(parent, args) {
@@ -445,9 +445,9 @@ const mutation = new GraphQLObjectType({
 		likePost: {
 			type: PostType,
 			args: {
-				postId: { type: GraphQLNonNull(GraphQLID) },
-				userId: { type: GraphQLNonNull(GraphQLID) },
-				publisherId: { type: GraphQLNonNull(GraphQLID) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+				publisherId: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				await Promise.all([
@@ -471,9 +471,9 @@ const mutation = new GraphQLObjectType({
 		unlikePost: {
 			type: PostType,
 			args: {
-				postId: { type: GraphQLNonNull(GraphQLID) },
-				userId: { type: GraphQLNonNull(GraphQLID) },
-				publisherId: { type: GraphQLNonNull(GraphQLID) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+				publisherId: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				await Promise.all([
@@ -493,9 +493,9 @@ const mutation = new GraphQLObjectType({
 		dislikePost: {
 			type: PostType,
 			args: {
-				postId: { type: GraphQLNonNull(GraphQLID) },
-				userId: { type: GraphQLNonNull(GraphQLID) },
-				publisherId: { type: GraphQLNonNull(GraphQLID) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+				publisherId: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				await Promise.all([
@@ -515,9 +515,9 @@ const mutation = new GraphQLObjectType({
 		undislikePost: {
 			type: PostType,
 			args: {
-				postId: { type: GraphQLNonNull(GraphQLID) },
-				userId: { type: GraphQLNonNull(GraphQLID) },
-				publisherId: { type: GraphQLNonNull(GraphQLID) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+				publisherId: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				await Promise.all([
@@ -537,11 +537,11 @@ const mutation = new GraphQLObjectType({
 		likeComment: {
 			type: PostType,
 			args: {
-				postId: { type: GraphQLNonNull(GraphQLID) },
-				userId: { type: GraphQLNonNull(GraphQLID) },
-				commentId: { type: GraphQLNonNull(GraphQLID) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+				commentId: { type: new GraphQLNonNull(GraphQLID) },
 				commenterId: {
-					type: GraphQLNonNull(GraphQLID),
+					type: new GraphQLNonNull(GraphQLID),
 				},
 			},
 			async resolve(_, args) {
@@ -569,11 +569,11 @@ const mutation = new GraphQLObjectType({
 		unlikeComment: {
 			type: PostType,
 			args: {
-				postId: { type: GraphQLNonNull(GraphQLID) },
-				userId: { type: GraphQLNonNull(GraphQLID) },
-				commentId: { type: GraphQLNonNull(GraphQLID) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+				commentId: { type: new GraphQLNonNull(GraphQLID) },
 				commenterId: {
-					type: GraphQLNonNull(GraphQLID),
+					type: new GraphQLNonNull(GraphQLID),
 				},
 			},
 			async resolve(_, args) {
@@ -601,10 +601,10 @@ const mutation = new GraphQLObjectType({
 		dislikeComment: {
 			type: PostType,
 			args: {
-				postId: { type: GraphQLNonNull(GraphQLID) },
-				userId: { type: GraphQLNonNull(GraphQLID) },
-				commentId: { type: GraphQLNonNull(GraphQLID) },
-				commenterId: { type: GraphQLNonNull(GraphQLID) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+				commentId: { type: new GraphQLNonNull(GraphQLID) },
+				commenterId: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				const objId = new mongoose.Types.ObjectId(args.commentId);
@@ -631,10 +631,10 @@ const mutation = new GraphQLObjectType({
 		undislikeComment: {
 			type: PostType,
 			args: {
-				postId: { type: GraphQLNonNull(GraphQLID) },
-				userId: { type: GraphQLNonNull(GraphQLID) },
-				commentId: { type: GraphQLNonNull(GraphQLID) },
-				commenterId: { type: GraphQLNonNull(GraphQLID) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+				commentId: { type: new GraphQLNonNull(GraphQLID) },
+				commenterId: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				const objId = new mongoose.Types.ObjectId(args.commentId);
@@ -661,9 +661,9 @@ const mutation = new GraphQLObjectType({
 		incrementViewCount: {
 			type: PostType,
 			args: {
-				postId: { type: GraphQLNonNull(GraphQLID) },
-				views: { type: GraphQLNonNull(GraphQLInt) },
-				publisherId: { type: GraphQLNonNull(GraphQLID) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
+				views: { type: new GraphQLNonNull(GraphQLInt) },
+				publisherId: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				const [post, __] = await Promise.all([
@@ -683,16 +683,16 @@ const mutation = new GraphQLObjectType({
 		deletePost: {
 			type: PostType,
 			args: {
-				id: { type: GraphQLNonNull(GraphQLID) },
+				id: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			resolve(parent, args) {
-				return Post.findByIdAndRemove(args.id);
+				return Post.findByIdAndDelete(args.id);
 			},
 		},
 		updateUser: {
 			type: UserType,
 			args: {
-				id: { type: GraphQLNonNull(GraphQLID) },
+				id: { type: new GraphQLNonNull(GraphQLID) },
 				avatarKey: { type: GraphQLString },
 				password: { type: GraphQLID },
 			},
@@ -720,7 +720,7 @@ const mutation = new GraphQLObjectType({
 		updatePost: {
 			type: PostType,
 			args: {
-				id: { type: GraphQLNonNull(GraphQLID) },
+				id: { type: new GraphQLNonNull(GraphQLID) },
 				title: { type: GraphQLString },
 				description: { type: GraphQLString },
 			},
