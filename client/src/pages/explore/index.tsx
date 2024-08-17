@@ -5,6 +5,7 @@ import VideoGrid from "@/components/Explore/VideoGrid";
 import { IPost } from "../../../../types/types";
 import PaginationBar from "@/components/Explore/PaginationBar";
 import { getPageCount } from "@/functions/getPageCount";
+import Head from "next/head";
 
 interface Props {
 	posts: IPost[];
@@ -19,6 +20,25 @@ const Home: FunctionComponent<Props> = ({ posts, pageCount, currentPage }) => {
 	}, []);
 	return posts && posts.length !== 0 ? (
 		<>
+			<Head>
+				<title>ScriptOwl | Explore</title>
+				<meta
+					name="description"
+					content="ScriptOwl is a video streaming site is dedicated to revolutionizing the way people learn and consume media content. By harnessing the power of GPT 3.5, we provide users with real-time translation of video transcripts, as well as a summarization feature that saves time and makes information more digestible. In addition, our quiz creation feature allows users to test their knowledge and reinforce what they've learned. Our goal is to break down language barriers and make learning more accessible to everyone, and we're constantly striving to innovate and improve the user experience. Join us on our mission to bring the world closer together through the power of video."
+				/>
+				<meta
+					name="viewport"
+					content="initial-scale=1.0, width=device-width"
+				/>
+				<meta
+					property="og:title"
+					content="
+					ScriptOwl | Explore
+				"
+					key="title"
+				/>
+				<link rel="icon" href="/img/ScriptOwl_logo_transparent.png" />
+			</Head>
 			{!isSSR && (
 				<div className="h-full w-full flex flex-col items-center justify-start space-y-10 font-mono py-10">
 					<h1 className="text-4xl font-medium text-slate-100 self-center">

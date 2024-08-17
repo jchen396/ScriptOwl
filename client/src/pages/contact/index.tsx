@@ -1,4 +1,5 @@
 import axios from "axios";
+import Head from "next/head";
 import React, { useState } from "react";
 
 type Props = {};
@@ -78,6 +79,25 @@ const Contact = (props: Props) => {
 	};
 	return (
 		<div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
+			<Head>
+				<title>ScriptOwl | Contact</title>
+				<meta
+					name="description"
+					content="ScriptOwl is a video streaming site is dedicated to revolutionizing the way people learn and consume media content. By harnessing the power of GPT 3.5, we provide users with real-time translation of video transcripts, as well as a summarization feature that saves time and makes information more digestible. In addition, our quiz creation feature allows users to test their knowledge and reinforce what they've learned. Our goal is to break down language barriers and make learning more accessible to everyone, and we're constantly striving to innovate and improve the user experience. Join us on our mission to bring the world closer together through the power of video."
+				/>
+				<meta
+					name="viewport"
+					content="initial-scale=1.0, width=device-width"
+				/>
+				<meta
+					property="og:title"
+					content="
+					ScriptOwl | Contact
+				"
+					key="title"
+				/>
+				<link rel="icon" href="/img/ScriptOwl_logo_transparent.png" />
+			</Head>
 			<h1 className="text-4xl font-medium text-slate-100">Contact</h1>
 			<form
 				action="submit"
@@ -85,19 +105,20 @@ const Contact = (props: Props) => {
 				onSubmit={(e) => handleFormSubmit(e)}
 			>
 				<div className="relative">
+					<input
+						type="email"
+						id="email"
+						className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+						placeholder=" "
+						onChange={(e) => setEmail(e.target.value)}
+						required
+					/>
 					<label
 						htmlFor="email"
 						className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-black px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
 					>
 						E-mail
 					</label>
-					<input
-						type="email"
-						id="email"
-						className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-						onChange={(e) => setEmail(e.target.value)}
-						required
-					/>
 				</div>
 				<div className="relative">
 					<input
