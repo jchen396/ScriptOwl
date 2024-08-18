@@ -56,10 +56,11 @@ app.use(bodyParser.json());
 app.use(
 	cors({
 		credentials: true,
-		origin:
+		origin: [
 			process.env.NODE_ENV === "development"
 				? "http://localhost:3000"
 				: "https://scriptowl.vercel.app",
+		],
 	})
 );
 
@@ -192,6 +193,13 @@ app.post("/sendgrid", async (req, res) => {
 		res.json(e).status(400);
 	}
 });
+
+const authRouter = require("./modules/oauth");
+const requestRouter = require("./modules/request");
+
+// OAuth
+app.use("/oauth", authRouter);
+app.use("/request", requestRouter);
 
 app.listen(port, () => {
 	console.log(`PORT ${port} is running.`);

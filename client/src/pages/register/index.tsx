@@ -11,6 +11,7 @@ import {
 	validateUsername,
 } from "@/functions/validateForm";
 import RegisterForm from "@/components/Register/RegisterForm";
+import OAuthOptions from "@/components/Register/OAuthOptions";
 
 interface Props {}
 
@@ -87,7 +88,7 @@ const Register: FunctionComponent<Props> = () => {
 				/>
 				<link rel="icon" href="/img/ScriptOwl_logo_transparent.png" />
 			</Head>
-			<div className="w-full h-full flex flex-col justify-center items-center space-y-10 font-mono py-10">
+			<div className="w-full h-full flex flex-col justify-center items-center space-y-5 font-mono py-10">
 				<RegisterForm
 					loading={loading}
 					errorMessage={errorMessage}
@@ -101,6 +102,7 @@ const Register: FunctionComponent<Props> = () => {
 					<span className="text-slate-100">OR</span>
 					<hr className="border-1 border-slate-100 flex-1" />
 				</div>
+				<OAuthOptions />
 			</div>
 		</>
 	);
