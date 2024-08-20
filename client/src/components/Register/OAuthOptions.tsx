@@ -1,10 +1,12 @@
 import React from "react";
 import GoogleIcon from "@mui/icons-material/Google";
+import { useSearchParams } from "next/navigation";
 
 interface Props {}
 
 const OAuthOptions: React.FunctionComponent<Props> = ({}) => {
-	const navigate = (url: any) => {
+	const searchParams = useSearchParams();
+	const navigate = (url: string) => {
 		window.location.href = url;
 	};
 	const auth = async () => {
@@ -12,10 +14,24 @@ const OAuthOptions: React.FunctionComponent<Props> = ({}) => {
 			`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}request`,
 			{ method: "post" }
 		);
-		console.log("data pulled");
 		const data = await res.json();
 		navigate(data.url);
 	};
+	if (searchParams.size) {
+		const search = location.search.substring(1);
+		const params = JSON.parse(
+			'{"' +
+				decodeURI(search)
+					.replace(/"/g, '\\"')
+					.replace(/&/g, '","')
+					.replace(/=/g, '":"') +
+				'"}'
+		);
+		const paramsString =
+			Object.keys(params)[0] + "=" + params[`${Object.keys(params)[0]}`];
+		const paramsObj = JSON.parse(paramsString);
+		console.log(paramsObj);
+	}
 	return (
 		<div className="w-3/4 flex flex-col justify-center items-center space-y-2">
 			<button

@@ -6,23 +6,25 @@ dotenv.config(); // Load environment variables from .env file
 const { OAuth2Client } = require("google-auth-library");
 
 async function getUserData(access_token) {
-	console.log(access_token);
 	const response = await fetch(
 		`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`
 	);
 
-	//console.log('response',response);
 	const data = await response.json();
-	console.log("data", data);
+	return data;
 }
 
 /* GET home page. */
 router.get("/", async function (req, res, next) {
 	const code = req.query.code;
+	let query;
 
-	console.log("code", code);
 	try {
-		const redirectURL = "http://localhost:5000/oauth";
+		const redirectURL = `${
+			process.env.NODE_ENV === "development"
+				? "http://localhost:5000/oauth"
+				: "https://script-owl-server.onrender.com"
+		}`;
 		const oAuth2Client = new OAuth2Client(
 			process.env.GCP_OAUTH_CLIENT_ID,
 			process.env.GCP_OAUTH_CLIENT_SECRET,
@@ -32,13 +34,21 @@ router.get("/", async function (req, res, next) {
 		// Make sure to set the credentials on the OAuth2 client.
 		await oAuth2Client.setCredentials(r.tokens);
 		const user = oAuth2Client.credentials;
-		console.log("credentials", user);
-		await getUserData(user.access_token);
+		const queryData = await getUserData(user.access_token);
+		console.log(queryData);
+		query = JSON.stringify(queryData);
 	} catch (err) {
 		console.log("Error logging in with OAuth2 user", err);
 	}
 
-	res.redirect(303, "http://localhost:3000/");
+	res.redirect(
+		303,
+		`${
+			process.env.NODE_ENV === "development"
+				? `http://localhost:3000/register?${query}`
+				: `https://scriptowl.vercel.app/register?${query}`
+		}`
+	);
 });
 
 module.exports = router;
