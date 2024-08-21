@@ -251,6 +251,8 @@ const mutation = new GraphQLObjectType({
 				username: { type: new GraphQLNonNull(GraphQLString) },
 				password: { type: new GraphQLNonNull(GraphQLID) },
 				email: { type: new GraphQLNonNull(GraphQLID) },
+				picture: { type: GraphQLString },
+				emailVerified: { type: GraphQLBoolean },
 			},
 			resolve(parent, args) {
 				return Promise.all([
@@ -274,6 +276,7 @@ const mutation = new GraphQLObjectType({
 							const verificationCode = Math.floor(
 								100000 + Math.random() * 900000
 							);
+							console.log(args.emailVerified, args.picture);
 							const user = new User({
 								username: args.username,
 								usernameLower: args.username.toLowerCase(),
@@ -281,12 +284,16 @@ const mutation = new GraphQLObjectType({
 								email: args.email,
 								emailLower: args.email.toLowerCase(),
 								points: 0,
-								avatarKey: "image-1687139427335-802564121.png",
+								avatarKey: `${
+									args.picture
+										? args.picture
+										: "image-1687139427335-802564121.png"
+								}`,
 								likedCommentsIds: [],
 								dislikedCommentsIds: [],
 								likedPostsIds: [],
 								dislikedPostsIds: [],
-								isVerified: false,
+								isVerified: args.emailVerified,
 								verificationCode,
 							});
 							await sendgrid.send({

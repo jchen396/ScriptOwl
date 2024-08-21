@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import LoginForm from "@/components/Login/LoginForm";
 import Head from "next/head";
+import OAuthOptions from "@/components/Register/OAuthOptions";
 
 interface Props {}
 
@@ -67,6 +68,12 @@ const Login: FunctionComponent<Props> = () => {
 					errorMessage={errorMessage}
 					setErrorMessage={setErrorMessage}
 				/>
+				<div className="w-80 flex flex-row justify-center items-center space-x-2">
+					<hr className="border-1 border-slate-100 flex-1" />
+					<span className="text-slate-100">OR</span>
+					<hr className="border-1 border-slate-100 flex-1" />
+				</div>
+				<OAuthOptions />
 			</div>
 		</>
 	);

@@ -125,7 +125,13 @@ const Navbar: FunctionComponent<Props> = ({ userData }) => {
 								height={50}
 								width={50}
 								className="w-10 h-10 rounded-full"
-								src={`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${userData.avatarKey}`}
+								src={
+									userData.avatarKey.startsWith(
+										"https://lh3.googleusercontent.com"
+									)
+										? userData.avatarKey
+										: `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${userData.avatarKey}`
+								}
 								alt="user photo"
 							/>
 						</button>

@@ -35,7 +35,6 @@ router.get("/", async function (req, res, next) {
 		await oAuth2Client.setCredentials(r.tokens);
 		const user = oAuth2Client.credentials;
 		const queryData = await getUserData(user.access_token);
-		console.log(queryData);
 		query = JSON.stringify(queryData);
 	} catch (err) {
 		console.log("Error logging in with OAuth2 user", err);

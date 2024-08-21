@@ -6,12 +6,21 @@ import { ADD_USER } from "@/graphql/mutations/addUser";
 import { useDispatch, useSelector } from "react-redux";
 import client from "../../../apollo-client";
 import { GET_USER_BY_EMAIL } from "@/graphql/queries/getUserByEmail";
+import { login } from "@/redux/apiCalls";
 
 interface Props {}
 
 const OAuthOptions: React.FunctionComponent<Props> = ({}) => {
 	const [emailExists, setEmailExists] = useState<boolean>(false);
 	const [OAuthAttempt, setOAuthAttempt] = useState<boolean>(false);
+
+	const [firstName, setFirstName] = useState<string>("");
+	const [lastName, setLastName] = useState<string>("");
+	const [accountEmail, setAccountEmail] = useState<string>("");
+	const [subCode, setSubCode] = useState<string>("");
+	const [emailVerified, setEmailVerified] = useState<boolean>(false);
+	const [accountPicture, setAccountPicture] = useState<string>("");
+
 	const [addUser, { loading }] = useMutation(ADD_USER);
 	const { currentUser, error, isFetching } = useSelector(
 		(state: any) => state.user
@@ -45,6 +54,12 @@ const OAuthOptions: React.FunctionComponent<Props> = ({}) => {
 				"=" +
 				params[`${Object.keys(params)[0]}`];
 			const paramsObj = JSON.parse(paramsString);
+			setFirstName(paramsObj["given_name"]);
+			setLastName(paramsObj["family_name"]);
+			setSubCode(paramsObj["sub"]);
+			setAccountEmail(paramsObj["email"]);
+			setEmailVerified(paramsObj["email_verified"]);
+			setAccountPicture(paramsObj["picture"]);
 			(async (email: string) => {
 				const { data } = await client.query({
 					query: GET_USER_BY_EMAIL,
@@ -52,7 +67,6 @@ const OAuthOptions: React.FunctionComponent<Props> = ({}) => {
 						email,
 					},
 				});
-				console.log("changing");
 				if (await data.userByEmail) {
 					setEmailExists(true);
 				} else {
@@ -63,16 +77,46 @@ const OAuthOptions: React.FunctionComponent<Props> = ({}) => {
 		}
 	}, [searchParams.size]);
 	useEffect(() => {
-		console.log({ emailExists, OAuthAttempt });
 		if (OAuthAttempt) {
-			console.log("Attempted.");
 			if (emailExists) {
-				console.log("signing in...");
+				try {
+					login(dispatch, {
+						logInUsername: `${firstName}_${lastName}${subCode.slice(
+							-4
+						)}`,
+						logInPassword: subCode,
+					});
+				} catch (err) {
+					console.log(err);
+				}
 			} else {
-				console.log("creating account...");
+				try {
+					(async () =>
+						await addUser({
+							variables: {
+								username: `${firstName}_${lastName}${subCode.slice(
+									-4
+								)}`,
+								password: subCode,
+								email: accountEmail,
+								points: 0,
+								emailVerified,
+								picture: accountPicture,
+							},
+						}))();
+
+					login(dispatch, {
+						logInUsername: `${firstName}_${lastName}${subCode.slice(
+							-4
+						)}`,
+						logInPassword: subCode,
+					});
+				} catch (err) {
+					console.log(err);
+				}
 			}
+			setOAuthAttempt(false);
 		}
-		setOAuthAttempt(false);
 	}, [OAuthAttempt]);
 
 	return (
@@ -81,12 +125,6 @@ const OAuthOptions: React.FunctionComponent<Props> = ({}) => {
 				className="w-80 h-8 flex flex-row justify-center items-center border border-slate-100 flex-1 rounded space-x-2 p-4 w-100 w-3/4 lg:w-1/3"
 				onClick={() => auth()}
 			>
-				<GoogleIcon className="text-slate-100" />
-				<span className="text-slate-100 text-md text-bold">
-					Sign In with Google
-				</span>
-			</button>
-			<button className="w-80 h-8 flex flex-row justify-center items-center border border-slate-100 flex-1 rounded space-x-2 p-4 w-100 w-3/4 lg:w-1/3">
 				<GoogleIcon className="text-slate-100" />
 				<span className="text-slate-100 text-md text-bold">
 					Sign In with Google
