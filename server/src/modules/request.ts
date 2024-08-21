@@ -30,7 +30,7 @@ router.post("/", async function (req, res, next) {
 	// Generate the url that will be used for the consent dialog.
 	const authorizeUrl = oAuth2Client.generateAuthUrl({
 		access_type: "offline",
-		scope: "https://www.googleapis.com/auth/userinfo.profile  openid ",
+		scope: "https://www.googleapis.com/auth/userinfo.profile  openid profile email",
 		prompt: "consent",
 	});
 	res.json({ url: authorizeUrl });

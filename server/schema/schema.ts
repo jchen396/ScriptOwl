@@ -158,8 +158,15 @@ const RootQuery = new GraphQLObjectType({
 			type: UserType,
 			args: { username: { type: GraphQLString } },
 			resolve(parent, args) {
-				console.log(args.username);
 				const user = User.findOne({ username: args.username });
+				return user;
+			},
+		},
+		userByEmail: {
+			type: UserType,
+			args: { email: { type: GraphQLString } },
+			resolve(parent, args) {
+				const user = User.findOne({ email: args.email });
 				return user;
 			},
 		},
