@@ -72,6 +72,10 @@ const AccountForm: React.FunctionComponent<Props> = ({
 							value={`${userData.username}`}
 							disabled
 						></input>
+						<button className="flex flex-row items-center p-2 border-2 border-white rounded-lg hover:bg-white hover:text-black">
+							<span className="px-2">Change Username</span>
+							<ArrowForwardIcon />
+						</button>
 						<label className="text-white" htmlFor="email">
 							E-mail
 						</label>

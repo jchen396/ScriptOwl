@@ -23,7 +23,7 @@ router.get("/", async function (req, res, next) {
 		const redirectURL = `${
 			process.env.NODE_ENV === "development"
 				? "http://localhost:5000/oauth"
-				: "https://script-owl-server.onrender.com"
+				: "https://script-owl-server.onrender.com/oauth"
 		}`;
 		const oAuth2Client = new OAuth2Client(
 			process.env.GCP_OAUTH_CLIENT_ID,
