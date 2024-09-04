@@ -6,9 +6,9 @@ import { ParsedUrlQuery } from "querystring";
 interface Props {
 	userData: IUser | ParsedUrlQuery;
 	changePassword?: boolean;
-	setChangePassword: React.Dispatch<
-		React.SetStateAction<boolean | undefined>
-	>;
+	setChangePassword: React.Dispatch<React.SetStateAction<boolean>>;
+	changeUsername?: boolean;
+	setChangeUsername: React.Dispatch<React.SetStateAction<boolean>>;
 	setNewPassword: React.Dispatch<React.SetStateAction<string>>;
 	confirmNewPassword: string;
 	setConfirmNewPassword: React.Dispatch<React.SetStateAction<string>>;
@@ -18,6 +18,8 @@ const AccountForm: React.FunctionComponent<Props> = ({
 	userData,
 	changePassword,
 	setChangePassword,
+	changeUsername,
+	setChangeUsername,
 	setNewPassword,
 	setConfirmNewPassword,
 }) => {
@@ -72,10 +74,44 @@ const AccountForm: React.FunctionComponent<Props> = ({
 							value={`${userData.username}`}
 							disabled
 						></input>
-						<button className="flex flex-row items-center p-2 border-2 border-white rounded-lg hover:bg-white hover:text-black">
-							<span className="px-2">Change Username</span>
-							<ArrowForwardIcon />
-						</button>
+						{changeUsername ? (
+							<form
+								action=""
+								className="w-full flex flex-col space-y-4 justify-center items-center"
+							>
+								<label
+									className="text-white"
+									htmlFor="username"
+								>
+									New Username
+								</label>
+								<div className="flex justify-center items-center">
+									<button
+										onClick={() => setChangeUsername(false)}
+										className="flex flex-row items-center p-2 border-2 border-white rounded-lg hover:bg-white hover:text-black"
+									>
+										<ArrowBackIcon />
+									</button>
+									<input
+										type="text"
+										id="disabled-input"
+										aria-label="disabled input"
+										className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 dark:bg-slate-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									></input>
+									<button className="flex flex-row items-center p-2 border-2 border-white rounded-lg hover:bg-white hover:text-black">
+										Confirm
+									</button>
+								</div>
+							</form>
+						) : (
+							<button
+								onClick={() => setChangeUsername(true)}
+								className="flex flex-row items-center p-2 border-2 border-white rounded-lg hover:bg-white hover:text-black"
+							>
+								<span className="px-2">Change Username</span>
+								<ArrowForwardIcon />
+							</button>
+						)}
 						<label className="text-white" htmlFor="email">
 							E-mail
 						</label>

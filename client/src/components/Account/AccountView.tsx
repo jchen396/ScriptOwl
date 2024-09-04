@@ -17,9 +17,9 @@ interface Props {
 	onSaveChanges: (e: any) => Promise<void>;
 	editToggle: boolean;
 	changePassword?: boolean;
-	setChangePassword: React.Dispatch<
-		React.SetStateAction<boolean | undefined>
-	>;
+	setChangePassword: React.Dispatch<React.SetStateAction<boolean>>;
+	changeUsername?: boolean;
+	setChangeUsername: React.Dispatch<React.SetStateAction<boolean>>;
 	newPassword: string;
 	setNewPassword: React.Dispatch<React.SetStateAction<string>>;
 	confirmNewPassword: string;
@@ -38,6 +38,8 @@ const AccountView: React.FunctionComponent<Props> = ({
 	editToggle,
 	changePassword,
 	setChangePassword,
+	changeUsername,
+	setChangeUsername,
 	newPassword,
 	setNewPassword,
 	confirmNewPassword,
@@ -75,6 +77,8 @@ const AccountView: React.FunctionComponent<Props> = ({
 						userData={userData}
 						changePassword={changePassword}
 						setChangePassword={setChangePassword}
+						changeUsername={changeUsername}
+						setChangeUsername={setChangeUsername}
 						setNewPassword={setNewPassword}
 						confirmNewPassword={confirmNewPassword}
 						setConfirmNewPassword={setConfirmNewPassword}

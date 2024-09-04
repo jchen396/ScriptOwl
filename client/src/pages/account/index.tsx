@@ -14,7 +14,8 @@ interface Props {}
 const Account: FunctionComponent<Props> = () => {
 	const router = useRouter();
 	const dispatch = useDispatch();
-	const [changePassword, setChangePassword] = useState<boolean>();
+	const [changePassword, setChangePassword] = useState<boolean>(false);
+	const [changeUsername, setChangeUsername] = useState<boolean>(false);
 	const [newPassword, setNewPassword] = useState<string>("");
 	const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
 	const [imageKey, setImageKey] = useState<string>("");
@@ -104,6 +105,8 @@ const Account: FunctionComponent<Props> = () => {
 						onEditToggle={onEditToggle}
 						changePassword={changePassword}
 						setChangePassword={setChangePassword}
+						changeUsername={changeUsername}
+						setChangeUsername={setChangeUsername}
 						newPassword={newPassword}
 						setNewPassword={setNewPassword}
 						confirmNewPassword={confirmNewPassword}
