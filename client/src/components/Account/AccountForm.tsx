@@ -10,6 +10,7 @@ interface Props {
 	changeUsername?: boolean;
 	setChangeUsername: React.Dispatch<React.SetStateAction<boolean>>;
 	setNewPassword: React.Dispatch<React.SetStateAction<string>>;
+	setNewUsername: React.Dispatch<React.SetStateAction<string>>;
 	confirmNewPassword: string;
 	setConfirmNewPassword: React.Dispatch<React.SetStateAction<string>>;
 }
@@ -21,6 +22,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
 	changeUsername,
 	setChangeUsername,
 	setNewPassword,
+	setNewUsername,
 	setConfirmNewPassword,
 }) => {
 	return (
@@ -81,7 +83,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
 							>
 								<label
 									className="text-white"
-									htmlFor="username"
+									htmlFor="newUsername"
 								>
 									New Username
 								</label>
@@ -93,6 +95,11 @@ const AccountForm: React.FunctionComponent<Props> = ({
 										<ArrowBackIcon />
 									</button>
 									<input
+										onChange={(e) =>
+											setNewUsername(
+												e.currentTarget.value
+											)
+										}
 										type="text"
 										id="disabled-input"
 										aria-label="disabled input"

@@ -22,6 +22,8 @@ interface Props {
 	setChangeUsername: React.Dispatch<React.SetStateAction<boolean>>;
 	newPassword: string;
 	setNewPassword: React.Dispatch<React.SetStateAction<string>>;
+	newUsername: string;
+	setNewUsername: React.Dispatch<React.SetStateAction<string>>;
 	confirmNewPassword: string;
 	setConfirmNewPassword: React.Dispatch<React.SetStateAction<string>>;
 	loading: boolean;
@@ -42,6 +44,8 @@ const AccountView: React.FunctionComponent<Props> = ({
 	setChangeUsername,
 	newPassword,
 	setNewPassword,
+	newUsername,
+	setNewUsername,
 	confirmNewPassword,
 	setConfirmNewPassword,
 	loading,
@@ -80,6 +84,7 @@ const AccountView: React.FunctionComponent<Props> = ({
 						changeUsername={changeUsername}
 						setChangeUsername={setChangeUsername}
 						setNewPassword={setNewPassword}
+						setNewUsername={setNewUsername}
 						confirmNewPassword={confirmNewPassword}
 						setConfirmNewPassword={setConfirmNewPassword}
 					/>

@@ -709,6 +709,7 @@ const mutation = new GraphQLObjectType({
 				id: { type: new GraphQLNonNull(GraphQLID) },
 				avatarKey: { type: GraphQLString },
 				password: { type: GraphQLID },
+				username: { type: GraphQLString },
 			},
 			async resolve(_, args) {
 				let encryptedPassword;
@@ -724,6 +725,7 @@ const mutation = new GraphQLObjectType({
 						$set: {
 							avatarKey: args.avatarKey,
 							password: encryptedPassword,
+							username: args.username,
 						},
 					},
 					{ new: true }

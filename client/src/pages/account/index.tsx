@@ -16,6 +16,7 @@ const Account: FunctionComponent<Props> = () => {
 	const dispatch = useDispatch();
 	const [changePassword, setChangePassword] = useState<boolean>(false);
 	const [changeUsername, setChangeUsername] = useState<boolean>(false);
+	const [newUsername, setNewUsername] = useState<string>("");
 	const [newPassword, setNewPassword] = useState<string>("");
 	const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
 	const [imageKey, setImageKey] = useState<string>("");
@@ -109,6 +110,8 @@ const Account: FunctionComponent<Props> = () => {
 						setChangeUsername={setChangeUsername}
 						newPassword={newPassword}
 						setNewPassword={setNewPassword}
+						newUsername={newUsername}
+						setNewUsername={setNewUsername}
 						confirmNewPassword={confirmNewPassword}
 						setConfirmNewPassword={setConfirmNewPassword}
 						loading={loading}
