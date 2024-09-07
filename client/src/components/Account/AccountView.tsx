@@ -90,7 +90,7 @@ const AccountView: React.FunctionComponent<Props> = ({
 					/>
 				</div>
 			</div>
-			{(newPassword || imageKey) && (
+			{(newPassword || imageKey || newUsername) && (
 				<div>
 					<button
 						className={`text-2xl text-black p-2 px-4 rounded-lg text-bold items-center justify-center

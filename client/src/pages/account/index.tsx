@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUser } from "@/redux/apiCalls";
@@ -63,10 +63,12 @@ const Account: FunctionComponent<Props> = () => {
 					id: id,
 					avatarKey: imageKey,
 					password: newPassword,
+					username: newUsername,
 				},
 			});
 			updateUser(dispatch, data.updateUser);
 			setNewPassword("");
+			setNewUsername("");
 			setImageKey("");
 		} catch (err) {
 			setErrorMessage(err);

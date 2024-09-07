@@ -61,21 +61,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
 						></input>
 					</form>
 				) : (
-					<form
-						className="flex flex-col space-y-4 items-center"
-						action=""
-					>
-						<label className="text-white" htmlFor="username">
-							Username
-						</label>
-						<input
-							type="text"
-							id="disabled-input"
-							aria-label="disabled input"
-							className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-slate-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-							value={`${userData.username}`}
-							disabled
-						></input>
+					<>
 						{changeUsername ? (
 							<form
 								action=""
@@ -119,25 +105,41 @@ const AccountForm: React.FunctionComponent<Props> = ({
 								<ArrowForwardIcon />
 							</button>
 						)}
-						<label className="text-white" htmlFor="email">
-							E-mail
-						</label>
-						<input
-							type="text"
-							id="disabled-input"
-							aria-label="disabled input"
-							className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-							value={`${userData.email}`}
-							disabled
-						></input>
-						<button
-							className="flex flex-row items-center p-2 border-2 border-white rounded-lg hover:bg-white hover:text-black"
-							onClick={() => setChangePassword(true)}
+						<form
+							className="flex flex-col space-y-4 items-center"
+							action=""
 						>
-							<span className="px-2">Change password</span>
-							<ArrowForwardIcon />
-						</button>
-					</form>
+							<label className="text-white" htmlFor="username">
+								Username
+							</label>
+							<input
+								type="text"
+								id="disabled-input"
+								aria-label="disabled input"
+								className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-slate-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+								value={`${userData.username}`}
+								disabled
+							></input>
+							<label className="text-white" htmlFor="email">
+								E-mail
+							</label>
+							<input
+								type="text"
+								id="disabled-input"
+								aria-label="disabled input"
+								className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+								value={`${userData.email}`}
+								disabled
+							></input>
+							<button
+								className="flex flex-row items-center p-2 border-2 border-white rounded-lg hover:bg-white hover:text-black"
+								onClick={() => setChangePassword(true)}
+							>
+								<span className="px-2">Change password</span>
+								<ArrowForwardIcon />
+							</button>
+						</form>
+					</>
 				)}
 			</div>
 		</>
