@@ -61,9 +61,9 @@ const Account: FunctionComponent<Props> = () => {
 			const { data } = await userUpdateMutate({
 				variables: {
 					id: id,
-					avatarKey: imageKey,
+					avatarKey: imageKey ? imageKey : currentUser.avatarKey,
 					password: newPassword,
-					username: newUsername,
+					username: newUsername ? newUsername : currentUser.username,
 				},
 			});
 			updateUser(dispatch, data.updateUser);

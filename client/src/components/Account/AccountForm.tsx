@@ -61,7 +61,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
 						></input>
 					</form>
 				) : (
-					<>
+					<div className="flex flex-col ">
 						{changeUsername ? (
 							<form
 								action=""
@@ -99,7 +99,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
 						) : (
 							<button
 								onClick={() => setChangeUsername(true)}
-								className="flex flex-row items-center p-2 border-2 border-white rounded-lg hover:bg-white hover:text-black"
+								className="flex flex-row justify-center w-1/2 items-center p-2 border-2 border-white rounded-lg hover:bg-white hover:text-black"
 							>
 								<span className="px-2">Change Username</span>
 								<ArrowForwardIcon />
@@ -139,7 +139,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
 								<ArrowForwardIcon />
 							</button>
 						</form>
-					</>
+					</div>
 				)}
 			</div>
 		</>
