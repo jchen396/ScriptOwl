@@ -21,6 +21,7 @@ const Post: FunctionComponent<Props> = () => {
 	const [successMessage, setSuccessMessage] = useState<string>("");
 	const [errorMessage, setErrorMessage] = useState<string>("");
 	const { currentUser } = useSelector((state: any) => state.user);
+	const [youtubeOption, setYoutubeOption] = useState<boolean>(false);
 	const onSubmitHandler = async (e: FormEvent<HTMLButtonElement>) => {
 		try {
 			setSuccessMessage("");
@@ -85,6 +86,8 @@ const Post: FunctionComponent<Props> = () => {
 					errorMessage={errorMessage}
 					setErrorMessage={setErrorMessage}
 					currentUser={currentUser}
+					youtubeOption={youtubeOption}
+					setYoutubeOption={setYoutubeOption}
 				/>
 			)}
 		</>
