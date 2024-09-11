@@ -19,6 +19,8 @@ interface Props {
 	currentUser: IUser;
 	youtubeOption: boolean;
 	setYoutubeOption: React.Dispatch<React.SetStateAction<boolean>>;
+	youtubeURL: string;
+	setYoutubeURL: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const PostForm: React.FC<Props> = ({
@@ -36,6 +38,8 @@ const PostForm: React.FC<Props> = ({
 	currentUser,
 	youtubeOption,
 	setYoutubeOption,
+	youtubeURL,
+	setYoutubeURL,
 }) => {
 	return (
 		<div className="min-h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
@@ -57,8 +61,33 @@ const PostForm: React.FC<Props> = ({
 						>
 							Enter Youtube URL:
 						</label>
-						<input type="text" className="w-full text-black" />
+						<input
+							type="text"
+							onChange={(e) =>
+								setYoutubeURL(e.currentTarget.value)
+							}
+							className="w-full text-black"
+						/>
 					</div>
+					<button
+						onClick={(e) => {
+							e.preventDefault();
+							console.log(youtubeURL);
+						}}
+						className={`text-white bg-gray-700 hover:cursor-not-allowed focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center
+						${
+							currentUser.isVerified
+								? `${
+										loading || posted
+											? "hover:cursor-not-allowed bg-blue-700"
+											: ""
+								  } 
+								`
+								: "border-gray-600 bg-gray-600 hover:cursor-not-allowed"
+						} `}
+					>
+						Submit
+					</button>
 				</form>
 			) : (
 				<form className="flex flex-col space-y-4 border-2 rounded border-slate-100 bg-transparent text-slate-100 w-100 p-10 w-3/4 lg:w-1/3 md:p-16">
