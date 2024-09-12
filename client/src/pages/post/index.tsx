@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { postVideo } from "@/functions/s3_functions/postVideo";
 import PostForm from "@/components/Post/PostForm";
 import { updateUser } from "@/redux/apiCalls";
+import axios from "axios";
 
 type Props = {};
 
@@ -66,6 +67,25 @@ const Post: FunctionComponent<Props> = () => {
 			setSuccessMessage("");
 		}
 	};
+
+	const onYoutubeSubmitHandler = async (e: FormEvent<HTMLButtonElement>) => {
+		try {
+			setSuccessMessage("");
+			setErrorMessage("");
+			e.preventDefault();
+			setPosted(true);
+			console.log(youtubeURL);
+			axios.post(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}youtube`, {
+				params: {
+					youtubeURL,
+				},
+			});
+		} catch (e) {
+			setErrorMessage(e);
+			setSuccessMessage("");
+		}
+	};
+
 	useEffect(() => {
 		if (!currentUser) {
 			router.push("/login");
@@ -76,6 +96,7 @@ const Post: FunctionComponent<Props> = () => {
 			{currentUser && (
 				<PostForm
 					onSubmitHandler={onSubmitHandler}
+					onYoutubeSubmitHandler={onYoutubeSubmitHandler}
 					posted={posted}
 					setVideoFile={setVideoFile}
 					setTitle={setTitle}

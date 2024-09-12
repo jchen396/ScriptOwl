@@ -6,6 +6,9 @@ import { IUser } from "../../../../types/types";
 
 interface Props {
 	onSubmitHandler: (e: React.FormEvent<HTMLButtonElement>) => Promise<void>;
+	onYoutubeSubmitHandler: (
+		e: React.FormEvent<HTMLButtonElement>
+	) => Promise<void>;
 	posted: boolean;
 	setVideoFile: React.Dispatch<React.SetStateAction<File | undefined>>;
 	setTitle: React.Dispatch<React.SetStateAction<string | undefined>>;
@@ -25,6 +28,7 @@ interface Props {
 
 const PostForm: React.FC<Props> = ({
 	onSubmitHandler,
+	onYoutubeSubmitHandler,
 	posted,
 	setVideoFile,
 	setTitle,
@@ -70,10 +74,7 @@ const PostForm: React.FC<Props> = ({
 						/>
 					</div>
 					<button
-						onClick={(e) => {
-							e.preventDefault();
-							console.log(youtubeURL);
-						}}
+						onClick={(e) => onYoutubeSubmitHandler(e)}
 						className={`text-white bg-gray-700 hover:cursor-not-allowed focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center
 						${
 							currentUser.isVerified

@@ -194,6 +194,12 @@ app.post("/sendgrid", async (req, res) => {
 	}
 });
 
+app.post("/youtube", async (req, res) => {
+	try {
+		console.log(req.params);
+	} catch (e) {}
+});
+
 const authRouter = require("./modules/oauth");
 const requestRouter = require("./modules/request");
 
