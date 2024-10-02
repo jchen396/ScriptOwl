@@ -5,7 +5,8 @@
     "lib": [ "es6" ],
     "target": "es5",
     "rootDir": "./..",
+    "moduleDetection": "force",
     "esModuleInterop": true,
-    "moduleDetection": "force"
-  }
+
+  },
 }

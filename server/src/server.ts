@@ -1,7 +1,7 @@
 const express = require("express");
 require("dotenv").config({ path: "../.env" });
-const { graphqlHTTP } = require("express-graphql");
 const schema = require("./../schema/schema");
+const { createHandler } = require("graphql-http/lib/use/express");
 const cors = require("cors");
 const port = process.env.PORT || 8080;
 const fs = require("fs");
@@ -75,12 +75,13 @@ app.use(async (req, res, next) => {
 // use GraphQL api
 app.use(
 	"/graphql",
-	graphqlHTTP((_, res) => {
-		return {
-			schema,
-			context: { res },
-			graphiql: process.env.NODE_ENV === "development",
-		};
+	createHandler((_, res) => {
+		try {
+			return {
+				schema,
+				context: { res },
+			};
+		} catch (_e) {}
 	})
 );
 
@@ -113,8 +114,7 @@ app.post("/videos", upload.single("video"), async (req, res) => {
 		// Get video data from python script
 		let result;
 		const scriptPath = `${__dirname}/uploads/extract_video_data.py`;
-		console.log(scriptPath);
-		const pythonScript = spawn("python", [scriptPath, filename]);
+		const pythonScript = spawn("python", [scriptPath, filename, "upload"]);
 		pythonScript.stdout.on("data", (data) => {
 			result = data.toString();
 		});
@@ -196,7 +196,20 @@ app.post("/sendgrid", async (req, res) => {
 
 app.post("/youtube", async (req, res) => {
 	try {
-		console.log(req.params);
+		let youtubeURL = req.body.youtubeURL;
+		let result;
+		const scriptPath = `${__dirname}/uploads/download_video_audio.py`;
+		const pythonScript = spawn("python", [scriptPath, youtubeURL]);
+		pythonScript.stdout.on("data", (data) => {
+			console.log(data.toString());
+		});
+		pythonScript.on("close", async () => {
+			// upload the rest of the content to s3
+			console.log("download complete");
+		});
+		pythonScript.on("error", (err) => {
+			console.log("Error: ", err);
+		});
 	} catch (e) {}
 });
 

@@ -76,9 +76,7 @@ const Post: FunctionComponent<Props> = () => {
 			setPosted(true);
 			console.log(youtubeURL);
 			axios.post(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}youtube`, {
-				params: {
-					youtubeURL,
-				},
+				youtubeURL,
 			});
 		} catch (e) {
 			setErrorMessage(e);
