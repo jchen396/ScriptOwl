@@ -75,13 +75,11 @@ app.use(async (req, res, next) => {
 // use GraphQL api
 app.use(
 	"/graphql",
-	createHandler((_, res) => {
-		try {
-			return {
-				schema,
-				context: { res },
-			};
-		} catch (_e) {}
+	createHandler({
+		schema,
+		context: async (req) => {
+			return req.context;
+		},
 	})
 );
 

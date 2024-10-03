@@ -1,0 +1,13 @@
+services:
+    server:
+        build: .
+        container_name: scriptowl-server
+        env_file:
+            - /server/.env
+        ports:
+            - "5000:5000"
+        command: npm start
+        develop:
+            watch:
+                - path: server
+                  action: rebuild

@@ -21,7 +21,7 @@ export const login = async (
 ) => {
 	try {
 		dispatch(loginStart());
-		const { data } = await client.query({
+		const { data, error } = await client.query({
 			query: LOG_IN_USER,
 			variables: {
 				username: logInUsername,
@@ -30,6 +30,7 @@ export const login = async (
 		});
 		dispatch(loginSuccess(data.logInUser));
 	} catch (err) {
+		console.log(err);
 		dispatch(loginFailure());
 	}
 };
