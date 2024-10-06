@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:18-slim
 
 COPY ./server /server
 
@@ -6,8 +6,15 @@ COPY ./types /types
 
 WORKDIR server
 
-RUN npm install
+RUN apt-get update 
+
+RUN apt-get install -y python3-pip 
+
+RUN pip install -r requirements.txt --upgrade --break-system-packages
+
+RUN apt-get install --yes python-is-python3 \
+    && npm install
 
 EXPOSE 5000
 
-CMD ["ls"]
+CMD ls

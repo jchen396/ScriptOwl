@@ -92,10 +92,10 @@ const PostForm: React.FC<Props> = ({
 				</form>
 			) : (
 				<form className="flex flex-col space-y-4 border-2 rounded border-slate-100 bg-transparent text-slate-100 w-100 p-10 w-3/4 lg:w-1/3 md:p-16">
-					<p className="text-red-400 text-sm">
+					{/* <p className="text-red-400 text-sm">
 						This service is currently unavailable. Sorry for the
 						inconvenience!
-					</p>
+					</p> */}
 					{successMessage && (
 						<div className="bg-green-500 p-4 rounded flex flex-row justify-between items-center space-x-2">
 							<CheckCircleIcon className="text-green-900" />
@@ -190,7 +190,7 @@ const PostForm: React.FC<Props> = ({
 					</div>
 					<button
 						type="button"
-						className={`text-white bg-gray-700 hover:cursor-not-allowed focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center 
+						className={`text-white bg-blue-700 hover:bg-black border-blue-700 border-2 hover:text-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-md w-full sm:w-auto px-5 py-2.5 text-center 
 						${
 							currentUser.isVerified
 								? `${
@@ -201,9 +201,8 @@ const PostForm: React.FC<Props> = ({
 								`
 								: "border-gray-600 bg-gray-600 hover:cursor-not-allowed"
 						} `}
-						//disabled={loading || !currentUser.isVerified}
-						disabled={true}
-						//onClick={(e) => onSubmitHandler(e)}
+						disabled={loading || !currentUser.isVerified}
+						onClick={(e) => onSubmitHandler(e)}
 					>
 						{loading || posted ? (
 							<div className="w-full flex flex-row justify-center items-center space-x-4">

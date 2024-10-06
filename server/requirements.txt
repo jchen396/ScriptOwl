@@ -8,7 +8,7 @@ Click==7.0
 comtypes==1.1.14
 ffmpeg==1.4
 idna==3.4
-numpy==1.21.6
+numpy
 opencv-python==4.7.0.72
 pipenv==2018.11.26
 pycodestyle==2.8.0
