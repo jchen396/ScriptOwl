@@ -15,6 +15,9 @@ const VideoPost: React.FunctionComponent<Props> = ({
 	timeNumber,
 	timeWord,
 }) => {
+	console.log(
+		`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${post.publisher.avatarKey}`
+	);
 	const postLikeRatio = post.dislikes
 		? Math.floor((post.likes / (post.likes + post.dislikes)) * 100)
 		: 100;

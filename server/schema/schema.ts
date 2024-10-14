@@ -677,7 +677,7 @@ const mutation = new GraphQLObjectType({
 			args: {
 				postId: { type: new GraphQLNonNull(GraphQLID) },
 				views: { type: new GraphQLNonNull(GraphQLInt) },
-				publisherId: { type: new GraphQLNonNull(GraphQLID) },
+				publisherId: { type: GraphQLID },
 			},
 			async resolve(_, args) {
 				const [post, __] = await Promise.all([
@@ -686,9 +686,11 @@ const mutation = new GraphQLObjectType({
 							views: args.views,
 						},
 					}),
-					User.findByIdAndUpdate(args.publisherId, {
-						inc: { points: 1 },
-					}),
+					args.publisherId
+						? User.findByIdAndUpdate(args.publisherId, {
+								inc: { points: 1 },
+						  })
+						: null,
 				]);
 				return post;
 			},

@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const INCREMENT_VIEW_COUNT = gql`
-	mutation IncrementViewCount($postId: ID!, $views: Int!, $publisherId: ID!) {
+	mutation IncrementViewCount($postId: ID!, $views: Int!, $publisherId: ID) {
 		incrementViewCount(
 			postId: $postId
 			views: $views

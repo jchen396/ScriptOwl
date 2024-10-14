@@ -11,6 +11,7 @@ interface Props {
 
 const VideoGrid: React.FunctionComponent<Props> = ({ posts }) => {
 	const [incrementViewCount] = useMutation(INCREMENT_VIEW_COUNT);
+	console.log(posts);
 	return (
 		<div className="w-full p-4 flex flex-col justify-center items-center space-y-4">
 			<div className="w-full grid gap-4 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
@@ -28,7 +29,9 @@ const VideoGrid: React.FunctionComponent<Props> = ({ posts }) => {
 										variables: {
 											postId: post.id,
 											views: post.views + 1,
-											publisherId: post.publisher.id,
+											publisherId: post.publisher.id
+												? post.publisher.id
+												: null,
 										},
 									});
 								}}

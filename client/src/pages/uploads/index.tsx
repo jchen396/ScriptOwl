@@ -7,7 +7,6 @@ import VideoGrid from "@/components/Explore/VideoGrid";
 const Uploads: NextPage<
 	InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ data }) => {
-	console.log(data.userPosts);
 	return (
 		<>
 			<div className="w-full h-full bg-black flex flex-col justify-center items-center text-white space-y-10 py-10">
