@@ -116,6 +116,9 @@ app.post("/videos", upload.single("video"), async (req, res) => {
 		pythonScript.stdout.on("data", (data) => {
 			result = data.toString();
 		});
+		pythonScript.stderr.on("data", (data) => {
+			console.error(`stderr: ${data}`);
+		});
 		pythonScript.on("close", async () => {
 			// upload the rest of the content to s3
 			console.log(result);
@@ -197,6 +200,7 @@ app.post("/youtube", async (req, res) => {
 		let youtubeURL = req.body.youtubeURL;
 		let result;
 		const scriptPath = `${__dirname}/uploads/download_video_audio.py`;
+		console.log(scriptPath);
 		const pythonScript = spawn("python", [scriptPath, youtubeURL]);
 		pythonScript.stdout.on("data", (data) => {
 			console.log(data.toString());

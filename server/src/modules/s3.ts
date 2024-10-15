@@ -62,7 +62,9 @@ async function uploadVideo(file) {
 exports.uploadVideo = uploadVideo;
 
 async function uploadThumbnail(file) {
-	const fileStream = fs.createReadStream(`src\\uploads\\${file}`);
+	const filePath = `${__dirname}/../uploads/${file}`;
+	console.log(filePath);
+	const fileStream = fs.createReadStream(filePath);
 	const uploadParams = {
 		Bucket: process.env.AWS_BUCKET2_THUMBNAILS_NAME,
 		Body: fileStream,
