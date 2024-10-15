@@ -125,7 +125,8 @@ app.post("/videos", upload.single("video"), async (req, res) => {
 			const key = await uploadVideo(req.file);
 			const thumbnailKey = await uploadThumbnail(`${filename}.jpg`);
 			await unlinkFile(req.file.path);
-			await unlinkFile(`src\\uploads\\${filename}.jpg`);
+			const thumbnailPath = `${__dirname}/uploads/${filename}.jpg`;
+			await unlinkFile(thumbnailPath);
 			res.send({ key, result, thumbnailKey }).status(200);
 		});
 		pythonScript.on("error", (err) => {
