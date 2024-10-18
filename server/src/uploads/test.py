@@ -1,7 +1,7 @@
 from pytube import YouTube#
 
 print("working")
-url = "https://www.youtube.com/watch?v=ZTrrc6Ni5eM"
+url = "https://www.youtube.com/"
 
 try:
    video = YouTube(url)

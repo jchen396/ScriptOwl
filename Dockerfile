@@ -18,3 +18,5 @@ RUN apt-get install -y python-is-python3 \
     && npm install
 
 EXPOSE 5000
+
+CMD ["npm", "start"]

@@ -11,3 +11,4 @@ services:
             watch:
                 - path: server
                   action: rebuild
+        image: jchen396/scriptowl-image:latest # Match the existing repo
