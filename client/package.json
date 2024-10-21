@@ -1,41 +1,41 @@
 {
-  "name": "vod_app",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "npm run dev",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@apollo/client": "^3.11.4",
-    "@emotion/react": "^11.13.0",
-    "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^5.16.7",
-    "@mui/material": "^5.16.7",
-    "@reduxjs/toolkit": "^2.2.7",
-    "@types/node": "22.4.0",
-    "@types/react": "18.3.3",
-    "@types/react-dom": "18.3.0",
-    "axios": "^1.7.4",
-    "eslint": "8.35.0",
-    "eslint-config-next": "13.2.3",
-    "express": "^4.19.2",
-    "express-graphql": "^0.12.0",
-    "graphql": "^15.9.0",
-    "graphql-request": "^7.1.0",
-    "next": "14.2.5",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-player": "^2.16.0",
-    "react-redux": "^9.1.2",
-    "typescript": "5.5.4"
-  },
-  "devDependencies": {
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.41",
-    "tailwindcss": "^3.4.10"
-  },
-  "python.testing.cwd": "${workspaceFolder}"
+    "name": "vod_app",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "npm run dev",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "@apollo/client": "^3.11.4",
+        "@emotion/react": "^11.13.0",
+        "@emotion/styled": "^11.13.0",
+        "@mui/icons-material": "^5.16.7",
+        "@mui/material": "^5.16.7",
+        "@reduxjs/toolkit": "^2.2.7",
+        "@types/node": "22.4.0",
+        "@types/react": "18.3.3",
+        "@types/react-dom": "18.3.0",
+        "axios": "^1.7.4",
+        "eslint": "8.35.0",
+        "eslint-config-next": "13.2.3",
+        "express": "^4.21.0",
+        "graphql-http": "^1.22.1",
+        "graphql": "^16.9.0",
+        "graphql-request": "^7.1.0",
+        "next": "14.2.5",
+        "react": "18.3.1",
+        "react-dom": "18.3.1",
+        "react-player": "^2.16.0",
+        "react-redux": "^9.1.2",
+        "typescript": "5.5.4"
+    },
+    "devDependencies": {
+        "autoprefixer": "^10.4.20",
+        "postcss": "^8.4.41",
+        "tailwindcss": "^3.4.10"
+    },
+    "python.testing.cwd": "${workspaceFolder}"
 }
