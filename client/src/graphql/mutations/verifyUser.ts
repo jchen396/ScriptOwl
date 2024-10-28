@@ -7,12 +7,15 @@ export const VERIFY_USER = gql`
 			username
 			email
 			points
+			followers
+			following
 			avatarKey
 			likedCommentsIds
 			dislikedCommentsIds
 			likedPostsIds
 			dislikedPostsIds
 			uploadedPostIds
+			watchHistory
 			isVerified
 			verificationCode
 		}

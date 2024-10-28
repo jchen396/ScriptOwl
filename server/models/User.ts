@@ -10,6 +10,8 @@ const userSchema = new Schema<IUser>(
 		password: { type: String, require: true },
 		email: { type: String, required: true, unique: true },
 		points: { type: Number },
+		followers: { type: [String] },
+		following: { type: [String] },
 		avatarKey: { type: String },
 		likedCommentsIds: { type: [String] },
 		dislikedCommentsIds: { type: [String] },

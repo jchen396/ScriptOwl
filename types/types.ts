@@ -20,6 +20,8 @@ export interface IUser {
 	email: string;
 	avatarKey: string;
 	points: number;
+	followers: Array<string>;
+	following: Array<string>;
 	likedCommentsIds: Array<string>;
 	dislikedCommentsIds: Array<string>;
 	likedPostsIds: Array<string>;

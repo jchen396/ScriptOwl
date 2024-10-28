@@ -54,6 +54,8 @@ const UserType = new GraphQLObjectType({
 		email: { type: GraphQLID },
 		emailLower: { type: GraphQLString },
 		points: { type: GraphQLInt },
+		followers: { type: new GraphQLList(GraphQLID) },
+		following: { type: new GraphQLList(GraphQLID) },
 		avatarKey: { type: GraphQLString },
 		likedCommentsIds: { type: new GraphQLList(GraphQLID) },
 		dislikedCommentsIds: { type: new GraphQLList(GraphQLID) },
@@ -294,6 +296,8 @@ const mutation = new GraphQLObjectType({
 								email: args.email,
 								emailLower: args.email.toLowerCase(),
 								points: 0,
+								followers: [],
+								following: [],
 								avatarKey: `${
 									args.picture
 										? args.picture
@@ -303,6 +307,7 @@ const mutation = new GraphQLObjectType({
 								dislikedCommentsIds: [],
 								likedPostsIds: [],
 								dislikedPostsIds: [],
+								watchHistory: [],
 								isVerified: args.emailVerified,
 								verificationCode,
 							});
@@ -723,6 +728,51 @@ const mutation = new GraphQLObjectType({
 				});
 			},
 		},
+		// Increase following count of user and follower count of publisher
+		followUser: {
+			type: UserType,
+			args: {
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+				publisherId: { type: new GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				await Promise.all([
+					User.findByIdAndUpdate(args.userId, {
+						$addToSet: {
+							following: args.publisherId,
+						},
+					}),
+					User.findByIdAndUpdate(args.publisherId, {
+						$addToSet: {
+							followers: args.userId,
+						},
+					}),
+				]);
+			},
+		},
+		// Decrease following count of user and follower count of publisher
+		unfollowUser: {
+			type: UserType,
+			args: {
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+				publisherId: { type: new GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				await Promise.all([
+					User.findByIdAndUpdate(args.userId, {
+						$pull: {
+							following: args.publisherId,
+						},
+					}),
+					User.findByIdAndUpdate(args.publisherId, {
+						$pull: {
+							followers: args.userId,
+						},
+					}),
+				]);
+			},
+		},
+
 		// Remove post by ID
 		deletePost: {
 			type: PostType,

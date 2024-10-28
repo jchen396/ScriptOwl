@@ -7,6 +7,8 @@ export const CHECK_TOKENS = gql`
 			username
 			email
 			points
+			followers
+			following
 			avatarKey
 			likedCommentsIds
 			dislikedCommentsIds
