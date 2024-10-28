@@ -11,6 +11,12 @@ export const GET_USER_BY_USERNAME = gql`
 			likedPostsIds
 			dislikedPostsIds
 			uploadedPostIds
+			watchHistory {
+				postId
+				createdAt {
+					date
+				}
+			}
 		}
 	}
 `;

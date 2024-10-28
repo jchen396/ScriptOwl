@@ -2,8 +2,18 @@ export interface IDate {
 	date: string;
 }
 
+export type WatchedPost = {
+	postId: string;
+	createdAt: IDate;
+};
+
 export interface IUser {
-	[key: string]: Array<string> | string | number | boolean;
+	[key: string]:
+		| Array<string>
+		| string
+		| number
+		| boolean
+		| Array<WatchedPost>;
 	username: string;
 	password: string;
 	readonly id: string;
@@ -15,12 +25,13 @@ export interface IUser {
 	likedPostsIds: Array<string>;
 	dislikedPostsIds: Array<string>;
 	uploadedPostIds: Array<string>;
+	watchHistory: Array<WatchedPost>;
 	isVerified: boolean;
 	verificationCode: number;
 }
 
 export interface IPublisher {
-	id: string;
+	readonly id: string;
 	username: string;
 	avatarKey: string;
 }

@@ -15,6 +15,12 @@ export const CHECK_TOKENS = gql`
 			uploadedPostIds
 			isVerified
 			verificationCode
+			watchHistory {
+				postId
+				createdAt {
+					date
+				}
+			}
 		}
 	}
 `;

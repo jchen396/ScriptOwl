@@ -4,48 +4,60 @@ import { useMutation } from "@apollo/client";
 import { IPost } from "../../../../types/types";
 import React from "react";
 import VideoPost from "./VideoPost";
+import { ADD_WATCH_HISTORY } from "@/graphql/mutations/addWatchHistory";
+import { useSelector } from "react-redux";
 
 interface Props {
-    posts: IPost[];
+	posts: IPost[];
 }
 
 const VideoGrid: React.FunctionComponent<Props> = ({ posts }) => {
-    const [incrementViewCount] = useMutation(INCREMENT_VIEW_COUNT);
-    return (
-        <div className="w-full p-4 flex flex-col justify-center items-center space-y-4">
-            <div className="w-full grid gap-4 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
-                {posts &&
-                    posts.map((post: IPost, key: number) => {
-                        const { timeNumber, timeWord } = getTimeDiff(
-                            parseInt(post.createdAt.date)
-                        );
-                        return (
-                            <div
-                                key={key}
-                                className="group w-full hover:bg-gray-800 p-2 hover:cursor-pointer rounded-lg"
-                                onClick={() => {
-                                    incrementViewCount({
-                                        variables: {
-                                            postId: post.id,
-                                            views: post.views + 1,
-                                            publisherId: post.publisher.id
-                                                ? post.publisher.id
-                                                : null,
-                                        },
-                                    });
-                                }}
-                            >
-                                <VideoPost
-                                    post={post}
-                                    timeNumber={timeNumber}
-                                    timeWord={timeWord}
-                                />
-                            </div>
-                        );
-                    })}
-            </div>
-        </div>
-    );
+	const [incrementViewCount] = useMutation(INCREMENT_VIEW_COUNT);
+	const [addWatchHistory] = useMutation(ADD_WATCH_HISTORY);
+	const { currentUser } = useSelector((state: any) => state.user);
+	return (
+		<div className="w-full p-4 flex flex-col justify-center items-center space-y-4">
+			<div className="w-full grid gap-4 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1">
+				{posts &&
+					posts?.map((post: IPost, key: number) => {
+						const { timeNumber, timeWord } = getTimeDiff(
+							parseInt(post.createdAt.date)
+						);
+						return (
+							<div
+								key={key}
+								className="group w-full hover:bg-gray-800 p-2 hover:cursor-pointer rounded-lg"
+								onClick={() => {
+									incrementViewCount({
+										variables: {
+											postId: post.id,
+											views: post.views + 1,
+											publisherId: post.publisher.id
+												? post.publisher.id
+												: null,
+										},
+									});
+									if (currentUser) {
+										addWatchHistory({
+											variables: {
+												userId: currentUser.id,
+												postId: post.id,
+											},
+										});
+									}
+								}}
+							>
+								<VideoPost
+									post={post}
+									timeNumber={timeNumber}
+									timeWord={timeWord}
+								/>
+							</div>
+						);
+					})}
+			</div>
+		</div>
+	);
 };
 
 export default VideoGrid;

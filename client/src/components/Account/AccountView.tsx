@@ -10,7 +10,6 @@ import ErrorIcon from "@mui/icons-material/Error";
 interface Props {
 	imageKey: string;
 	currentUser: IUser;
-	userData: IUser | ParsedUrlQuery;
 	onEditToggle: () => void;
 	onResetPhoto: () => void;
 	onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -32,7 +31,6 @@ interface Props {
 const AccountView: React.FunctionComponent<Props> = ({
 	imageKey,
 	currentUser,
-	userData,
 	onEditToggle,
 	onResetPhoto,
 	onFileSelect,
@@ -78,7 +76,7 @@ const AccountView: React.FunctionComponent<Props> = ({
 						<Points currentUser={currentUser} />
 					</div>
 					<AccountForm
-						userData={userData}
+						currentUser={currentUser}
 						changePassword={changePassword}
 						setChangePassword={setChangePassword}
 						changeUsername={changeUsername}

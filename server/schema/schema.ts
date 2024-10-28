@@ -32,6 +32,16 @@ const DateType = new GraphQLObjectType({
 		},
 	}),
 });
+// Watch History Type
+const WatchedPostType = new GraphQLObjectType({
+	name: "WatchedPost",
+	fields: () => ({
+		postId: { type: GraphQLID },
+		createdAt: {
+			type: DateType,
+		},
+	}),
+});
 
 // User Type
 const UserType = new GraphQLObjectType({
@@ -50,6 +60,7 @@ const UserType = new GraphQLObjectType({
 		likedPostsIds: { type: new GraphQLList(GraphQLID) },
 		dislikedPostsIds: { type: new GraphQLList(GraphQLID) },
 		uploadedPostIds: { type: new GraphQLList(GraphQLID) },
+		watchHistory: { type: new GraphQLList(WatchedPostType) },
 		isVerified: { type: GraphQLBoolean },
 		verificationCode: { type: GraphQLInt },
 		createdAt: {
@@ -64,7 +75,7 @@ const CommentType = new GraphQLObjectType({
 		id: { type: GraphQLID },
 		commenter: {
 			type: UserType,
-			resolve(parent, args) {
+			resolve(parent, __) {
 				return User.findById(parent.commenter);
 			},
 		},
@@ -98,7 +109,7 @@ const PostType = new GraphQLObjectType({
 		},
 		publisher: {
 			type: UserType,
-			resolve(parent, args) {
+			resolve(parent, __) {
 				return User.findById(parent.publisher);
 			},
 		},
@@ -112,7 +123,7 @@ const RootQuery = new GraphQLObjectType({
 		posts: {
 			type: new GraphQLList(PostType),
 			args: { page: { type: GraphQLInt } },
-			resolve(parent, args) {
+			resolve(_, args) {
 				// limit 20
 				const limit = 20;
 				return Post.find()
@@ -124,14 +135,14 @@ const RootQuery = new GraphQLObjectType({
 		post: {
 			type: PostType,
 			args: { id: { type: GraphQLID } },
-			resolve(parent, args) {
+			resolve(_, args) {
 				return Post.findById(args.id);
 			},
 		},
 		// Return all users in db
 		users: {
 			type: new GraphQLList(UserType),
-			resolve(parent, args) {
+			resolve(_, args) {
 				return User.find();
 			},
 		},
@@ -139,7 +150,7 @@ const RootQuery = new GraphQLObjectType({
 		user: {
 			type: UserType,
 			args: { id: { type: GraphQLID } },
-			resolve(parent, args) {
+			resolve(_, args) {
 				return User.findById(args.id);
 			},
 		},
@@ -157,7 +168,7 @@ const RootQuery = new GraphQLObjectType({
 		userByUsername: {
 			type: UserType,
 			args: { username: { type: GraphQLString } },
-			resolve(parent, args) {
+			resolve(_, args) {
 				const user = User.findOne({ username: args.username });
 				return user;
 			},
@@ -165,7 +176,7 @@ const RootQuery = new GraphQLObjectType({
 		userByEmail: {
 			type: UserType,
 			args: { email: { type: GraphQLString } },
-			resolve(parent, args) {
+			resolve(_, args) {
 				const user = User.findOne({ email: args.email });
 				return user;
 			},
@@ -254,7 +265,7 @@ const mutation = new GraphQLObjectType({
 				picture: { type: GraphQLString },
 				emailVerified: { type: GraphQLBoolean },
 			},
-			resolve(parent, args) {
+			resolve(_, args) {
 				return Promise.all([
 					User.findOne({
 						usernameLower: args.username.toLowerCase(),
@@ -276,7 +287,6 @@ const mutation = new GraphQLObjectType({
 							const verificationCode = Math.floor(
 								100000 + Math.random() * 900000
 							);
-							console.log(args.emailVerified, args.picture);
 							const user = new User({
 								username: args.username,
 								usernameLower: args.username.toLowerCase(),
@@ -322,7 +332,7 @@ const mutation = new GraphQLObjectType({
 			args: {
 				id: { type: new GraphQLNonNull(GraphQLID) },
 			},
-			resolve(parent, args) {
+			resolve(_, args) {
 				return User.findByIdAndDelete(args.id);
 			},
 		},
@@ -431,7 +441,7 @@ const mutation = new GraphQLObjectType({
 				comment: { type: new GraphQLNonNull(GraphQLString) },
 				timestamp: { type: GraphQLString },
 			},
-			async resolve(parent, args) {
+			async resolve(_, args) {
 				await Promise.all([
 					Post.findByIdAndUpdate(args.postId, {
 						$push: {
@@ -695,13 +705,31 @@ const mutation = new GraphQLObjectType({
 				return post;
 			},
 		},
+		// Add video to watch history
+		addWatchHistory: {
+			type: UserType,
+			args: {
+				postId: { type: new GraphQLNonNull(GraphQLID) },
+				userId: { type: new GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				await User.findByIdAndUpdate(args.userId, {
+					$addToSet: {
+						watchHistory: {
+							postId: args.postId,
+							createdAt: new Date(),
+						},
+					},
+				});
+			},
+		},
 		// Remove post by ID
 		deletePost: {
 			type: PostType,
 			args: {
 				id: { type: new GraphQLNonNull(GraphQLID) },
 			},
-			resolve(parent, args) {
+			resolve(_, args) {
 				return Post.findByIdAndDelete(args.id);
 			},
 		},
@@ -742,7 +770,7 @@ const mutation = new GraphQLObjectType({
 				title: { type: GraphQLString },
 				description: { type: GraphQLString },
 			},
-			resolve(parent, args) {
+			resolve(_, args) {
 				return Post.findByIdAndUpdate(
 					args.id,
 					{

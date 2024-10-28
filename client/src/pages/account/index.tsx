@@ -23,9 +23,8 @@ const Account: FunctionComponent<Props> = () => {
 	const [errorMessage, setErrorMessage] = useState<string>("");
 	const [editToggle, setEditToggle] = useState<boolean>(false);
 	const { currentUser } = useSelector((state: any) => state.user);
-	const userData = router.query;
 	const [userUpdateMutate, { loading }] = useMutation(UPDATE_USER);
-	if (!currentUser || userData.username !== currentUser.username) {
+	if (!currentUser) {
 		try {
 			router.replace("/");
 		} catch (err) {
@@ -100,7 +99,6 @@ const Account: FunctionComponent<Props> = () => {
 					<AccountView
 						imageKey={imageKey}
 						currentUser={currentUser}
-						userData={userData}
 						onResetPhoto={onResetPhoto}
 						onFileSelect={onFileSelect}
 						onSaveChanges={onSaveChanges}

@@ -4,7 +4,7 @@ import { IUser } from "./../../../../types/types";
 import { ParsedUrlQuery } from "querystring";
 
 interface Props {
-	userData: IUser | ParsedUrlQuery;
+	currentUser: IUser;
 	changePassword?: boolean;
 	setChangePassword: React.Dispatch<React.SetStateAction<boolean>>;
 	changeUsername?: boolean;
@@ -16,7 +16,7 @@ interface Props {
 }
 
 const AccountForm: React.FunctionComponent<Props> = ({
-	userData,
+	currentUser,
 	changePassword,
 	setChangePassword,
 	changeUsername,
@@ -117,7 +117,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
 								id="disabled-input"
 								aria-label="disabled input"
 								className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-slate-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-								value={`${userData.username}`}
+								value={`${currentUser.username}`}
 								disabled
 							></input>
 							<label className="text-white" htmlFor="email">
@@ -128,7 +128,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
 								id="disabled-input"
 								aria-label="disabled input"
 								className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
-								value={`${userData.email}`}
+								value={`${currentUser.email}`}
 								disabled
 							></input>
 							<button

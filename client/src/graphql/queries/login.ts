@@ -13,6 +13,12 @@ export const LOG_IN_USER = gql`
 			likedPostsIds
 			dislikedPostsIds
 			uploadedPostIds
+			watchHistory {
+				postId
+				createdAt {
+					date
+				}
+			}
 			isVerified
 			verificationCode
 		}
