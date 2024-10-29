@@ -19,6 +19,8 @@ export const GET_POST_BY_ID = gql`
 				id
 				username
 				avatarKey
+				followers
+				following
 			}
 			comments {
 				id

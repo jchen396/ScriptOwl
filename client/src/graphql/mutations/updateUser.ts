@@ -17,12 +17,20 @@ export const UPDATE_USER = gql`
 			username
 			email
 			points
+			followers
+			following
 			avatarKey
 			likedCommentsIds
 			dislikedCommentsIds
 			likedPostsIds
 			dislikedPostsIds
 			uploadedPostIds
+			watchHistory {
+				postId
+				createdAt {
+					date
+				}
+			}
 			isVerified
 			verificationCode
 		}

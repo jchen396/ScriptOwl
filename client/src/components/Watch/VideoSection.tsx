@@ -46,10 +46,16 @@ const VideoSection: React.FunctionComponent<Props> = ({
 	const [dislikePost] = useMutation(DISLIKE_POST);
 	const [undislikePost] = useMutation(UNDISLIKE_POST);
 
+	const [followerCount, setFollowerCount] = useState<number>(
+		post?.publisher?.followers?.length
+	);
+	const [isFollowing, setIsFollowing] = useState<boolean>(
+		currentUser?.following?.includes(post.publisher.id)
+	);
 	const [followStatus, setFollowStatus] = useState<string>(
 		currentUser?.following?.includes(post.publisher.id)
-			? "Follow"
-			: "✔ Following"
+			? "✔ Following"
+			: "Follow"
 	);
 	const [followUser] = useMutation(FOLLOW_USER);
 	const [unfollowUser] = useMutation(UNFOLLOW_USER);
@@ -161,36 +167,45 @@ const VideoSection: React.FunctionComponent<Props> = ({
 		if (!currentUser) {
 			router.push("/login");
 		} else {
-			console.log("Following");
-			await followUser({
+			if (disabled) return;
+			setDisabled(true);
+			const { data } = await followUser({
 				variables: {
 					userId: currentUser?.id,
 					publisherId: post.publisher.id,
 				},
 			});
+			setIsFollowing(true);
+			setFollowerCount(followerCount + 1);
 			setFollowStatus("✔ Following");
 		}
+		setDisabled(false);
 	};
 	const onUnfollow = async () => {
 		if (!currentUser) {
 			router.push("/login");
 		} else {
-			console.log("Unfollowing");
-			await unfollowUser({
+			if (disabled) return;
+			setDisabled(true);
+			const { data } = await unfollowUser({
 				variables: {
 					userId: currentUser?.id,
 					publisherId: post.publisher.id,
 				},
 			});
+			setIsFollowing(false);
+			setFollowerCount(followerCount - 1);
 			setFollowStatus("Follow");
 		}
+		setDisabled(false);
 	};
 	useEffect(() => {
 		setPostLikePercentage(
 			postDislikes ? (postLikes / (postLikes + postDislikes)) * 100 : 100
 		);
 	}, [postLikes, postDislikes]);
-	console.log(currentUser.following);
+	console.log(post.publisher.followers.length);
+
 	return (
 		<div className="basis-2/3 w-full h-full flex justify-center items-center">
 			<div className="flex flex-col justify-center items-center space-y-2">
@@ -273,21 +288,22 @@ const VideoSection: React.FunctionComponent<Props> = ({
 						}
 						alt="user photo"
 					/>
-					<Link
-						href={{
-							pathname: `/user/${post.publisher.username}`,
-						}}
-					>
-						<span>{post.publisher.username}</span>
-					</Link>
-					{currentUser.id !== post.publisher.id ? (
+					<div className="flex flex-col justify-center items-start">
+						<Link
+							href={{
+								pathname: `/user/${post.publisher.username}`,
+							}}
+						>
+							<span>{post.publisher.username}</span>
+						</Link>
+						<span className="text-sm text-slate-400">
+							{followerCount} followers
+						</span>
+					</div>
+					{currentUser?.id !== post.publisher.id ? (
 						<button
 							onClick={() =>
-								currentUser?.following?.includes(
-									post.publisher.id
-								)
-									? onUnfollow()
-									: onFollow()
+								isFollowing ? onUnfollow() : onFollow()
 							}
 							className="p-2 px-4 bold text-white text-xl rounded-lg bg-blue-500 hover:opacity-80"
 						>
