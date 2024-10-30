@@ -204,7 +204,6 @@ const VideoSection: React.FunctionComponent<Props> = ({
 			postDislikes ? (postLikes / (postLikes + postDislikes)) * 100 : 100
 		);
 	}, [postLikes, postDislikes]);
-	console.log(post.publisher.followers.length);
 
 	return (
 		<div className="basis-2/3 w-full h-full flex justify-center items-center">
