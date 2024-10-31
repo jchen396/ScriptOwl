@@ -36,6 +36,8 @@ export interface IPublisher {
 	readonly id: string;
 	username: string;
 	avatarKey: string;
+	followers: Array<string>;
+	following: Array<string>;
 }
 
 export interface IComment {

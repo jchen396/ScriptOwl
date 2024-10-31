@@ -470,6 +470,32 @@ const mutation = new GraphQLObjectType({
 				]);
 			},
 		},
+		// Delete a comment
+		deleteComment: {
+			type: PostType,
+			args: {
+				commentId: { type: new GraphQLNonNull(GraphQLID) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
+				publisherId: { type: new GraphQLNonNull(GraphQLID) },
+				commenter: { type: new GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				const objId = new mongoose.Types.ObjectId(args.commentId);
+				await Promise.all([
+					Post.findByIdAndUpdate(args.postId, {
+						$pull: {
+							comments: { id: objId },
+						},
+					}),
+					User.findByIdAndUpdate(args.commenter, {
+						$inc: { points: -5 },
+					}),
+					User.findByIdAndUpdate(args.publisherId, {
+						$inc: { points: -5 },
+					}),
+				]);
+			},
+		},
 		// Increase like count when pressed thumbs up button on post
 		likePost: {
 			type: PostType,

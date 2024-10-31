@@ -14,6 +14,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FOLLOW_USER } from "@/graphql/mutations/followUser";
 import { UNFOLLOW_USER } from "@/graphql/mutations/unfollowUser";
+import FollowButton from "./FollowButton";
 
 type Props = {
 	currentUser: IUser;
@@ -300,14 +301,10 @@ const VideoSection: React.FunctionComponent<Props> = ({
 						</span>
 					</div>
 					{currentUser?.id !== post.publisher.id ? (
-						<button
-							onClick={() =>
-								isFollowing ? onUnfollow() : onFollow()
-							}
-							className="p-2 px-4 bold text-white text-xl rounded-lg bg-blue-500 hover:opacity-80"
-						>
-							{followStatus}
-						</button>
+						<FollowButton
+							publisherId={post.publisher.id}
+							currentUser={currentUser}
+						/>
 					) : (
 						<></>
 					)}
