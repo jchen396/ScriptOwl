@@ -30,14 +30,12 @@ const FollowButton: React.FunctionComponent<Props> = ({
 		} else {
 			if (buttonDisabled) return;
 			setButtonDisabled(true);
-			console.log("follow1");
 			const { data } = await followUser({
 				variables: {
 					userId: currentUser?.id,
 					publisherId: publisherId,
 				},
 			});
-			console.log("follow");
 			setIsFollowing(true);
 			setFollowStatus("✔ Following");
 		}
@@ -49,20 +47,17 @@ const FollowButton: React.FunctionComponent<Props> = ({
 		} else {
 			if (buttonDisabled) return;
 			setButtonDisabled(true);
-			console.log("unfollow1");
 			const { data } = await unfollowUser({
 				variables: {
 					userId: currentUser?.id,
 					publisherId,
 				},
 			});
-			console.log("unfollow");
 			setIsFollowing(false);
 			setFollowStatus("Follow");
 		}
 		setButtonDisabled(false);
 	};
-	console.log(currentUser, publisherId, isFollowing, buttonDisabled);
 	return (
 		<>
 			<button
