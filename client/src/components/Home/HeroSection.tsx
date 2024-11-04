@@ -1,9 +1,11 @@
 import Image from "next/image";
 import React from "react";
+import URLInput from "./URLInput";
 
 const HeroSection = () => {
 	return (
 		<div className="h-screen w-full sm:w-3/4 p-10 flex flex-col-reverse xl:flex-row items-center justify-between space-y-4 md:space-x-4 ">
+			<URLInput />
 			<div className="basis-1/2 flex flex-col items-start justify-start space-y-4 ">
 				<h2 className="text-4xl md:text-7xl font-bold ">
 					Your Video Content{" "}
