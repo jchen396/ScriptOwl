@@ -1,5 +1,6 @@
 from youtube_transcript_api import YouTubeTranscriptApi
 import re
+import sys
 
 def extract_video_id(url):
     # Regular expression to match YouTube video ID
@@ -11,17 +12,21 @@ def extract_video_id(url):
     return None
 
 # Example usage
-url = 'https://www.youtube.com/watch?v=nGggU-Cxhv0'
-video_id = extract_video_id(url)
+def main(argv):
+    url = sys.argv[1]
+    video_id = extract_video_id(url)
 
-try:
-    # Fetch the transcript
-    transcript = YouTubeTranscriptApi.get_transcript(video_id)
+    try:
+        # Fetch the transcript
+        transcript = YouTubeTranscriptApi.get_transcript(video_id)
 
 
-    # Print the transcript
-    for entry in transcript:
-        print(f"{entry['text']}")
+        # Print the transcript
+        for entry in transcript:
+            print(f"{entry['text']}")
 
-except Exception as e:
-    print(f"An error occurred: {e}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
