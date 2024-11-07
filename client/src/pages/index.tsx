@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import HeroSection from "@/components/Home/HeroSection";
 import Info from "@/components/Home/Info";
-import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import Head from "next/head";
 import URLInput from "@/components/Home/URLInput";
+import TranscriptSection from "@/components/Watch/TranscriptSection";
 
 interface Props {}
 
 const Home: React.FunctionComponent<Props> = ({}) => {
 	const [youtubeTranscript, setYoutubeTranscript] = useState<string>("");
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [wordSelected, setWordSelected] = useState<string | null>(null);
+	const [section, setSection] = useState<string>("");
+	const [chatReply, setChatReply] = useState<string | null>(null);
+	const [chatLoading, setChatLoading] = useState<boolean>(false);
+	const [service, setService] = useState<string>("");
 	return (
 		<div className="flex flex-wrap items-center justify-center text-white space-y-10 font-mono ">
 			<Head>
@@ -54,7 +58,16 @@ const Home: React.FunctionComponent<Props> = ({}) => {
 					</div>
 				</div>
 			) : youtubeTranscript ? (
-				youtubeTranscript
+				<TranscriptSection
+					transcript={youtubeTranscript}
+					setWordSelected={setWordSelected}
+					setSection={setSection}
+					setChatReply={setChatReply}
+					setChatLoading={setChatLoading}
+					setService={setService}
+					currentUser={null}
+					requireUser={false}
+				/>
 			) : (
 				<URLInput
 					setYoutubeTranscript={setYoutubeTranscript}

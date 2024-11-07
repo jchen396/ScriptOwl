@@ -202,7 +202,7 @@ app.post("/youtube", async (req, res) => {
 		const scriptPath = `${__dirname}/uploads/get_transcript_by_url.py`;
 		const pythonScript = spawn("python", [scriptPath, youtubeURL]);
 		pythonScript.stdout.on("data", (data) => {
-			result = data.toString();
+			result = data.toString("utf-8");
 		});
 		pythonScript.on("close", async () => {
 			// upload the rest of the content to s3

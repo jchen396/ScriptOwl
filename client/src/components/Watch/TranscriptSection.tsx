@@ -13,7 +13,8 @@ interface Props {
 	setChatReply: React.Dispatch<React.SetStateAction<string | null>>;
 	setChatLoading: React.Dispatch<React.SetStateAction<boolean>>;
 	setService: React.Dispatch<React.SetStateAction<string>>;
-	currentUser: IUser;
+	currentUser: IUser | null;
+	requireUser: boolean;
 }
 
 const TranscriptSection: React.FC<Props> = ({
@@ -24,12 +25,13 @@ const TranscriptSection: React.FC<Props> = ({
 	setChatLoading,
 	setService,
 	currentUser,
+	requireUser,
 }) => {
 	const router = useRouter();
 	const handleWordSelect = async (
 		e: React.MouseEvent<HTMLSpanElement, MouseEvent>
 	) => {
-		if (!currentUser || !currentUser.isVerified) {
+		if (requireUser && (!currentUser || !currentUser.isVerified)) {
 			return;
 		}
 		setChatLoading(true);
@@ -75,7 +77,8 @@ const TranscriptSection: React.FC<Props> = ({
 						return (
 							<span
 								className={`flex items-center justify-center ${
-									currentUser && currentUser.isVerified
+									(currentUser && currentUser.isVerified) ||
+									!requireUser
 										? "hover:text-white hover:cursor-default"
 										: ""
 								}`}
