@@ -3,15 +3,18 @@ import axios from "axios";
 import React, { useState } from "react";
 
 type Props = {
+	youtubeURL: string;
+	setYoutubeURL: React.Dispatch<React.SetStateAction<string>>;
 	setYoutubeTranscript: React.Dispatch<React.SetStateAction<string>>;
 	setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const URLInput: React.FunctionComponent<Props> = ({
+	youtubeURL,
+	setYoutubeURL,
 	setYoutubeTranscript,
 	setIsLoading,
 }) => {
-	const [youtubeURL, setYoutubeURL] = useState<string>("");
 	const submitYoutubeURL = async (e: any) => {
 		e.preventDefault();
 		setIsLoading(true);
