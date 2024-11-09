@@ -107,6 +107,7 @@ const Watch: NextPage<
 							section={section}
 							setSection={setSection}
 							service={service}
+							requireUser={true}
 						/>
 						{getSectionComponent()}
 					</div>

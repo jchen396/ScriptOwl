@@ -4,6 +4,8 @@ import Info from "@/components/Home/Info";
 import Head from "next/head";
 import URLInput from "@/components/Home/URLInput";
 import TranscriptSection from "@/components/Watch/TranscriptSection";
+import ChatGPTSection from "@/components/Watch/ChatGPTSection";
+import SectionTabs from "@/components/Watch/SectionTabs";
 
 interface Props {}
 
@@ -13,7 +15,7 @@ const Home: React.FunctionComponent<Props> = ({}) => {
 	const [youtubeTranscript, setYoutubeTranscript] = useState<string>("");
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [wordSelected, setWordSelected] = useState<string | null>(null);
-	const [section, setSection] = useState<string>("");
+	const [section, setSection] = useState<string>("transcript");
 	const [chatReply, setChatReply] = useState<string | null>(null);
 	const [chatLoading, setChatLoading] = useState<boolean>(false);
 	const [service, setService] = useState<string>("");
@@ -26,6 +28,35 @@ const Home: React.FunctionComponent<Props> = ({}) => {
 			return match[1]; // Return the YouTube video ID
 		}
 		return null;
+	};
+	const getSectionComponent = () => {
+		if (section === "transcript") {
+			return (
+				<TranscriptSection
+					transcript={youtubeTranscript}
+					setWordSelected={setWordSelected}
+					setSection={setSection}
+					setChatReply={setChatReply}
+					setChatLoading={setChatLoading}
+					setService={setService}
+					currentUser={null}
+					requireUser={false}
+				/>
+			);
+		}
+		if (section === "ChatGPT") {
+			return (
+				<ChatGPTSection
+					transcript={youtubeTranscript}
+					wordSelected={wordSelected}
+					chatReply={chatReply}
+					setChatReply={setChatReply}
+					chatLoading={chatLoading}
+					setChatLoading={setChatLoading}
+					service={service}
+				/>
+			);
+		}
 	};
 	useEffect(() => {
 		if (youtubeURL) {
@@ -85,16 +116,14 @@ const Home: React.FunctionComponent<Props> = ({}) => {
 						allowFullScreen
 					></iframe>
 					<div className="basis-1/3 h-screen w-full flex flex-col justify-center items-center text-white ">
-						<TranscriptSection
-							transcript={youtubeTranscript}
-							setWordSelected={setWordSelected}
+						<SectionTabs
+							post={null}
+							section={section}
 							setSection={setSection}
-							setChatReply={setChatReply}
-							setChatLoading={setChatLoading}
-							setService={setService}
-							currentUser={null}
+							service={service}
 							requireUser={false}
 						/>
+						{getSectionComponent()}
 					</div>
 				</div>
 			) : (
