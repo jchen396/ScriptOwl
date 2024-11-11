@@ -6,7 +6,6 @@ certifi==2019.9.11
 charset-normalizer==3.0.1
 Click==7.0
 comtypes==1.1.14
-Django==2.2.6
 docopt==0.6.2
 ffmpeg==1.4
 idna==3.4

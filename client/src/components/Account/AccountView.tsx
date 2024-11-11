@@ -1,11 +1,11 @@
 import { IUser } from "./../../../../types/types";
 import React from "react";
-import { ParsedUrlQuery } from "querystring";
 import AccountForm from "./AccountForm";
 import Avatar from "./Avatar";
 import Points from "./Points";
 import CloseIcon from "@mui/icons-material/Close";
 import ErrorIcon from "@mui/icons-material/Error";
+import DeleteAccButton from "./DeleteAccButton";
 
 interface Props {
 	imageKey: string;
@@ -14,6 +14,7 @@ interface Props {
 	onResetPhoto: () => void;
 	onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	onSaveChanges: (e: any) => Promise<void>;
+	onDeleteAccount: (e: any) => Promise<void>;
 	editToggle: boolean;
 	changePassword?: boolean;
 	setChangePassword: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,6 +36,7 @@ const AccountView: React.FunctionComponent<Props> = ({
 	onResetPhoto,
 	onFileSelect,
 	onSaveChanges,
+	onDeleteAccount,
 	editToggle,
 	changePassword,
 	setChangePassword,
@@ -74,6 +76,7 @@ const AccountView: React.FunctionComponent<Props> = ({
 							editToggle={editToggle}
 						/>
 						<Points currentUser={currentUser} />
+						<DeleteAccButton onDeleteAccount={onDeleteAccount} />
 					</div>
 					<AccountForm
 						currentUser={currentUser}

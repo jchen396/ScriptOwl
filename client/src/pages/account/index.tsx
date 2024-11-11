@@ -22,6 +22,9 @@ const Account: FunctionComponent<Props> = () => {
 	const [imageKey, setImageKey] = useState<string>("");
 	const [errorMessage, setErrorMessage] = useState<string>("");
 	const [editToggle, setEditToggle] = useState<boolean>(false);
+	const [deleteMsg, setDeleteMsg] = useState<string>("");
+	const [showDeleteMsg, setShowDeleteMsg] = useState<boolean>(false);
+	const [deleteConfirmInput, setDeleteConfirmInput] = useState<string>("");
 	const { currentUser } = useSelector((state: any) => state.user);
 	const [userUpdateMutate, { loading }] = useMutation(UPDATE_USER);
 	if (!currentUser) {
@@ -73,6 +76,14 @@ const Account: FunctionComponent<Props> = () => {
 			setErrorMessage(err);
 		}
 	};
+	const onDeleteAccount = async () => {
+		try {
+			setShowDeleteMsg(true);
+			setDeleteMsg(`Type \'${currentUser?.username}\' to confirm:`);
+		} catch (err) {
+			setErrorMessage(err);
+		}
+	};
 	return (
 		<>
 			<Head>
@@ -95,6 +106,38 @@ const Account: FunctionComponent<Props> = () => {
 				<link rel="icon" href="/img/ScriptOwl_logo_transparent.png" />
 			</Head>
 			<div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
+				{showDeleteMsg && (
+					<div className="absolute rounded-lg flex flex-col justify-center items-center p-4 border-2 bg-black text-white">
+						<p>Are you sure you want to delete this account? </p>
+						<br />
+						<p>{deleteMsg}</p>
+						<input
+							className="text-black"
+							onChange={(e) =>
+								setDeleteConfirmInput(e.currentTarget.value)
+							}
+							type="text"
+						/>
+						<div className="flex flex-row justify-center items-center space-x-2">
+							<button
+								className="p-2 flex justify-center items-center"
+								onClick={() =>
+									deleteConfirmInput === currentUser.username
+										? console.log("deleting")
+										: console.log("wrong input")
+								}
+							>
+								Confirm
+							</button>
+							<button
+								className="p-2 flex justify-center items-center"
+								onClick={() => setShowDeleteMsg(false)}
+							>
+								Cancel
+							</button>
+						</div>
+					</div>
+				)}
 				{currentUser && (
 					<AccountView
 						imageKey={imageKey}
@@ -102,6 +145,7 @@ const Account: FunctionComponent<Props> = () => {
 						onResetPhoto={onResetPhoto}
 						onFileSelect={onFileSelect}
 						onSaveChanges={onSaveChanges}
+						onDeleteAccount={onDeleteAccount}
 						editToggle={editToggle}
 						onEditToggle={onEditToggle}
 						changePassword={changePassword}
