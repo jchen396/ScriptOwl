@@ -3,29 +3,58 @@ import React from "react";
 import ReactPlayer from "react-player";
 import { IPost } from "../../../../types/types";
 import Image from "next/image";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 type Props = {
 	post: IPost;
 	timeNumber?: string;
 	timeWord?: string;
+	options?: string[];
+	setShowDeleteMsg?: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const VideoPost: React.FunctionComponent<Props> = ({
 	post,
 	timeNumber,
 	timeWord,
+	options,
+	setShowDeleteMsg,
 }) => {
 	const postLikeRatio = post.dislikes
 		? Math.floor((post.likes / (post.likes + post.dislikes)) * 100)
 		: 100;
+	const handleDeleteClick = (e: any) => {
+		e.stopPropagation(); // Stop the click event from propagating up to the Link
+		e.preventDefault(); // Prevent the default navigation behavior of the Link
+
+		setShowDeleteMsg?.(true); // Show delete confirmation message or whatever logic you need
+	};
 	return (
 		<>
 			<Link
+				className="relative"
 				href={{
 					pathname: "/watch",
 					query: { v: post.id },
 				}}
 			>
+				{options && (
+					<div className="absolute top-2 right-2 z-40 flex justify-end items-center rounded-lg bg-black bg-opacity-50 p-2">
+						{options.includes("edit") && (
+							<EditIcon className="relative text-blue-600 hover:opacity-80" />
+						)}
+						{options.includes("delete") && (
+							<DeleteIcon
+								onClick={() => {
+									handleDeleteClick;
+								}}
+								className="relative text-red-600 hover:opacity-80"
+							/>
+						)}
+					</div>
+				)}
+
 				<div className="relative border-2 border-gray-800 rounded">
 					<ReactPlayer
 						url={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}

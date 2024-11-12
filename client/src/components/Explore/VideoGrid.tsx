@@ -9,9 +9,15 @@ import { useSelector } from "react-redux";
 
 interface Props {
 	posts: IPost[];
+	options?: string[];
+	setShowDeleteMsg?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const VideoGrid: React.FunctionComponent<Props> = ({ posts }) => {
+const VideoGrid: React.FunctionComponent<Props> = ({
+	posts,
+	options,
+	setShowDeleteMsg,
+}) => {
 	const [incrementViewCount] = useMutation(INCREMENT_VIEW_COUNT);
 	const [addWatchHistory] = useMutation(ADD_WATCH_HISTORY);
 	const { currentUser } = useSelector((state: any) => state.user);
@@ -26,7 +32,7 @@ const VideoGrid: React.FunctionComponent<Props> = ({ posts }) => {
 						return (
 							<div
 								key={key}
-								className="group w-full hover:bg-gray-800 p-2 hover:cursor-pointer rounded-lg"
+								className="relative group w-full hover:bg-gray-800 p-2 hover:cursor-pointer rounded-lg"
 								onClick={() => {
 									incrementViewCount({
 										variables: {
@@ -51,6 +57,7 @@ const VideoGrid: React.FunctionComponent<Props> = ({ posts }) => {
 									post={post}
 									timeNumber={timeNumber}
 									timeWord={timeWord}
+									options={options}
 								/>
 							</div>
 						);

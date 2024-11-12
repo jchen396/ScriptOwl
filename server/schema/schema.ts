@@ -436,6 +436,22 @@ const mutation = new GraphQLObjectType({
 				return user;
 			},
 		},
+		deletePost: {
+			type: PostType,
+			args: {
+				publisherId: { type: new GraphQLNonNull(GraphQLID) },
+				id: { type: new GraphQLNonNull(GraphQLID) },
+			},
+			async resolve(_, args) {
+				const [user, __] = await Promise.all([
+					User.findByIdAndUpdate(args.publisherId, {
+						$pull: { uploadedPostIds: args.id },
+					}),
+					Post.findByIdAndDelete(args.id),
+				]);
+				return user;
+			},
+		},
 		// Comment a post
 		commentPost: {
 			type: PostType,
@@ -800,15 +816,6 @@ const mutation = new GraphQLObjectType({
 		},
 
 		// Remove post by ID
-		deletePost: {
-			type: PostType,
-			args: {
-				id: { type: new GraphQLNonNull(GraphQLID) },
-			},
-			resolve(_, args) {
-				return Post.findByIdAndDelete(args.id);
-			},
-		},
 		updateUser: {
 			type: UserType,
 			args: {
