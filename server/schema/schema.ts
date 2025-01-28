@@ -440,14 +440,14 @@ const mutation = new GraphQLObjectType({
 			type: PostType,
 			args: {
 				publisherId: { type: new GraphQLNonNull(GraphQLID) },
-				id: { type: new GraphQLNonNull(GraphQLID) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
 			},
 			async resolve(_, args) {
 				const [user, __] = await Promise.all([
 					User.findByIdAndUpdate(args.publisherId, {
-						$pull: { uploadedPostIds: args.id },
+						$pull: { uploadedPostIds: args.postId },
 					}),
-					Post.findByIdAndDelete(args.id),
+					Post.findByIdAndDelete(args.postId),
 				]);
 				return user;
 			},

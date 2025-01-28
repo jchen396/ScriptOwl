@@ -11,12 +11,18 @@ interface Props {
 	posts: IPost[];
 	options?: string[];
 	setShowDeleteMsg?: React.Dispatch<React.SetStateAction<boolean>>;
+	setTargetPostId?: React.Dispatch<React.SetStateAction<string>>;
+	setTargetPostPublisherId?: React.Dispatch<React.SetStateAction<string>>;
+	setTargetPostTitle?: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const VideoGrid: React.FunctionComponent<Props> = ({
 	posts,
 	options,
 	setShowDeleteMsg,
+	setTargetPostId,
+	setTargetPostPublisherId,
+	setTargetPostTitle,
 }) => {
 	const [incrementViewCount] = useMutation(INCREMENT_VIEW_COUNT);
 	const [addWatchHistory] = useMutation(ADD_WATCH_HISTORY);
@@ -58,6 +64,12 @@ const VideoGrid: React.FunctionComponent<Props> = ({
 									timeNumber={timeNumber}
 									timeWord={timeWord}
 									options={options}
+									setShowDeleteMsg={setShowDeleteMsg}
+									setTargetPostId={setTargetPostId}
+									setTargetPostPublisherId={
+										setTargetPostPublisherId
+									}
+									setTargetPostTitle={setTargetPostTitle}
 								/>
 							</div>
 						);

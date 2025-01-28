@@ -12,6 +12,9 @@ type Props = {
 	timeWord?: string;
 	options?: string[];
 	setShowDeleteMsg?: React.Dispatch<React.SetStateAction<boolean>>;
+	setTargetPostId?: React.Dispatch<React.SetStateAction<string>>;
+	setTargetPostPublisherId?: React.Dispatch<React.SetStateAction<string>>;
+	setTargetPostTitle?: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const VideoPost: React.FunctionComponent<Props> = ({
@@ -20,15 +23,20 @@ const VideoPost: React.FunctionComponent<Props> = ({
 	timeWord,
 	options,
 	setShowDeleteMsg,
+	setTargetPostId,
+	setTargetPostPublisherId,
+	setTargetPostTitle,
 }) => {
 	const postLikeRatio = post.dislikes
 		? Math.floor((post.likes / (post.likes + post.dislikes)) * 100)
 		: 100;
-	const handleDeleteClick = (e: any) => {
+	const handleDeleteClick = (e: React.MouseEvent) => {
 		e.stopPropagation(); // Stop the click event from propagating up to the Link
 		e.preventDefault(); // Prevent the default navigation behavior of the Link
-
 		setShowDeleteMsg?.(true); // Show delete confirmation message or whatever logic you need
+		setTargetPostId?.(post.id);
+		setTargetPostPublisherId?.(post.publisher.id);
+		setTargetPostTitle?.(post.title);
 	};
 	return (
 		<>
@@ -40,14 +48,14 @@ const VideoPost: React.FunctionComponent<Props> = ({
 				}}
 			>
 				{options && (
-					<div className="absolute top-2 right-2 z-40 flex justify-end items-center rounded-lg bg-black bg-opacity-50 p-2">
+					<div className="absolute top-5 left-2 z-40 flex justify-end items-center rounded-lg bg-black bg-opacity-50 p-2">
 						{options.includes("edit") && (
 							<EditIcon className="relative text-blue-600 hover:opacity-80" />
 						)}
 						{options.includes("delete") && (
 							<DeleteIcon
-								onClick={() => {
-									handleDeleteClick;
+								onClick={(e) => {
+									handleDeleteClick(e);
 								}}
 								className="relative text-red-600 hover:opacity-80"
 							/>
