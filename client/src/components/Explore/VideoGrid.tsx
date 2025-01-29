@@ -11,6 +11,7 @@ interface Props {
 	posts: IPost[];
 	options?: string[];
 	setShowDeleteMsg?: React.Dispatch<React.SetStateAction<boolean>>;
+	setShowEditMsg?: React.Dispatch<React.SetStateAction<boolean>>;
 	setTargetPostId?: React.Dispatch<React.SetStateAction<string>>;
 	setTargetPostPublisherId?: React.Dispatch<React.SetStateAction<string>>;
 	setTargetPostTitle?: React.Dispatch<React.SetStateAction<string>>;
@@ -20,6 +21,7 @@ const VideoGrid: React.FunctionComponent<Props> = ({
 	posts,
 	options,
 	setShowDeleteMsg,
+	setShowEditMsg,
 	setTargetPostId,
 	setTargetPostPublisherId,
 	setTargetPostTitle,
@@ -65,6 +67,7 @@ const VideoGrid: React.FunctionComponent<Props> = ({
 									timeWord={timeWord}
 									options={options}
 									setShowDeleteMsg={setShowDeleteMsg}
+									setShowEditMsg={setShowEditMsg}
 									setTargetPostId={setTargetPostId}
 									setTargetPostPublisherId={
 										setTargetPostPublisherId

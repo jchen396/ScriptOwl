@@ -10,6 +10,7 @@ const Uploads: NextPage<
 	InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ data }) => {
 	const [showDeleteMsg, setShowDeleteMsg] = useState<boolean>(false);
+	const [showEditMsg, setShowEditMsg] = useState<boolean>(false);
 	const [targetPostId, setTargetPostId] = useState<string>("");
 	const [targetPostPublisherId, setTargetPostPublisherId] =
 		useState<string>("");
@@ -46,6 +47,19 @@ const Uploads: NextPage<
 						</div>
 					</div>
 				)}
+				{showEditMsg && (
+					<div className="absolute flex flex-col justify-center items-center p-4 rounded-lg text-white border-2 border-white bg-black z-50">
+						<p className="m-2">{`Edit Message test`}</p>
+						<div className="w-full flex flex-row justify-around items-center ">
+							<button className="bg-blue-400 hover:bg-opacity-80 p-2 px-4 rounded ">
+								Confirm
+							</button>
+							<button onClick={() => setShowEditMsg(false)}>
+								Close
+							</button>
+						</div>
+					</div>
+				)}
 				<h1 className="text-4xl font-medium text-slate-100">Uploads</h1>
 				<div className="w-3/4 h-3/5 rounded ">
 					{data.userPosts.length !== 0 ? (
@@ -54,6 +68,7 @@ const Uploads: NextPage<
 								posts={data.userPosts}
 								options={["delete", "edit"]}
 								setShowDeleteMsg={setShowDeleteMsg}
+								setShowEditMsg={setShowEditMsg}
 								setTargetPostId={setTargetPostId}
 								setTargetPostPublisherId={
 									setTargetPostPublisherId

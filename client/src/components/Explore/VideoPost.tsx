@@ -12,6 +12,7 @@ type Props = {
 	timeWord?: string;
 	options?: string[];
 	setShowDeleteMsg?: React.Dispatch<React.SetStateAction<boolean>>;
+	setShowEditMsg?: React.Dispatch<React.SetStateAction<boolean>>;
 	setTargetPostId?: React.Dispatch<React.SetStateAction<string>>;
 	setTargetPostPublisherId?: React.Dispatch<React.SetStateAction<string>>;
 	setTargetPostTitle?: React.Dispatch<React.SetStateAction<string>>;
@@ -23,6 +24,7 @@ const VideoPost: React.FunctionComponent<Props> = ({
 	timeWord,
 	options,
 	setShowDeleteMsg,
+	setShowEditMsg,
 	setTargetPostId,
 	setTargetPostPublisherId,
 	setTargetPostTitle,
@@ -38,6 +40,11 @@ const VideoPost: React.FunctionComponent<Props> = ({
 		setTargetPostPublisherId?.(post.publisher.id);
 		setTargetPostTitle?.(post.title);
 	};
+	const handleEditClick = (e: React.MouseEvent) => {
+		e.stopPropagation(); // Stop the click event from propagating up to the Link
+		e.preventDefault(); // Prevent the default navigation behavior of the Link
+		setShowEditMsg?.(true); // Show edit confirmation message or whatever logic you need
+	};
 	return (
 		<>
 			<Link
@@ -50,7 +57,12 @@ const VideoPost: React.FunctionComponent<Props> = ({
 				{options && (
 					<div className="absolute top-5 left-2 z-40 flex justify-end items-center rounded-lg bg-black bg-opacity-50 p-2">
 						{options.includes("edit") && (
-							<EditIcon className="relative text-blue-600 hover:opacity-80" />
+							<EditIcon
+								onClick={(e) => {
+									handleEditClick(e);
+								}}
+								className="relative text-blue-600 hover:opacity-80"
+							/>
 						)}
 						{options.includes("delete") && (
 							<DeleteIcon
