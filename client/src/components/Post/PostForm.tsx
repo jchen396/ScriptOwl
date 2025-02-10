@@ -139,7 +139,7 @@ const PostForm: React.FC<Props> = ({
 					</div>
 					<div>
 						<label
-							htmlFor="first_name"
+							htmlFor="title"
 							className="block mb-2 text-sm text-gray-900 dark:text-white"
 						>
 							Title
@@ -154,7 +154,7 @@ const PostForm: React.FC<Props> = ({
 					</div>
 					<div>
 						<label
-							htmlFor="last_name"
+							htmlFor="description"
 							className="block mb-2 text-sm text-gray-900 dark:text-white"
 						>
 							Description

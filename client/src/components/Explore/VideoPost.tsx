@@ -16,6 +16,12 @@ type Props = {
 	setTargetPostId?: React.Dispatch<React.SetStateAction<string>>;
 	setTargetPostPublisherId?: React.Dispatch<React.SetStateAction<string>>;
 	setTargetPostTitle?: React.Dispatch<React.SetStateAction<string>>;
+	setTargetPostDesc?: React.Dispatch<
+		React.SetStateAction<string | undefined>
+	>;
+	setTargetPostCategory?: React.Dispatch<
+		React.SetStateAction<string | undefined>
+	>;
 };
 
 const VideoPost: React.FunctionComponent<Props> = ({
@@ -28,6 +34,8 @@ const VideoPost: React.FunctionComponent<Props> = ({
 	setTargetPostId,
 	setTargetPostPublisherId,
 	setTargetPostTitle,
+	setTargetPostDesc,
+	setTargetPostCategory,
 }) => {
 	const postLikeRatio = post.dislikes
 		? Math.floor((post.likes / (post.likes + post.dislikes)) * 100)
@@ -44,6 +52,11 @@ const VideoPost: React.FunctionComponent<Props> = ({
 		e.stopPropagation(); // Stop the click event from propagating up to the Link
 		e.preventDefault(); // Prevent the default navigation behavior of the Link
 		setShowEditMsg?.(true); // Show edit confirmation message or whatever logic you need
+		setTargetPostId?.(post.id);
+		setTargetPostTitle?.(post.title);
+		setTargetPostDesc?.(post.description);
+		setTargetPostCategory?.(post.category);
+		console.log(post);
 	};
 	return (
 		<>

@@ -15,6 +15,12 @@ interface Props {
 	setTargetPostId?: React.Dispatch<React.SetStateAction<string>>;
 	setTargetPostPublisherId?: React.Dispatch<React.SetStateAction<string>>;
 	setTargetPostTitle?: React.Dispatch<React.SetStateAction<string>>;
+	setTargetPostDesc?: React.Dispatch<
+		React.SetStateAction<string | undefined>
+	>;
+	setTargetPostCategory?: React.Dispatch<
+		React.SetStateAction<string | undefined>
+	>;
 }
 
 const VideoGrid: React.FunctionComponent<Props> = ({
@@ -25,6 +31,8 @@ const VideoGrid: React.FunctionComponent<Props> = ({
 	setTargetPostId,
 	setTargetPostPublisherId,
 	setTargetPostTitle,
+	setTargetPostDesc,
+	setTargetPostCategory,
 }) => {
 	const [incrementViewCount] = useMutation(INCREMENT_VIEW_COUNT);
 	const [addWatchHistory] = useMutation(ADD_WATCH_HISTORY);
@@ -73,6 +81,10 @@ const VideoGrid: React.FunctionComponent<Props> = ({
 										setTargetPostPublisherId
 									}
 									setTargetPostTitle={setTargetPostTitle}
+									setTargetPostDesc={setTargetPostDesc}
+									setTargetPostCategory={
+										setTargetPostCategory
+									}
 								/>
 							</div>
 						);

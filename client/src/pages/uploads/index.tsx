@@ -15,7 +15,18 @@ const Uploads: NextPage<
 	const [targetPostPublisherId, setTargetPostPublisherId] =
 		useState<string>("");
 	const [targetPostTitle, setTargetPostTitle] = useState<string>("");
+	const [targetPostDesc, setTargetPostDesc] = useState<string | undefined>(
+		""
+	);
+	const [targetPostCategory, setTargetPostCategory] = useState<
+		string | undefined
+	>("");
 	const [deletePost] = useMutation(DELETE_POST);
+
+	const [title, setTitle] = useState<string>("");
+	const [descrirption, setDescription] = useState<string | null>("");
+	const [category, setCategory] = useState<string | null>("");
+
 	const onDeletePost = async () => {
 		await deletePost({
 			variables: {
@@ -49,7 +60,67 @@ const Uploads: NextPage<
 				)}
 				{showEditMsg && (
 					<div className="absolute flex flex-col justify-center items-center p-4 rounded-lg text-white border-2 border-white bg-black z-50">
-						<p className="m-2">{`Edit Message test`}</p>
+						<form action="">
+							<div>
+								<label
+									htmlFor="first_name"
+									className="block mb-2 text-sm text-gray-900 dark:text-white"
+								>
+									Title
+								</label>
+								<input
+									type="text"
+									id="title"
+									className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									placeholder={targetPostTitle}
+									onChange={(e) => setTitle(e.target.value)}
+									required
+								/>
+							</div>
+							<div>
+								<label
+									htmlFor="description"
+									className="block mb-2 text-sm text-gray-900 dark:text-white"
+								>
+									Description
+								</label>
+								<textarea
+									id="description"
+									className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									placeholder={targetPostDesc}
+									onChange={(e) =>
+										setDescription(e.target.value)
+									}
+								/>
+							</div>
+							<div className="mb-6">
+								<label
+									htmlFor="categories"
+									className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+								>
+									Category
+								</label>
+								<select
+									id="categories"
+									className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									onChange={(e) =>
+										setCategory(e.target.value)
+									}
+									defaultValue="DEFAULT"
+								>
+									<option value="DEFAULT" disabled>
+										Choose a category...
+									</option>
+									<option value="entertainment">
+										Entertainment
+									</option>
+									<option value="music">Music</option>
+									<option value="education">Education</option>
+									<option value="sports">Sports</option>
+									<option value="comedy">Comedy</option>
+								</select>
+							</div>
+						</form>
 						<div className="w-full flex flex-row justify-around items-center ">
 							<button className="bg-blue-400 hover:bg-opacity-80 p-2 px-4 rounded ">
 								Confirm
@@ -74,6 +145,8 @@ const Uploads: NextPage<
 									setTargetPostPublisherId
 								}
 								setTargetPostTitle={setTargetPostTitle}
+								setTargetPostDesc={setTargetPostDesc}
+								setTargetPostCategory={setTargetPostCategory}
 							/>
 						</div>
 					) : (

@@ -9,6 +9,7 @@ export const USER_POSTS = gql`
 			category
 			views
 			likes
+			description
 			dislikes
 			duration
 			thumbnail
