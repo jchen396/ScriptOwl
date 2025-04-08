@@ -56,7 +56,6 @@ const VideoPost: React.FunctionComponent<Props> = ({
 		setTargetPostTitle?.(post.title);
 		setTargetPostDesc?.(post.description);
 		setTargetPostCategory?.(post.category);
-		console.log(post);
 	};
 	return (
 		<>

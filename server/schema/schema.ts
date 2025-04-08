@@ -849,21 +849,25 @@ const mutation = new GraphQLObjectType({
 		updatePost: {
 			type: PostType,
 			args: {
-				id: { type: new GraphQLNonNull(GraphQLID) },
+				publisherId: { type: new GraphQLNonNull(GraphQLID) },
+				postId: { type: new GraphQLNonNull(GraphQLID) },
 				title: { type: GraphQLString },
 				description: { type: GraphQLString },
+				category: { type: GraphQLString },
 			},
-			resolve(_, args) {
-				return Post.findByIdAndUpdate(
-					args.id,
+			async resolve(_, args) {
+				const post = await Post.findByIdAndUpdate(
+					args.postId,
 					{
 						$set: {
 							title: args.title,
 							description: args.description,
+							category: args.category,
 						},
 					},
 					{ new: true }
 				);
+				return post;
 			},
 		},
 	},

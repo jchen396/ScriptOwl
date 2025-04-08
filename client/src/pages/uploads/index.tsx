@@ -5,6 +5,7 @@ import { InferGetServerSidePropsType, NextPage } from "next";
 import VideoGrid from "@/components/Explore/VideoGrid";
 import { useMutation } from "@apollo/client";
 import { DELETE_POST } from "@/graphql/mutations/deletePost";
+import { UPDATE_POST } from "@/graphql/mutations/updatePost";
 
 const Uploads: NextPage<
 	InferGetServerSidePropsType<typeof getServerSideProps>
@@ -22,9 +23,10 @@ const Uploads: NextPage<
 		string | undefined
 	>("");
 	const [deletePost] = useMutation(DELETE_POST);
+	const [updatePost] = useMutation(UPDATE_POST);
 
 	const [title, setTitle] = useState<string>("");
-	const [descrirption, setDescription] = useState<string | null>("");
+	const [description, setDescription] = useState<string | null>("");
 	const [category, setCategory] = useState<string | null>("");
 
 	const onDeletePost = async () => {
@@ -32,6 +34,17 @@ const Uploads: NextPage<
 			variables: {
 				publisherId: targetPostPublisherId,
 				postId: targetPostId,
+			},
+		});
+	};
+	const onEditPost = async () => {
+		await updatePost({
+			variables: {
+				publisherId: targetPostPublisherId,
+				postId: targetPostId,
+				title,
+				description,
+				category,
 			},
 		});
 	};
@@ -122,7 +135,10 @@ const Uploads: NextPage<
 							</div>
 						</form>
 						<div className="w-full flex flex-row justify-around items-center ">
-							<button className="bg-blue-400 hover:bg-opacity-80 p-2 px-4 rounded ">
+							<button
+								onClick={() => onEditPost()}
+								className="bg-blue-400 hover:bg-opacity-80 p-2 px-4 rounded "
+							>
 								Confirm
 							</button>
 							<button onClick={() => setShowEditMsg(false)}>
