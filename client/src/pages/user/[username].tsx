@@ -12,164 +12,171 @@ import { useSelector } from "react-redux";
 type Props = {};
 
 const Profile: FunctionComponent<Props> = () => {
-	const router = useRouter();
-	const { currentUser } = useSelector((state: any) => state.user);
-	const username = router.query.username;
-	const [targetUser, setTargetUser] = useState<IUser | null>(null);
-	const [profileLoading, setProfileLoading] = useState<boolean>(true);
-	const [videosLoading, setVideosLoading] = useState<boolean>(true);
+    const router = useRouter();
+    const { currentUser } = useSelector((state: any) => state.user);
+    const username = router.query.username;
+    const [targetUser, setTargetUser] = useState<IUser | null>(null);
+    const [profileLoading, setProfileLoading] = useState<boolean>(true);
+    const [videosLoading, setVideosLoading] = useState<boolean>(true);
 
-	const [showUpload, setShowUpload] = useState<boolean>(false);
+    const [showUpload, setShowUpload] = useState<boolean>(false);
 
-	const [videosData, setVideosData] = useState<IPost[]>([]);
-	const fetchUserInfo = async () => {
-		try {
-			const { data } = await client.query({
-				query: GET_USER_BY_USERNAME,
-				variables: {
-					username,
-				},
-			});
-			return await data.userByUsername;
-		} catch (e) {}
-	};
-	const getLikedVideos = async () => {
-		try {
-			const { data } = await client.query({
-				query: USER_POSTS,
-				variables: {
-					postIds: targetUser?.likedPostsIds,
-				},
-			});
-			return await data.userPosts;
-		} catch (e) {}
-	};
-	const getUploads = async () => {
-		try {
-			const { data } = await client.query({
-				query: USER_POSTS,
-				variables: {
-					postIds: targetUser?.uploadedPostIds,
-				},
-			});
-			return await data.userPosts;
-		} catch (e) {}
-	};
-	//Load user data
-	useEffect(() => {
-		if (username) {
-			fetchUserInfo().then((data) => {
-				setTargetUser(data);
-			});
-			setProfileLoading(false);
-		}
-	}, [username]);
-	useEffect(() => {
-		if (targetUser) {
-			if (showUpload) {
-				getUploads().then((data) => {
-					setVideosData(data);
-				});
-			} else {
-				getLikedVideos().then((data) => {
-					setVideosData(data);
-				});
-			}
-			setVideosLoading(false);
-		}
-	}, [targetUser, showUpload]);
-	return (
-		<>
-			<div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
-				{profileLoading ? (
-					<h1 className="text-white">Loading profile...</h1>
-				) : (
-					<>
-						{targetUser !== null ? (
-							<div className="p-10 w-full h-screen flex flex-col justify-start items-center md:flex-row space-y-10">
-								<div className="h-full flex flex-col justify-center items-center basis-1/2 space-y-10 md:py-20">
-									<h1 className="text-white text-4xl">
-										{targetUser?.username}
-									</h1>
-									<Image
-										height={100}
-										width={100}
-										className="w-32 h-32 rounded"
-										src={`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${targetUser.avatarKey}`}
-										alt="user photo"
-									/>
-									{currentUser?.id !== targetUser.id ? (
-										<FollowButton
-											publisherId={targetUser.id}
-											currentUser={currentUser}
-										/>
-									) : (
-										<></>
-									)}
-									<h2 className="text-slate-500 text-xl">
-										Points: {targetUser?.points}
-									</h2>
-								</div>
+    const [videosData, setVideosData] = useState<IPost[]>([]);
+    const fetchUserInfo = async () => {
+        try {
+            const { data } = await client.query({
+                query: GET_USER_BY_USERNAME,
+                variables: {
+                    username,
+                },
+            });
+            return await data.userByUsername;
+        } catch (e) {}
+    };
+    const getLikedVideos = async () => {
+        try {
+            const { data } = await client.query({
+                query: USER_POSTS,
+                variables: {
+                    postIds: targetUser?.likedPostsIds,
+                },
+            });
+            return await data.userPosts;
+        } catch (e) {}
+    };
+    const getUploads = async () => {
+        try {
+            const { data } = await client.query({
+                query: USER_POSTS,
+                variables: {
+                    postIds: targetUser?.uploadedPostIds,
+                },
+            });
+            return await data.userPosts;
+        } catch (e) {}
+    };
+    //Load user data
+    useEffect(() => {
+        if (username) {
+            fetchUserInfo().then((data) => {
+                setTargetUser(data);
+            });
+            setProfileLoading(false);
+        }
+    }, [username]);
+    useEffect(() => {
+        if (targetUser) {
+            if (showUpload) {
+                getUploads().then((data) => {
+                    setVideosData(data);
+                });
+            } else {
+                getLikedVideos().then((data) => {
+                    setVideosData(data);
+                });
+            }
+            setVideosLoading(false);
+        }
+    }, [targetUser, showUpload]);
+    console.log(targetUser?.avatarKey);
+    return (
+        <>
+            <div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
+                {profileLoading ? (
+                    <h1 className="text-white">Loading profile...</h1>
+                ) : (
+                    <>
+                        {targetUser !== null ? (
+                            <div className="p-10 w-full h-screen flex flex-col justify-start items-center md:flex-row space-y-10">
+                                <div className="h-full flex flex-col justify-center items-center basis-1/2 space-y-10 md:py-20">
+                                    <h1 className="text-white text-4xl">
+                                        {targetUser?.username}
+                                    </h1>
+                                    <Image
+                                        height={100}
+                                        width={100}
+                                        className="w-32 h-32 rounded"
+                                        src={
+                                            targetUser.avatarKey.startsWith(
+                                                "https://lh3.googleusercontent.com"
+                                            )
+                                                ? targetUser.avatarKey
+                                                : `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${targetUser.avatarKey}`
+                                        }
+                                        alt="user photo"
+                                    />
+                                    {currentUser?.id !== targetUser.id ? (
+                                        <FollowButton
+                                            publisherId={targetUser.id}
+                                            currentUser={currentUser}
+                                        />
+                                    ) : (
+                                        <></>
+                                    )}
+                                    <h2 className="text-slate-500 text-xl">
+                                        Points: {targetUser?.points}
+                                    </h2>
+                                </div>
 
-								<div className="h-full w-full flex flex-col justify-between items-center basis-1/2 space-y-10 md:py-20">
-									<button
-										onClick={() =>
-											setShowUpload(!showUpload)
-										}
-										className="text-white border rounded p-2"
-									>
-										Show{" "}
-										{showUpload
-											? "Liked videos"
-											: "Uploads"}
-									</button>
-									<h1 className="h-full text-slate-500 text-2xl">
-										{showUpload
-											? "Uploads"
-											: "Liked Videos"}
-									</h1>
-									<div className="h-full w-4/5 ">
-										{videosLoading ? (
-											<>
-												<h2 className="flex justify-center items-center text-xl text-slate-500">
-													Loading videos...
-												</h2>
-											</>
-										) : (
-											<>
-												{targetUser?.uploadedPostIds
-													.length > 0 ? (
-													<div className="w-full h-full flex flex-col items-center justify-start font-mono ">
-														<VideoRow
-															posts={videosData}
-														/>
-													</div>
-												) : (
-													<>
-														<h2 className="flex justify-center items-center text-xl text-slate-500">
-															This user has no
-															{showUpload
-																? " uploads"
-																: " liked videos"}
-															.
-														</h2>
-													</>
-												)}
-											</>
-										)}
-									</div>
-								</div>
-							</div>
-						) : (
-							<h1 className="text-white text-2xl">
-								Could not find user {username}.
-							</h1>
-						)}
-					</>
-				)}
-			</div>
-		</>
-	);
+                                <div className="h-full w-full flex flex-col justify-between items-center basis-1/2 space-y-10 md:py-20">
+                                    <button
+                                        onClick={() =>
+                                            setShowUpload(!showUpload)
+                                        }
+                                        className="text-white border rounded p-2"
+                                    >
+                                        Show{" "}
+                                        {showUpload
+                                            ? "Liked videos"
+                                            : "Uploads"}
+                                    </button>
+                                    <h1 className="h-full text-slate-500 text-2xl">
+                                        {showUpload
+                                            ? "Uploads"
+                                            : "Liked Videos"}
+                                    </h1>
+                                    <div className="h-full w-4/5 ">
+                                        {videosLoading ? (
+                                            <>
+                                                <h2 className="flex justify-center items-center text-xl text-slate-500">
+                                                    Loading videos...
+                                                </h2>
+                                            </>
+                                        ) : (
+                                            <>
+                                                {targetUser?.uploadedPostIds
+                                                    .length > 0 ? (
+                                                    <div className="w-full h-full flex flex-col items-center justify-start font-mono ">
+                                                        <VideoRow
+                                                            posts={videosData}
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <>
+                                                        <h2 className="flex justify-center items-center text-xl text-slate-500">
+                                                            This user has no
+                                                            {showUpload
+                                                                ? " uploads"
+                                                                : " liked videos"}
+                                                            .
+                                                        </h2>
+                                                    </>
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <h1 className="text-white text-2xl">
+                                Could not find user {username}.
+                            </h1>
+                        )}
+                    </>
+                )}
+            </div>
+        </>
+    );
 };
 
 export default Profile;

@@ -1,0 +1,7 @@
+import { gql } from "@apollo/client";
+
+export const GET_AVATAR_KEYS_BY_ID = gql`
+    query getAvatarKeysById($id: ID!) {
+        avatarKeysById(id: $id)
+    }
+`;

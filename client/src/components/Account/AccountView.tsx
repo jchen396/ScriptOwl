@@ -1,5 +1,5 @@
 import { IUser } from "./../../../../types/types";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AccountForm from "./AccountForm";
 import Avatar from "./Avatar";
 import Points from "./Points";
@@ -7,6 +7,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import ErrorIcon from "@mui/icons-material/Error";
 import DeleteAccButton from "./DeleteAccButton";
 import Following from "./Following";
+import client from "../../../apollo-client";
+import { GET_AVATAR_KEYS_BY_ID } from "@/graphql/queries/getAvatarKeysById";
 
 interface Props {
     imageKey: string;
@@ -27,6 +29,10 @@ interface Props {
     setNewUsername: React.Dispatch<React.SetStateAction<string>>;
     confirmNewPassword: string;
     setConfirmNewPassword: React.Dispatch<React.SetStateAction<string>>;
+    followingAvatarKeys: string[];
+    setFollowingAvatarKeys: React.Dispatch<React.SetStateAction<string[]>>;
+    followerAvatarKeys: string[];
+    setFollowerAvatarKeys: React.Dispatch<React.SetStateAction<string[]>>;
     loading: boolean;
     errorMessage: string;
 }
@@ -49,6 +55,10 @@ const AccountView: React.FunctionComponent<Props> = ({
     setNewUsername,
     confirmNewPassword,
     setConfirmNewPassword,
+    followingAvatarKeys,
+    setFollowingAvatarKeys,
+    followerAvatarKeys,
+    setFollowerAvatarKeys,
     loading,
     errorMessage,
 }) => {
