@@ -8,9 +8,6 @@ import { postImage } from "@/functions/s3_functions/postImage";
 import AccountView from "@/components/Account/AccountView";
 import { validatePassword } from "@/functions/validateForm";
 import Head from "next/head";
-import { GET_AVATAR_KEYS_BY_ID } from "@/graphql/queries/getAvatarKeysById";
-import client from "../../../apollo-client";
-import { current } from "@reduxjs/toolkit";
 
 interface Props {}
 

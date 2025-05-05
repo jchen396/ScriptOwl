@@ -6,8 +6,7 @@ import Points from "./Points";
 import CloseIcon from "@mui/icons-material/Close";
 import ErrorIcon from "@mui/icons-material/Error";
 import DeleteAccButton from "./DeleteAccButton";
-import Following from "./Following";
-import client from "../../../apollo-client";
+import FollowData from "./FollowData";
 import { GET_AVATAR_KEYS_BY_ID } from "@/graphql/queries/getAvatarKeysById";
 
 interface Props {
@@ -87,7 +86,7 @@ const AccountView: React.FunctionComponent<Props> = ({
                             editToggle={editToggle}
                         />
                         <Points currentUser={currentUser} />
-                        <Following currentUser={currentUser} />
+                        <FollowData currentUser={currentUser} />
                         <DeleteAccButton onDeleteAccount={onDeleteAccount} />
                     </div>
                     <AccountForm

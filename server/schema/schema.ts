@@ -117,6 +117,14 @@ const PostType = new GraphQLObjectType({
         },
     }),
 });
+// Follow Data Type
+const FollowDataType = new GraphQLObjectType({
+    name: "FollowData",
+    fields: {
+        following: { type: new GraphQLList(GraphQLString) },
+        followers: { type: new GraphQLList(GraphQLString) },
+    },
+});
 // Queries
 const RootQuery = new GraphQLObjectType({
     name: "RootQueryType",
@@ -184,21 +192,36 @@ const RootQuery = new GraphQLObjectType({
             },
         },
         avatarKeysById: {
-            type: new GraphQLList(GraphQLString),
+            type: FollowDataType,
             args: {
                 id: { type: GraphQLID },
             },
             async resolve(_, args) {
-                const user = await User.findById(args.id).select("following");
-                if (!user) {
-                    throw new Error("User not found");
-                }
+                const user = await User.findById(args.id).select([
+                    "following",
+                    "followers",
+                ]);
 
-                const followedUsers = await User.find({
+                const followingAvatarKeys = await User.find({
                     _id: { $in: user.following },
-                }).select("avatarKey");
+                }).select(["avatarKey"]);
 
-                return followedUsers.map((u) => u.avatarKey);
+                const followerAvatarKeys = await User.find({
+                    _id: { $in: user.followers },
+                }).select(["avatarKey"]);
+
+                type FollowData = {
+                    following: string[];
+                    followers: string[];
+                };
+                const followObj = {} as FollowData;
+                followObj.following = followingAvatarKeys.map(
+                    (u) => u.avatarKey
+                );
+                followObj.followers = followerAvatarKeys.map(
+                    (u) => u.avatarKey
+                );
+                return followObj;
             },
         },
         // Check token data stored in cookies
