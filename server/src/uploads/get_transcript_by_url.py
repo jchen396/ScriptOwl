@@ -20,13 +20,13 @@ def main(argv):
     video_id = extract_video_id(url)
 
     try:
-        # Fetch the transcript
-        transcript = YouTubeTranscriptApi.get_transcript(video_id)
+        ytt_api = YouTubeTranscriptApi()
+        fetched_transcript = ytt_api.fetch(video_id)
 
 
         # Print the transcript
-        for entry in transcript:
-            print(f"{entry['text']}")
+        for snippet in fetched_transcript:
+            print(snippet.text)
 
     except Exception as e:
         print(f"An error occurred: {e}")
