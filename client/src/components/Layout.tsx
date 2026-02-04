@@ -42,7 +42,7 @@ const Layout = ({ children }: PropsWithChildren) => {
                         )}
                         <p className="text-white">Show chat list</p>
                     </div>
-                    {showChatList ? <ChatList /> : <></>}
+                    {showChatList ? <ChatList userData={userData} /> : <></>}
                 </div>
                 <Footer />
             </div>
