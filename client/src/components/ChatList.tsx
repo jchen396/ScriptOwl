@@ -13,7 +13,6 @@ const ChatList: FunctionComponent<Props> = ({ userData }) => {
     const { data, error } = useQuery(GET_AVATAR_KEYS_BY_ID, {
         variables: { id: userData?.id },
     });
-    console.log(data);
     return (
         <div className="h-20 border-top border-t-2 border-whiet">
             <li className="h-full flex space-x-2 justify-left items-center mx-4">
