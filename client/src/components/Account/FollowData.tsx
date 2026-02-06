@@ -28,7 +28,7 @@ const FollowData: React.FunctionComponent<Props> = ({ currentUser }) => {
                                         className="w-10 h-10 rounded-full"
                                         src={
                                             imageId.startsWith(
-                                                "https://lh3.googleusercontent.com"
+                                                "https://lh3.googleusercontent.com",
                                             )
                                                 ? imageId
                                                 : `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${imageId}`
@@ -54,7 +54,7 @@ const FollowData: React.FunctionComponent<Props> = ({ currentUser }) => {
                                         className="w-10 h-10 rounded-full"
                                         src={
                                             imageId.startsWith(
-                                                "https://lh3.googleusercontent.com"
+                                                "https://lh3.googleusercontent.com",
                                             )
                                                 ? imageId
                                                 : `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${imageId}`

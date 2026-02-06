@@ -5,6 +5,7 @@ export const GET_AVATAR_KEYS_BY_ID = gql`
         avatarKeysById(id: $id) {
             following
             followers
+            friends
         }
     }
 `;

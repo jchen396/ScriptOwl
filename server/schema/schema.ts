@@ -56,6 +56,7 @@ const UserType = new GraphQLObjectType({
         points: { type: GraphQLInt },
         followers: { type: new GraphQLList(GraphQLID) },
         following: { type: new GraphQLList(GraphQLID) },
+        friends: { type: new GraphQLList(GraphQLID) },
         avatarKey: { type: GraphQLString },
         likedCommentsIds: { type: new GraphQLList(GraphQLID) },
         dislikedCommentsIds: { type: new GraphQLList(GraphQLID) },
@@ -123,6 +124,7 @@ const FollowDataType = new GraphQLObjectType({
     fields: {
         following: { type: new GraphQLList(GraphQLString) },
         followers: { type: new GraphQLList(GraphQLString) },
+        friends: { type: new GraphQLList(GraphQLString) },
     },
 });
 // Queries
@@ -200,6 +202,7 @@ const RootQuery = new GraphQLObjectType({
                 const user = await User.findById(args.id).select([
                     "following",
                     "followers",
+                    "friends",
                 ]);
 
                 const followingAvatarKeys = await User.find({
@@ -210,17 +213,23 @@ const RootQuery = new GraphQLObjectType({
                     _id: { $in: user.followers },
                 }).select(["avatarKey"]);
 
+                const friendsAvatarKeys = await User.find({
+                    _id: { $in: user.friends },
+                }).select(["avatarKey"]);
+
                 type FollowData = {
                     following: string[];
                     followers: string[];
+                    friends: string[];
                 };
                 const followObj = {} as FollowData;
                 followObj.following = followingAvatarKeys.map(
-                    (u) => u.avatarKey
+                    (u) => u.avatarKey,
                 );
                 followObj.followers = followerAvatarKeys.map(
-                    (u) => u.avatarKey
+                    (u) => u.avatarKey,
                 );
+                followObj.friends = friendsAvatarKeys.map((u) => u.avatarKey);
                 return followObj;
             },
         },
@@ -259,10 +268,10 @@ const RootQuery = new GraphQLObjectType({
                         }
                         const hashedPassword = CryptoJS.AES.decrypt(
                             user.password,
-                            process.env.PASS_SEC
+                            process.env.PASS_SEC,
                         );
                         const originalPassword = hashedPassword.toString(
-                            CryptoJS.enc.Utf8
+                            CryptoJS.enc.Utf8,
                         );
                         if (originalPassword === args.password) {
                             const { accessToken, refreshToken } =
@@ -282,7 +291,7 @@ const RootQuery = new GraphQLObjectType({
                             return user;
                         } else {
                             throw new GraphQLError(
-                                "Username and password do not match."
+                                "Username and password do not match.",
                             );
                         }
                     } catch (err) {
@@ -318,17 +327,17 @@ const mutation = new GraphQLObjectType({
                     .then(async (res) => {
                         if (res[0]) {
                             throw new GraphQLError(
-                                "Username is already taken."
+                                "Username is already taken.",
                             );
                         } else if (res[1]) {
                             throw new GraphQLError("Email is already taken.");
                         } else {
                             const encryptedPassword = CryptoJS.AES.encrypt(
                                 args.password,
-                                process.env.PASS_SEC
+                                process.env.PASS_SEC,
                             ).toString();
                             const verificationCode = Math.floor(
-                                100000 + Math.random() * 900000
+                                100000 + Math.random() * 900000,
                             );
                             const user = new User({
                                 username: args.username,
@@ -339,6 +348,7 @@ const mutation = new GraphQLObjectType({
                                 points: 0,
                                 followers: [],
                                 following: [],
+                                friends: [],
                                 avatarKey: `${
                                     args.picture
                                         ? args.picture
@@ -395,7 +405,7 @@ const mutation = new GraphQLObjectType({
                             isVerified: true,
                         },
                     },
-                    { new: true }
+                    { new: true },
                 );
                 return user;
             },
@@ -410,7 +420,7 @@ const mutation = new GraphQLObjectType({
             },
             async resolve(_, args) {
                 const verificationCode = Math.floor(
-                    100000 + Math.random() * 900000
+                    100000 + Math.random() * 900000,
                 );
                 const user = await User.findByIdAndUpdate(
                     args.id,
@@ -419,7 +429,7 @@ const mutation = new GraphQLObjectType({
                             verificationCode,
                         },
                     },
-                    { new: true }
+                    { new: true },
                 );
                 await sendgrid.send({
                     to: `${args.email}`, // Your email where you'll receive emails
@@ -471,7 +481,7 @@ const mutation = new GraphQLObjectType({
                             points: 10,
                         },
                     },
-                    { new: true }
+                    { new: true },
                 );
                 post.save();
                 return user;
@@ -568,7 +578,7 @@ const mutation = new GraphQLObjectType({
 
                         {
                             $inc: { likes: 1 },
-                        }
+                        },
                     ),
                     User.findByIdAndUpdate(args.userId, {
                         $push: { likedPostsIds: args.postId },
@@ -666,7 +676,7 @@ const mutation = new GraphQLObjectType({
                         },
                         {
                             $inc: { "comments.$.likes": 1 },
-                        }
+                        },
                     ),
                     User.findByIdAndUpdate(args.userId, {
                         $push: { likedCommentsIds: args.commentId },
@@ -698,7 +708,7 @@ const mutation = new GraphQLObjectType({
                         },
                         {
                             $inc: { "comments.$.likes": -1 },
-                        }
+                        },
                     ),
                     User.findByIdAndUpdate(args.userId, {
                         $pull: { likedCommentsIds: args.commentId },
@@ -728,7 +738,7 @@ const mutation = new GraphQLObjectType({
                         },
                         {
                             $inc: { "comments.$.dislikes": 1 },
-                        }
+                        },
                     ),
                     User.findByIdAndUpdate(args.userId, {
                         $push: { dislikedCommentsIds: args.commentId },
@@ -758,7 +768,7 @@ const mutation = new GraphQLObjectType({
                         },
                         {
                             $inc: { "comments.$.dislikes": -1 },
-                        }
+                        },
                     ),
                     User.findByIdAndUpdate(args.userId, {
                         $pull: { dislikedCommentsIds: args.commentId },
@@ -831,6 +841,36 @@ const mutation = new GraphQLObjectType({
                         },
                     }),
                 ]);
+                //Check if the current and target users are mutuals
+                const [userFollowsPublisher, publisherFollowsUser] =
+                    await Promise.all([
+                        User.exists({
+                            _id: args.userId,
+                            following: args.publisherId,
+                        }),
+                        User.exists({
+                            _id: args.publisherId,
+                            followers: args.userId,
+                        }),
+                    ]);
+
+                const areMutual =
+                    !!userFollowsPublisher && !!publisherFollowsUser;
+                // Add each other to their friends list if mutual conditions are met
+                if (areMutual) {
+                    await Promise.all([
+                        User.findByIdAndUpdate(args.userId, {
+                            $addToSet: {
+                                friends: args.publisherId,
+                            },
+                        }),
+                        User.findByIdAndUpdate(args.publisherId, {
+                            $addToSet: {
+                                friends: args.userId,
+                            },
+                        }),
+                    ]);
+                }
             },
         },
         // Decrease following count of user and follower count of publisher
@@ -853,6 +893,36 @@ const mutation = new GraphQLObjectType({
                         },
                     }),
                 ]);
+                //Check if the current and target users are mutuals
+                const [userFollowsPublisher, publisherFollowsUser] =
+                    await Promise.all([
+                        User.exists({
+                            _id: args.userId,
+                            following: args.publisherId,
+                        }),
+                        User.exists({
+                            _id: args.publisherId,
+                            followers: args.userId,
+                        }),
+                    ]);
+
+                const areMutual =
+                    !!userFollowsPublisher && !!publisherFollowsUser;
+                // Remove each other to their friends list if mutual conditions are met
+                if (!areMutual) {
+                    try {
+                        await Promise.all([
+                            User.findByIdAndUpdate(args.userId, {
+                                $addToSet: { friends: args.publisherId },
+                            }),
+                            User.findByIdAndUpdate(args.publisherId, {
+                                $addToSet: { friends: args.userId },
+                            }),
+                        ]);
+                    } catch (err) {
+                        console.error("Mutual friend update failed:", err);
+                    }
+                }
             },
         },
 
@@ -870,7 +940,7 @@ const mutation = new GraphQLObjectType({
                 if (args.password) {
                     encryptedPassword = CryptoJS.AES.encrypt(
                         args.password,
-                        process.env.PASS_SEC
+                        process.env.PASS_SEC,
                     ).toString();
                 }
                 return await User.findByIdAndUpdate(
@@ -882,7 +952,7 @@ const mutation = new GraphQLObjectType({
                             username: args.username,
                         },
                     },
-                    { new: true }
+                    { new: true },
                 );
             },
         },
@@ -906,7 +976,7 @@ const mutation = new GraphQLObjectType({
                             category: args.category,
                         },
                     },
-                    { new: true }
+                    { new: true },
                 );
                 return post;
             },
