@@ -12,12 +12,13 @@ const FollowData: React.FunctionComponent<Props> = ({ currentUser }) => {
     const { data, error } = useQuery(GET_AVATAR_KEYS_BY_ID, {
         variables: { id: currentUser?.id },
     });
+    console.log(data);
     return (
         <>
             <div className="w-full flex flex-col items-center ">
                 <p className="text-2xl">Following:</p>
                 <div className="flex flex-row items-center justify-center">
-                    {data?.avatarKeysById.following
+                    {data?.avatarKeysById?.following
                         ?.slice(-4)
                         .map((imageId: string, key: number) => {
                             return (
@@ -43,7 +44,7 @@ const FollowData: React.FunctionComponent<Props> = ({ currentUser }) => {
             <div className="w-full flex flex-col items-center ">
                 <p className="text-2xl">Followers:</p>
                 <div className="flex flex-row items-center justify-center">
-                    {data?.avatarKeysById.followers
+                    {data?.avatarKeysById?.followers
                         ?.slice(-4)
                         .map((imageId: string, key: number) => {
                             return (

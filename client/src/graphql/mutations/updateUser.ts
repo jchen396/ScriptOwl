@@ -1,38 +1,48 @@
 import { gql } from "@apollo/client";
 
 export const UPDATE_USER = gql`
-	mutation UpdateUser(
-		$id: ID!
-		$avatarKey: String
-		$password: ID
-		$username: String
-	) {
-		updateUser(
-			id: $id
-			avatarKey: $avatarKey
-			password: $password
-			username: $username
-		) {
-			id
-			username
-			email
-			points
-			followers
-			following
-			avatarKey
-			likedCommentsIds
-			dislikedCommentsIds
-			likedPostsIds
-			dislikedPostsIds
-			uploadedPostIds
-			watchHistory {
-				postId
-				createdAt {
-					date
-				}
-			}
-			isVerified
-			verificationCode
-		}
-	}
+    mutation UpdateUser(
+        $id: ID!
+        $avatarKey: String
+        $password: ID
+        $username: String
+    ) {
+        updateUser(
+            id: $id
+            avatarKey: $avatarKey
+            password: $password
+            username: $username
+        ) {
+            id
+            username
+            email
+            points
+            followers {
+                userId
+                username
+            }
+            following {
+                userId
+                username
+            }
+            friends {
+                userId
+                username
+            }
+            avatarKey
+            likedCommentsIds
+            dislikedCommentsIds
+            likedPostsIds
+            dislikedPostsIds
+            uploadedPostIds
+            watchHistory {
+                postId
+                createdAt {
+                    date
+                }
+            }
+            isVerified
+            verificationCode
+        }
+    }
 `;

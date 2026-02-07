@@ -13,16 +13,17 @@ export interface IUser {
         | string
         | number
         | boolean
-        | Array<WatchedPost>;
+        | Array<WatchedPost>
+        | Array<{ userId: string; username: string }>;
     username: string;
     password: string;
     readonly id: string;
     email: string;
     avatarKey: string;
     points: number;
-    followers: Array<string>;
-    following: Array<string>;
-    friends: Array<string>;
+    followers: Array<{ userId: string; username: string }>;
+    following: Array<{ userId: string; username: string }>;
+    friends: Array<{ userId: string; username: string }>;
     likedCommentsIds: Array<string>;
     dislikedCommentsIds: Array<string>;
     likedPostsIds: Array<string>;
