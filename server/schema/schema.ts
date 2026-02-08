@@ -253,11 +253,6 @@ const RootQuery = new GraphQLObjectType({
                     friends: string[];
                 };
                 const avatarKeys = {} as avatarKeyData;
-                console.log({
-                    followingAvatarKeys,
-                    followerAvatarKeys,
-                    friendsAvatarKeys,
-                });
                 avatarKeys.following = followingAvatarKeys.map(
                     (u) => u.avatarKey,
                 );
@@ -265,7 +260,6 @@ const RootQuery = new GraphQLObjectType({
                     (u) => u.avatarKey,
                 );
                 avatarKeys.friends = friendsAvatarKeys.map((u) => u.avatarKey);
-                console.log(avatarKeys);
                 return avatarKeys;
             },
         },
@@ -890,35 +884,49 @@ const mutation = new GraphQLObjectType({
                     console.error("Follow user failed:", err);
                 }
                 //Check if the current and target users are mutuals
-                // const [userFollowsPublisher, publisherFollowsUser] =
-                //     await Promise.all([
-                //         User.exists({
-                //             _id: args.userId,
-                //             following: args.publisherId,
-                //         }),
-                //         User.exists({
-                //             _id: args.publisherId,
-                //             followers: args.userId,
-                //         }),
-                //     ]);
+                const [userFollowsPublisher, publisherFollowsUser] =
+                    await Promise.all([
+                        User.exists({
+                            _id: args.userId,
+                            following: {
+                                $elemMatch: {
+                                    userId: args.publisherId,
+                                },
+                            },
+                        }),
+                        User.exists({
+                            _id: args.publisherId,
+                            followers: {
+                                $elemMatch: {
+                                    userId: args.userId,
+                                },
+                            },
+                        }),
+                    ]);
 
-                // const areMutual =
-                //     !!userFollowsPublisher && !!publisherFollowsUser;
-                // // Add each other to their friends list if mutual conditions are met
-                // if (areMutual) {
-                //     await Promise.all([
-                //         User.findByIdAndUpdate(args.userId, {
-                //             $addToSet: {
-                //                 friends: args.publisherId,
-                //             },
-                //         }),
-                //         User.findByIdAndUpdate(args.publisherId, {
-                //             $addToSet: {
-                //                 friends: args.userId,
-                //             },
-                //         }),
-                //     ]);
-                // }
+                const areMutual =
+                    !!userFollowsPublisher && !!publisherFollowsUser;
+                // Add each other to their friends list if mutual conditions are met
+                if (areMutual) {
+                    await Promise.all([
+                        User.findByIdAndUpdate(args.userId, {
+                            $addToSet: {
+                                friends: {
+                                    userId: args.publisherId,
+                                    username: args.publisherName,
+                                },
+                            },
+                        }),
+                        User.findByIdAndUpdate(args.publisherId, {
+                            $addToSet: {
+                                friends: {
+                                    userId: args.userId,
+                                    username: args.username,
+                                },
+                            },
+                        }),
+                    ]);
+                }
             },
         },
         // Decrease following count of user and follower count of publisher
@@ -952,35 +960,51 @@ const mutation = new GraphQLObjectType({
                     console.error("Unfollow user failed:", err);
                 }
                 // //Check if the current and target users are mutuals
-                // const [userFollowsPublisher, publisherFollowsUser] =
-                //     await Promise.all([
-                //         User.exists({
-                //             _id: args.userId,
-                //             following: args.publisherId,
-                //         }),
-                //         User.exists({
-                //             _id: args.publisherId,
-                //             followers: args.userId,
-                //         }),
-                //     ]);
+                const [userFollowsPublisher, publisherFollowsUser] =
+                    await Promise.all([
+                        User.exists({
+                            _id: args.userId,
+                            following: {
+                                $elemMatch: {
+                                    userId: args.publisherId,
+                                },
+                            },
+                        }),
+                        User.exists({
+                            _id: args.publisherId,
+                            followers: {
+                                $elemMatch: {
+                                    userId: args.userId,
+                                },
+                            },
+                        }),
+                    ]);
 
-                // const areMutual =
-                //     !!userFollowsPublisher && !!publisherFollowsUser;
+                const areMutual =
+                    !!userFollowsPublisher && !!publisherFollowsUser;
                 // // Remove each other to their friends list if mutual conditions are met
-                // if (!areMutual) {
-                //     try {
-                //         await Promise.all([
-                //             User.findByIdAndUpdate(args.userId, {
-                //                 $addToSet: { friends: args.publisherId },
-                //             }),
-                //             User.findByIdAndUpdate(args.publisherId, {
-                //                 $addToSet: { friends: args.userId },
-                //             }),
-                //         ]);
-                //     } catch (err) {
-                //         console.error("Mutual friend update failed:", err);
-                //     }
-                // }
+                if (!areMutual) {
+                    try {
+                        await Promise.all([
+                            User.findByIdAndUpdate(args.userId, {
+                                $pull: {
+                                    friends: {
+                                        userId: args.publisherId,
+                                    },
+                                },
+                            }),
+                            User.findByIdAndUpdate(args.publisherId, {
+                                $pull: {
+                                    friends: {
+                                        userId: args.userId,
+                                    },
+                                },
+                            }),
+                        ]);
+                    } catch (err) {
+                        console.error("Mutual friend update failed:", err);
+                    }
+                }
             },
         },
 
