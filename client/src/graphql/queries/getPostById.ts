@@ -20,16 +20,13 @@ export const GET_POST_BY_ID = gql`
                 username
                 avatarKey
                 followers {
-                    userId
-                    username
+                    id
                 }
                 following {
-                    userId
-                    username
+                    id
                 }
                 friends {
-                    userId
-                    username
+                    id
                 }
             }
             comments {

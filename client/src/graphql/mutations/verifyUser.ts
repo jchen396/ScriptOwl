@@ -8,16 +8,13 @@ export const VERIFY_USER = gql`
             email
             points
             followers {
-                userId
-                username
+                id
             }
             following {
-                userId
-                username
+                id
             }
             friends {
-                userId
-                username
+                id
             }
             avatarKey
             likedCommentsIds

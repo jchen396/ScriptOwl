@@ -17,22 +17,32 @@ const ChatList: FunctionComponent<Props> = ({ userData }) => {
         <div className="h-20 border-top border-t-2 border-whiet">
             <li className="h-full flex space-x-2 justify-left items-center mx-4">
                 {data?.avatarKeysById.friends.map(
-                    (imageId: string, key: number) => {
+                    (
+                        friendData: { avatarKey: string; username: string },
+                        key: number,
+                    ) => {
                         return (
-                            <div key={key}>
+                            <div
+                                key={key}
+                                className="flex justify-center items-center space-x-2 hover:border-2 border-gray-400 rounded-md py-2 px-4
+                                hover:bg-gray-700 hover:cursor-pointer"
+                            >
                                 <Image
                                     height={50}
                                     width={50}
                                     className="w-10 h-10 rounded-full"
                                     src={
-                                        imageId.startsWith(
+                                        friendData?.avatarKey.startsWith(
                                             "https://lh3.googleusercontent.com",
                                         )
-                                            ? imageId
-                                            : `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${imageId}`
+                                            ? friendData?.avatarKey
+                                            : `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${friendData?.avatarKey}`
                                     }
                                     alt="user photo"
                                 />{" "}
+                                <p className="text-white text-md">
+                                    {friendData.username}
+                                </p>
                             </div>
                         );
                     },

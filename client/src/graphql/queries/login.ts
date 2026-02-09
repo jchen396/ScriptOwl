@@ -7,18 +7,6 @@ export const LOG_IN_USER = gql`
             username
             email
             points
-            followers {
-                userId
-                username
-            }
-            following {
-                userId
-                username
-            }
-            friends {
-                userId
-                username
-            }
             avatarKey
             likedCommentsIds
             dislikedCommentsIds

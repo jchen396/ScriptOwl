@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 // 1. Create an interface representing a document in MongoDB.
 import { IUser } from "./../../types/types";
@@ -10,9 +10,24 @@ const userSchema = new Schema<IUser>(
         password: { type: String, require: true },
         email: { type: String, required: true, unique: true },
         points: { type: Number },
-        followers: { type: [Object] },
-        following: { type: [Object] },
-        friends: { type: [Object] },
+        followers: [
+            {
+                type: Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        following: [
+            {
+                type: Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        friends: [
+            {
+                type: Types.ObjectId,
+                ref: "User",
+            },
+        ],
         avatarKey: { type: String },
         likedCommentsIds: { type: [String] },
         dislikedCommentsIds: { type: [String] },

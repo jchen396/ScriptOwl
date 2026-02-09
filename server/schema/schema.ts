@@ -50,14 +50,6 @@ const FollowPayloadData = new GraphQLObjectType({
         username: { type: GraphQLString },
     },
 });
-const AvatarKeysType = new GraphQLObjectType({
-    name: "AvatarKeys",
-    fields: {
-        following: { type: new GraphQLList(GraphQLString) },
-        followers: { type: new GraphQLList(GraphQLString) },
-        friends: { type: new GraphQLList(GraphQLString) },
-    },
-});
 // User Type
 const UserType = new GraphQLObjectType({
     name: "User",
@@ -69,9 +61,9 @@ const UserType = new GraphQLObjectType({
         email: { type: GraphQLID },
         emailLower: { type: GraphQLString },
         points: { type: GraphQLInt },
-        followers: { type: new GraphQLList(FollowPayloadData) },
-        following: { type: new GraphQLList(FollowPayloadData) },
-        friends: { type: new GraphQLList(FollowPayloadData) },
+        followers: { type: new GraphQLList(UserType) },
+        following: { type: new GraphQLList(UserType) },
+        friends: { type: new GraphQLList(UserType) },
         avatarKey: { type: GraphQLString },
         likedCommentsIds: { type: new GraphQLList(GraphQLID) },
         dislikedCommentsIds: { type: new GraphQLList(GraphQLID) },
@@ -209,58 +201,20 @@ const RootQuery = new GraphQLObjectType({
             },
         },
         avatarKeysById: {
-            type: AvatarKeysType,
+            type: UserType,
             args: {
                 id: { type: GraphQLID },
             },
             async resolve(_, args) {
-                const user = await User.findById(args.id).select([
-                    "following",
-                    "followers",
-                    "friends",
-                ]);
-
-                const followingAvatarKeys = await User.find({
-                    _id: {
-                        $in: user.following.map(
-                            (f: { userId: string; username: string }) =>
-                                f.userId,
-                        ),
-                    },
-                }).select(["avatarKey"]);
-
-                const followerAvatarKeys = await User.find({
-                    _id: {
-                        $in: user.followers.map(
-                            (f: { userId: string; username: string }) =>
-                                f.userId,
-                        ),
-                    },
-                }).select(["avatarKey"]);
-
-                const friendsAvatarKeys = await User.find({
-                    _id: {
-                        $in: user.friends.map(
-                            (f: { userId: string; username: string }) =>
-                                f.userId,
-                        ),
-                    },
-                }).select(["avatarKey"]);
-
-                type avatarKeyData = {
-                    following: string[];
-                    followers: string[];
-                    friends: string[];
-                };
-                const avatarKeys = {} as avatarKeyData;
-                avatarKeys.following = followingAvatarKeys.map(
-                    (u) => u.avatarKey,
-                );
-                avatarKeys.followers = followerAvatarKeys.map(
-                    (u) => u.avatarKey,
-                );
-                avatarKeys.friends = friendsAvatarKeys.map((u) => u.avatarKey);
-                return avatarKeys;
+                try {
+                    return await User.findById(args.id).populate([
+                        { path: "following", select: "username avatarKey" },
+                        { path: "followers", select: "username avatarKey" },
+                        { path: "friends", select: "username avatarKey" },
+                    ]);
+                } catch (err) {
+                    console.error("Error fetching avatar keys:", err);
+                }
             },
         },
         // Check token data stored in cookies
@@ -865,18 +819,12 @@ const mutation = new GraphQLObjectType({
                     await Promise.all([
                         User.findByIdAndUpdate(args.userId, {
                             $addToSet: {
-                                following: {
-                                    userId: args.publisherId,
-                                    username: args.publisherName,
-                                },
+                                following: args.publisherId,
                             },
                         }),
                         User.findByIdAndUpdate(args.publisherId, {
                             $addToSet: {
-                                followers: {
-                                    userId: args.userId,
-                                    username: args.username,
-                                },
+                                followers: args.userId,
                             },
                         }),
                     ]);
@@ -888,19 +836,11 @@ const mutation = new GraphQLObjectType({
                     await Promise.all([
                         User.exists({
                             _id: args.userId,
-                            following: {
-                                $elemMatch: {
-                                    userId: args.publisherId,
-                                },
-                            },
+                            following: args.publisherId,
                         }),
                         User.exists({
                             _id: args.publisherId,
-                            followers: {
-                                $elemMatch: {
-                                    userId: args.userId,
-                                },
-                            },
+                            followers: args.userId,
                         }),
                     ]);
 
@@ -911,18 +851,12 @@ const mutation = new GraphQLObjectType({
                     await Promise.all([
                         User.findByIdAndUpdate(args.userId, {
                             $addToSet: {
-                                friends: {
-                                    userId: args.publisherId,
-                                    username: args.publisherName,
-                                },
+                                friends: args.publisherId,
                             },
                         }),
                         User.findByIdAndUpdate(args.publisherId, {
                             $addToSet: {
-                                friends: {
-                                    userId: args.userId,
-                                    username: args.username,
-                                },
+                                friends: args.userId,
                             },
                         }),
                     ]);
@@ -943,40 +877,28 @@ const mutation = new GraphQLObjectType({
                     await Promise.all([
                         User.findByIdAndUpdate(args.userId, {
                             $pull: {
-                                following: {
-                                    userId: args.publisherId,
-                                },
+                                following: args.publisherId,
                             },
                         }),
                         User.findByIdAndUpdate(args.publisherId, {
                             $pull: {
-                                followers: {
-                                    userId: args.userId,
-                                },
+                                followers: args.userId,
                             },
                         }),
                     ]);
                 } catch (err) {
                     console.error("Unfollow user failed:", err);
                 }
-                // //Check if the current and target users are mutuals
+                //Check if the current and target users are mutuals
                 const [userFollowsPublisher, publisherFollowsUser] =
                     await Promise.all([
                         User.exists({
                             _id: args.userId,
-                            following: {
-                                $elemMatch: {
-                                    userId: args.publisherId,
-                                },
-                            },
+                            following: args.publisherId,
                         }),
                         User.exists({
                             _id: args.publisherId,
-                            followers: {
-                                $elemMatch: {
-                                    userId: args.userId,
-                                },
-                            },
+                            followers: args.userId,
                         }),
                     ]);
 
@@ -988,16 +910,12 @@ const mutation = new GraphQLObjectType({
                         await Promise.all([
                             User.findByIdAndUpdate(args.userId, {
                                 $pull: {
-                                    friends: {
-                                        userId: args.publisherId,
-                                    },
+                                    friends: args.publisherId,
                                 },
                             }),
                             User.findByIdAndUpdate(args.publisherId, {
                                 $pull: {
-                                    friends: {
-                                        userId: args.userId,
-                                    },
+                                    friends: args.userId,
                                 },
                             }),
                         ]);
