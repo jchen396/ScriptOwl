@@ -7,8 +7,10 @@ import Image from "next/image";
 
 interface Props {
     userData?: IUser;
-    setSelectedChat: React.Dispatch<React.SetStateAction<string>>;
-    selectedChat: string;
+    setSelectedChat: React.Dispatch<
+        React.SetStateAction<{ username: string; avatarKey: string }>
+    >;
+    selectedChat: { username: string; avatarKey: string };
 }
 
 const ChatList: FunctionComponent<Props> = ({
@@ -34,11 +36,16 @@ const ChatList: FunctionComponent<Props> = ({
                                     className="flex justify-center items-center space-x-2 hover:border-2 border-gray-400 rounded-md py-2 px-4
                                 hover:bg-gray-700 hover:cursor-pointer"
                                     onClick={() =>
-                                        selectedChat === ""
-                                            ? setSelectedChat(
-                                                  friendData.username,
-                                              )
-                                            : setSelectedChat("")
+                                        selectedChat.username === ""
+                                            ? setSelectedChat({
+                                                  username: friendData.username,
+                                                  avatarKey:
+                                                      friendData.avatarKey,
+                                              })
+                                            : setSelectedChat({
+                                                  username: "",
+                                                  avatarKey: "",
+                                              })
                                     }
                                 >
                                     <Image
@@ -53,7 +60,7 @@ const ChatList: FunctionComponent<Props> = ({
                                                 : `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${friendData?.avatarKey}`
                                         }
                                         alt="user photo"
-                                    />{" "}
+                                    />
                                     <p className="text-white text-md">
                                         {friendData.username}
                                     </p>

@@ -16,7 +16,10 @@ const Layout = ({ children }: PropsWithChildren) => {
     const dispatch = useDispatch();
     const [userData, setUserData] = useState<IUser>();
     const [showChatList, setShowChatList] = useState<boolean>(false);
-    const [selectedChat, setSelectedChat] = useState<string>("");
+    const [selectedChat, setSelectedChat] = useState<{
+        username: string;
+        avatarKey: string;
+    }>({ username: "", avatarKey: "" });
     useEffect(() => {
         authenticate(dispatch);
     }, [dispatch]);
@@ -50,8 +53,11 @@ const Layout = ({ children }: PropsWithChildren) => {
                         <></>
                     )}
                 </div>
-                {selectedChat !== "" && (
-                    <ChatRoom setSelectedChat={setSelectedChat} />
+                {selectedChat.username !== "" && (
+                    <ChatRoom
+                        setSelectedChat={setSelectedChat}
+                        selectedChat={selectedChat}
+                    />
                 )}
                 <Footer />
             </div>
