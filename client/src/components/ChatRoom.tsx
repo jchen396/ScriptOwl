@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useRef } from "react";
 import { IUser } from "./../../../types/types";
 import { FunctionComponent } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_AVATAR_KEYS_BY_ID } from "@/graphql/queries/getAvatarKeysById";
 import CloseIcon from "@mui/icons-material/Close";
+import SendIcon from "@mui/icons-material/Send";
 import Image from "next/image";
 
 interface Props {
@@ -17,6 +18,20 @@ const ChatList: FunctionComponent<Props> = ({
     setSelectedChat,
     selectedChat,
 }) => {
+    const [message, setMessage] = React.useState<string>("");
+    const [messageBoxes, setMessageBoxes] = React.useState<string[]>([]);
+    const ref = useRef<HTMLInputElement | null>(null);
+
+    const changeMessageHandler = (e: any) => {
+        setMessage(e.target.value);
+    };
+    const sendMessage = (e: any) => {
+        e.preventDefault();
+        let newMessage = `${selectedChat.username}: ${message}`;
+        setMessageBoxes((prevState) => [...prevState, newMessage]);
+        ref.current!.value = "";
+    };
+
     return (
         <div className="fixed h-1/2 bottom-0 left-0 w-1/4 bg-black border-2 z-10 p-2">
             <div className="flex flex-col h-full w-full justify-between items-center">
@@ -44,12 +59,38 @@ const ChatList: FunctionComponent<Props> = ({
                         }
                     />
                 </div>
-                <div className="flex-1 w-full bg-gray-900 overflow-y-auto p-2 mt-2"></div>
+                <div className="flex-1 w-full bg-gray-900 overflow-y-auto p-2 mt-2">
+                    {messageBoxes.map((message, key) => {
+                        return (
+                            <div
+                                key={key}
+                                className="bg-gray-700 text-white p-2 rounded-md mb-2"
+                            >
+                                {message}
+                            </div>
+                        );
+                    })}
+                </div>
 
-                <input
-                    className="h-12 w-full bg-black border border-white text-white px-2"
-                    type="text"
-                />
+                <form
+                    id="chatInput"
+                    className="relative mb-4 flex justify-center items-center w-full self-end"
+                    onSubmit={(e) => sendMessage(e)}
+                >
+                    <input
+                        ref={ref}
+                        placeholder="Enter a message..."
+                        className="h-12 w-full bg-black border border-white text-white px-2"
+                        onChange={(e) => changeMessageHandler(e)}
+                    />
+                    <button
+                        form="chatInput"
+                        type="submit"
+                        className="mx-2 p-3 sm:p-4 rounded-2xl bg-black hover:bg-blue-600 border-blue-600 border-2 text-blue-600 hover:text-black flex justify-center items-center enter-button"
+                    >
+                        Send
+                    </button>
+                </form>
             </div>
         </div>
     );
