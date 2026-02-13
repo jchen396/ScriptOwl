@@ -9,6 +9,7 @@ const util = require("util");
 const unlinkFile = util.promisify(fs.unlink);
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
+const socketIo = require("socket.io");
 
 // MongoDB configurations
 import { Post } from "../models/Post";
@@ -212,6 +213,25 @@ app.post("/youtube", async (req, res) => {
             console.log("Error: ", err);
         });
     } catch (e) {}
+});
+
+const http = require("http");
+const server = http.createServer(app);
+// Socket.io for real-time chat
+const io = socketIo(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+    },
+});
+io.on("connection", (socket) => {
+    console.log("a user connected");
+    socket.on("disconnect", () => {
+        console.log("user disconnected");
+    });
+    socket.on("chat message", (msg) => {
+        io.emit("chat message", msg);
+    });
 });
 
 const authRouter = require("./modules/oauth");

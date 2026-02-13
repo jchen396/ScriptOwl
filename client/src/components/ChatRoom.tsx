@@ -1,10 +1,6 @@
-import React, { useRef } from "react";
-import { IUser } from "./../../../types/types";
+import React, { useEffect, useRef } from "react";
 import { FunctionComponent } from "react";
-import { useQuery } from "@apollo/client";
-import { GET_AVATAR_KEYS_BY_ID } from "@/graphql/queries/getAvatarKeysById";
 import CloseIcon from "@mui/icons-material/Close";
-import SendIcon from "@mui/icons-material/Send";
 import Image from "next/image";
 
 interface Props {
@@ -12,11 +8,13 @@ interface Props {
         React.SetStateAction<{ username: string; avatarKey: string }>
     >;
     selectedChat: { username: string; avatarKey: string };
+    currentUser: any;
 }
 
 const ChatList: FunctionComponent<Props> = ({
     setSelectedChat,
     selectedChat,
+    currentUser,
 }) => {
     const [message, setMessage] = React.useState<string>("");
     const [messageBoxes, setMessageBoxes] = React.useState<string[]>([]);
@@ -27,10 +25,13 @@ const ChatList: FunctionComponent<Props> = ({
     };
     const sendMessage = (e: any) => {
         e.preventDefault();
-        let newMessage = `${selectedChat.username}: ${message}`;
+        let newMessage = `${currentUser.username}: ${message}`;
         setMessageBoxes((prevState) => [...prevState, newMessage]);
         ref.current!.value = "";
     };
+    // useEffect(()= > {
+
+    // },[])
 
     return (
         <div className="fixed h-1/2 bottom-0 left-0 w-1/4 bg-black border-2 z-10 p-2">
