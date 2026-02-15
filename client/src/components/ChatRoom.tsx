@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { FunctionComponent } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
+import socket from "./Socket";
 
 interface Props {
     setSelectedChat: React.Dispatch<
@@ -29,9 +30,20 @@ const ChatList: FunctionComponent<Props> = ({
         setMessageBoxes((prevState) => [...prevState, newMessage]);
         ref.current!.value = "";
     };
-    // useEffect(()= > {
 
-    // },[])
+    useEffect(() => {
+        if (selectedChat.username !== "") {
+            console.log("Selected chat changed, now connecting to socket");
+            socket.on("connect", () => {
+                console.log("Connected, now joining room");
+                socket.emit("join", "123", currentUser.username);
+            });
+
+            return () => {
+                socket.off("connect");
+            };
+        }
+    }, [selectedChat]);
 
     return (
         <div className="fixed h-1/2 bottom-0 left-0 w-1/4 bg-black border-2 z-10 p-2">

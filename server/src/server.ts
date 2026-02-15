@@ -225,9 +225,15 @@ const io = socketIo(server, {
     },
 });
 io.on("connection", (socket) => {
-    console.log("a user connected");
+    console.log("✅ Client connected:", socket.id); // ← Add this
+
+    socket.on("join", (room, username) => {
+        console.log(`✅ ${username} joined room: ${room}`);
+        socket.join(room);
+    });
+
     socket.on("disconnect", () => {
-        console.log("user disconnected");
+        console.log("❌ User disconnected:", socket.id);
     });
     socket.on("chat message", (msg) => {
         io.emit("chat message", msg);
@@ -241,6 +247,6 @@ const requestRouter = require("./modules/request");
 app.use("/oauth", authRouter);
 app.use("/request", requestRouter);
 
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`PORT ${port} is running.`);
 });
