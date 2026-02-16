@@ -27,23 +27,25 @@ const ChatList: FunctionComponent<Props> = ({
     const sendMessage = (e: any) => {
         e.preventDefault();
         let newMessage = `${currentUser.username}: ${message}`;
+        socket.emit("message", newMessage, "123");
         setMessageBoxes((prevState) => [...prevState, newMessage]);
         ref.current!.value = "";
     };
-
     useEffect(() => {
         if (selectedChat.username !== "") {
-            console.log("Selected chat changed, now connecting to socket");
-            socket.on("connect", () => {
-                console.log("Connected, now joining room");
-                socket.emit("join", "123", currentUser.username);
+            socket.emit("join", "123", currentUser.username);
+            socket.on("connect", () => {});
+            socket.on("disconnect", () => {});
+            socket.on("message", (msg) => {
+                setMessageBoxes((prevState) => [...prevState, msg]);
             });
-
             return () => {
                 socket.off("connect");
+                socket.off("disconnect");
+                socket.off("message");
             };
         }
-    }, [selectedChat]);
+    }, [selectedChat.username]);
 
     return (
         <div className="fixed h-1/2 bottom-0 left-0 w-1/4 bg-black border-2 z-10 p-2">

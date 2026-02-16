@@ -225,18 +225,21 @@ const io = socketIo(server, {
     },
 });
 io.on("connection", (socket) => {
-    console.log("✅ Client connected:", socket.id); // ← Add this
-
+    console.log("✅ New client connected:", socket.id);
     socket.on("join", (room, username) => {
         console.log(`✅ ${username} joined room: ${room}`);
         socket.join(room);
     });
-
     socket.on("disconnect", () => {
         console.log("❌ User disconnected:", socket.id);
     });
-    socket.on("chat message", (msg) => {
-        io.emit("chat message", msg);
+    socket.on("message", (message, room) => {
+        try {
+            console.log(`📤 Broadcasting message to room ${room}:`, message);
+            socket.broadcast.to(room).emit("message", message);
+        } catch (e) {
+            console.log("Error broadcasting message: ", e);
+        }
     });
 });
 
