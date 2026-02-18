@@ -225,7 +225,6 @@ const io = socketIo(server, {
     },
 });
 io.on("connection", (socket) => {
-    console.log("✅ New client connected:", socket.id);
     socket.on("join", (room, username) => {
         console.log(`✅ ${username} joined room: ${room}`);
         socket.join(room);
@@ -233,10 +232,9 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log("❌ User disconnected:", socket.id);
     });
-    socket.on("message", (message, room) => {
+    socket.on("message", (messageObj, room) => {
         try {
-            console.log(`📤 Broadcasting message to room ${room}:`, message);
-            socket.broadcast.to(room).emit("message", message);
+            socket.broadcast.to(room).emit("message", messageObj);
         } catch (e) {
             console.log("Error broadcasting message: ", e);
         }

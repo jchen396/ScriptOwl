@@ -18,7 +18,13 @@ const ChatList: FunctionComponent<Props> = ({
     currentUser,
 }) => {
     const [message, setMessage] = React.useState<string>("");
-    const [messageBoxes, setMessageBoxes] = React.useState<string[]>([]);
+    const [messageBoxes, setMessageBoxes] = React.useState<
+        {
+            avatarKey: string;
+            sender: string;
+            content: string;
+        }[]
+    >([]);
     const ref = useRef<HTMLInputElement | null>(null);
 
     const changeMessageHandler = (e: any) => {
@@ -26,9 +32,13 @@ const ChatList: FunctionComponent<Props> = ({
     };
     const sendMessage = (e: any) => {
         e.preventDefault();
-        let newMessage = `${currentUser.username}: ${message}`;
-        socket.emit("message", newMessage, "123");
-        setMessageBoxes((prevState) => [...prevState, newMessage]);
+        let newMessageObj = {
+            avatarKey: currentUser.avatarKey,
+            sender: currentUser.username,
+            content: message,
+        };
+        socket.emit("message", newMessageObj, "123");
+        setMessageBoxes((prevState) => [...prevState, newMessageObj]);
         ref.current!.value = "";
     };
     useEffect(() => {
@@ -81,7 +91,22 @@ const ChatList: FunctionComponent<Props> = ({
                                 key={key}
                                 className="bg-gray-700 text-white p-2 rounded-md mb-2"
                             >
-                                {message}
+                                <Image
+                                    height={50}
+                                    width={50}
+                                    className="w-8 h-8 rounded-full inline-block mr-2"
+                                    src={
+                                        message.avatarKey.startsWith(
+                                            "https://lh3.googleusercontent.com",
+                                        )
+                                            ? message.avatarKey
+                                            : `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${message.avatarKey}`
+                                    }
+                                    alt="user photo"
+                                />
+                                <p>
+                                    {message.sender}: {message.content}
+                                </p>
                             </div>
                         );
                     })}
