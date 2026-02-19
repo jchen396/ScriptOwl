@@ -8,9 +8,13 @@ import Image from "next/image";
 interface Props {
     userData?: IUser;
     setSelectedChat: React.Dispatch<
-        React.SetStateAction<{ username: string; avatarKey: string }>
+        React.SetStateAction<{
+            id: string;
+            username: string;
+            avatarKey: string;
+        }>
     >;
-    selectedChat: { username: string; avatarKey: string };
+    selectedChat: { id: string; username: string; avatarKey: string };
 }
 
 const ChatList: FunctionComponent<Props> = ({
@@ -27,7 +31,11 @@ const ChatList: FunctionComponent<Props> = ({
                 <li className="h-full flex space-x-2 justify-left items-center mx-4">
                     {data?.avatarKeysById.friends.map(
                         (
-                            friendData: { avatarKey: string; username: string },
+                            friendData: {
+                                id: string;
+                                avatarKey: string;
+                                username: string;
+                            },
                             key: number,
                         ) => {
                             return (
@@ -35,18 +43,20 @@ const ChatList: FunctionComponent<Props> = ({
                                     key={key}
                                     className="flex justify-center items-center space-x-2 hover:border-2 border-gray-400 rounded-md py-2 px-4
                                 hover:bg-gray-700 hover:cursor-pointer"
-                                    onClick={() =>
+                                    onClick={() => {
                                         selectedChat.username === ""
                                             ? setSelectedChat({
+                                                  id: friendData.id,
                                                   username: friendData.username,
                                                   avatarKey:
                                                       friendData.avatarKey,
                                               })
                                             : setSelectedChat({
+                                                  id: "",
                                                   username: "",
                                                   avatarKey: "",
-                                              })
-                                    }
+                                              });
+                                    }}
                                 >
                                     <Image
                                         height={50}

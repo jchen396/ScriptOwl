@@ -208,9 +208,9 @@ const RootQuery = new GraphQLObjectType({
             async resolve(_, args) {
                 try {
                     return await User.findById(args.id).populate([
-                        { path: "following", select: "username avatarKey" },
-                        { path: "followers", select: "username avatarKey" },
-                        { path: "friends", select: "username avatarKey" },
+                        { path: "following", select: "id username avatarKey" },
+                        { path: "followers", select: "id username avatarKey" },
+                        { path: "friends", select: "id username avatarKey" },
                     ]);
                 } catch (err) {
                     console.error("Error fetching avatar keys:", err);

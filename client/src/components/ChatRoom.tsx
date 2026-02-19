@@ -6,9 +6,13 @@ import socket from "./Socket";
 
 interface Props {
     setSelectedChat: React.Dispatch<
-        React.SetStateAction<{ username: string; avatarKey: string }>
+        React.SetStateAction<{
+            id: string;
+            username: string;
+            avatarKey: string;
+        }>
     >;
-    selectedChat: { username: string; avatarKey: string };
+    selectedChat: { id: string; username: string; avatarKey: string };
     currentUser: any;
 }
 
@@ -25,6 +29,7 @@ const ChatList: FunctionComponent<Props> = ({
             content: string;
         }[]
     >([]);
+    const [room, setRoom] = React.useState<string>("");
     const ref = useRef<HTMLInputElement | null>(null);
 
     const changeMessageHandler = (e: any) => {
@@ -37,13 +42,15 @@ const ChatList: FunctionComponent<Props> = ({
             sender: currentUser.username,
             content: message,
         };
-        socket.emit("message", newMessageObj, "123");
+        socket.emit("message", newMessageObj, room);
+        socket.emit("join", room, currentUser.username);
         setMessageBoxes((prevState) => [...prevState, newMessageObj]);
         ref.current!.value = "";
     };
     useEffect(() => {
         if (selectedChat.username !== "") {
-            socket.emit("join", "123", currentUser.username);
+            let roomNumber = [currentUser.id, selectedChat.id].sort().join("");
+            setRoom(roomNumber);
             socket.on("connect", () => {});
             socket.on("disconnect", () => {});
             socket.on("message", (msg) => {
@@ -80,7 +87,11 @@ const ChatList: FunctionComponent<Props> = ({
                     <CloseIcon
                         className="absolute w-8 h-8 text-white hover:text-red-400 right-0 top-0 hover:cursor-pointer"
                         onClick={() =>
-                            setSelectedChat({ username: "", avatarKey: "" })
+                            setSelectedChat({
+                                id: "",
+                                username: "",
+                                avatarKey: "",
+                            })
                         }
                     />
                 </div>
@@ -89,7 +100,7 @@ const ChatList: FunctionComponent<Props> = ({
                         return (
                             <div
                                 key={key}
-                                className="bg-gray-700 text-white p-2 rounded-md mb-2"
+                                className="flex items-center justify-start bg-gray-700 text-white p-2 rounded-md mb-2"
                             >
                                 <Image
                                     height={50}

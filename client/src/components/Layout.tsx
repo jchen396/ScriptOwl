@@ -17,9 +17,10 @@ const Layout = ({ children }: PropsWithChildren) => {
     const [userData, setUserData] = useState<IUser>();
     const [showChatList, setShowChatList] = useState<boolean>(false);
     const [selectedChat, setSelectedChat] = useState<{
+        id: string;
         username: string;
         avatarKey: string;
-    }>({ username: "", avatarKey: "" });
+    }>({ id: "", username: "", avatarKey: "" });
     useEffect(() => {
         authenticate(dispatch);
     }, [dispatch]);
