@@ -20,7 +20,8 @@ const Layout = ({ children }: PropsWithChildren) => {
         id: string;
         username: string;
         avatarKey: string;
-    }>({ id: "", username: "", avatarKey: "" });
+        time: number;
+    }>({ id: "", username: "", avatarKey: "", time: 0 });
     useEffect(() => {
         authenticate(dispatch);
     }, [dispatch]);

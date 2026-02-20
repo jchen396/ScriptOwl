@@ -3,6 +3,7 @@ import { FunctionComponent } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import socket from "./Socket";
+import { time } from "console";
 
 interface Props {
     setSelectedChat: React.Dispatch<
@@ -10,9 +11,15 @@ interface Props {
             id: string;
             username: string;
             avatarKey: string;
+            time: number;
         }>
     >;
-    selectedChat: { id: string; username: string; avatarKey: string };
+    selectedChat: {
+        id: string;
+        username: string;
+        avatarKey: string;
+        time: number;
+    };
     currentUser: any;
 }
 
@@ -27,6 +34,7 @@ const ChatList: FunctionComponent<Props> = ({
             avatarKey: string;
             sender: string;
             content: string;
+            time: number;
         }[]
     >([]);
     const [room, setRoom] = React.useState<string>("");
@@ -41,14 +49,16 @@ const ChatList: FunctionComponent<Props> = ({
             avatarKey: currentUser.avatarKey,
             sender: currentUser.username,
             content: message,
+            time: new Date().getTime(),
         };
+        console.log("time sent: ", newMessageObj.time);
         socket.emit("message", newMessageObj, room);
-        socket.emit("join", room, currentUser.username);
         setMessageBoxes((prevState) => [...prevState, newMessageObj]);
         ref.current!.value = "";
     };
     useEffect(() => {
         if (selectedChat.username !== "") {
+            socket.emit("join", room, currentUser.username);
             let roomNumber = [currentUser.id, selectedChat.id].sort().join("");
             setRoom(roomNumber);
             socket.on("connect", () => {});
@@ -91,6 +101,7 @@ const ChatList: FunctionComponent<Props> = ({
                                 id: "",
                                 username: "",
                                 avatarKey: "",
+                                time: 0,
                             })
                         }
                     />
@@ -118,6 +129,15 @@ const ChatList: FunctionComponent<Props> = ({
                                 <p>
                                     {message.sender}: {message.content}
                                 </p>
+                                <span className="text-xs text-gray-400 ml-2">
+                                    {new Date(message.time).toLocaleTimeString(
+                                        [],
+                                        {
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                        },
+                                    )}
+                                </span>
                             </div>
                         );
                     })}

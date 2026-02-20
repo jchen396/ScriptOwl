@@ -226,12 +226,9 @@ const io = socketIo(server, {
 });
 io.on("connection", (socket) => {
     socket.on("join", (room, username) => {
-        console.log(`✅ ${username} joined room: ${room}`);
         socket.join(room);
     });
-    socket.on("disconnect", () => {
-        console.log("❌ User disconnected:", socket.id);
-    });
+    socket.on("disconnect", () => {});
     socket.on("message", (messageObj, room) => {
         try {
             socket.broadcast.to(room).emit("message", messageObj);

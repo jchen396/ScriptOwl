@@ -12,9 +12,15 @@ interface Props {
             id: string;
             username: string;
             avatarKey: string;
+            time: number;
         }>
     >;
-    selectedChat: { id: string; username: string; avatarKey: string };
+    selectedChat: {
+        id: string;
+        username: string;
+        avatarKey: string;
+        time: number;
+    };
 }
 
 const ChatList: FunctionComponent<Props> = ({
@@ -35,6 +41,7 @@ const ChatList: FunctionComponent<Props> = ({
                                 id: string;
                                 avatarKey: string;
                                 username: string;
+                                time: number;
                             },
                             key: number,
                         ) => {
@@ -50,11 +57,13 @@ const ChatList: FunctionComponent<Props> = ({
                                                   username: friendData.username,
                                                   avatarKey:
                                                       friendData.avatarKey,
+                                                  time: friendData.time,
                                               })
                                             : setSelectedChat({
                                                   id: "",
                                                   username: "",
                                                   avatarKey: "",
+                                                  time: 0,
                                               });
                                     }}
                                 >
