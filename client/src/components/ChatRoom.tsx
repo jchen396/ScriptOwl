@@ -3,7 +3,8 @@ import { FunctionComponent } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import socket from "./Socket";
-import { time } from "console";
+import { MESSAGE_FRIEND } from "@/graphql/mutations/sendMessage";
+import { useMutation } from "@apollo/client";
 
 interface Props {
     setSelectedChat: React.Dispatch<
@@ -28,6 +29,7 @@ const ChatList: FunctionComponent<Props> = ({
     selectedChat,
     currentUser,
 }) => {
+    const [messageFriend] = useMutation(MESSAGE_FRIEND);
     const [message, setMessage] = React.useState<string>("");
     const [messageBoxes, setMessageBoxes] = React.useState<
         {
@@ -43,7 +45,7 @@ const ChatList: FunctionComponent<Props> = ({
     const changeMessageHandler = (e: any) => {
         setMessage(e.target.value);
     };
-    const sendMessage = (e: any) => {
+    const sendMessage = async (e: any) => {
         e.preventDefault();
         let newMessageObj = {
             avatarKey: currentUser.avatarKey,
@@ -51,16 +53,24 @@ const ChatList: FunctionComponent<Props> = ({
             content: message,
             time: new Date().getTime(),
         };
-        console.log("time sent: ", newMessageObj.time);
+        await messageFriend({
+            variables: {
+                roomId: room,
+                senderId: currentUser.id,
+                receiverId: selectedChat.id,
+                content: message,
+                time: newMessageObj.time,
+            },
+        });
         socket.emit("message", newMessageObj, room);
         setMessageBoxes((prevState) => [...prevState, newMessageObj]);
         ref.current!.value = "";
     };
     useEffect(() => {
         if (selectedChat.username !== "") {
-            socket.emit("join", room, currentUser.username);
             let roomNumber = [currentUser.id, selectedChat.id].sort().join("");
             setRoom(roomNumber);
+            socket.emit("join", room);
             socket.on("connect", () => {});
             socket.on("disconnect", () => {});
             socket.on("message", (msg) => {
