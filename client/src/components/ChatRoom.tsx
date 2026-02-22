@@ -3,8 +3,9 @@ import { FunctionComponent } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
 import socket from "./Socket";
-import { MESSAGE_FRIEND } from "@/graphql/mutations/sendMessage";
-import { useMutation } from "@apollo/client";
+import { MESSAGE_FRIEND } from "@/graphql/mutations/messageFriend";
+import { useMutation, useQuery } from "@apollo/client";
+import { CHAT_BY_ROOM_ID } from "@/graphql/queries/chatByRoomId";
 
 interface Props {
     setSelectedChat: React.Dispatch<
@@ -42,6 +43,11 @@ const ChatList: FunctionComponent<Props> = ({
     const [room, setRoom] = React.useState<string>("");
     const ref = useRef<HTMLInputElement | null>(null);
 
+    const { data, error, loading } = useQuery(CHAT_BY_ROOM_ID, {
+        variables: { roomId: room },
+        skip: !room || selectedChat.username === "",
+    });
+
     const changeMessageHandler = (e: any) => {
         setMessage(e.target.value);
     };
@@ -53,24 +59,34 @@ const ChatList: FunctionComponent<Props> = ({
             content: message,
             time: new Date().getTime(),
         };
+        socket.emit("message", newMessageObj, room);
+        setMessageBoxes((prevState) => [...prevState, newMessageObj]);
         await messageFriend({
             variables: {
                 roomId: room,
-                senderId: currentUser.id,
-                receiverId: selectedChat.id,
+                senderUsername: currentUser.username,
+                receiverUsername: selectedChat.username,
                 content: message,
                 time: newMessageObj.time,
+                avatarKey: currentUser.avatarKey,
             },
         });
-        socket.emit("message", newMessageObj, room);
-        setMessageBoxes((prevState) => [...prevState, newMessageObj]);
         ref.current!.value = "";
     };
+    useEffect(() => {
+        console.log("ChatByRoomId data: ", data);
+        if (data?.chatByRoomId) {
+            setMessageBoxes(data.chatByRoomId.messages);
+        }
+    }, [data]);
+
+    useEffect(() => {
+        if (room !== "") socket.emit("join", room);
+    }, [room]);
     useEffect(() => {
         if (selectedChat.username !== "") {
             let roomNumber = [currentUser.id, selectedChat.id].sort().join("");
             setRoom(roomNumber);
-            socket.emit("join", room);
             socket.on("connect", () => {});
             socket.on("disconnect", () => {});
             socket.on("message", (msg) => {

@@ -69,3 +69,17 @@ export interface IPost {
     duration: number;
     thumbnail: string;
 }
+
+export interface IChatMessage {
+    sender: string;
+    receiver: string;
+    content: string;
+    time: number;
+    avatarKey: string;
+}
+
+export interface IChat {
+    readonly id: string;
+    roomId: string;
+    messages: IChatMessage[];
+}

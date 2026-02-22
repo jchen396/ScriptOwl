@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 // Mongoose models
 import { User } from "../models/User";
 import { Post } from "../models/Post";
+import { Chat } from "../models/Chat";
 import {
     GraphQLObjectType,
     GraphQLID,
@@ -14,6 +15,7 @@ import {
     GraphQLNonNull,
     GraphQLError,
     GraphQLBoolean,
+    GraphQLFloat,
 } from "graphql";
 import { createTokens } from "../src/modules/auth";
 
@@ -123,6 +125,32 @@ const PostType = new GraphQLObjectType({
                 return User.findById(parent.publisher);
             },
         },
+    }),
+});
+const ChatMessageType = new GraphQLObjectType({
+    name: "ChatMessage",
+    fields: () => ({
+        id: { type: GraphQLID },
+        sender: {
+            type: GraphQLString,
+        },
+        receiver: {
+            type: GraphQLString,
+        },
+        content: { type: GraphQLString },
+        time: { type: GraphQLFloat },
+        avatarKey: { type: GraphQLString },
+        createdAt: {
+            type: DateType,
+        },
+    }),
+});
+const ChatType = new GraphQLObjectType({
+    name: "Chat",
+    fields: () => ({
+        id: { type: GraphQLID },
+        roomId: { type: GraphQLString },
+        messages: { type: new GraphQLList(ChatMessageType) },
     }),
 });
 // Follow Data Type
@@ -282,6 +310,20 @@ const RootQuery = new GraphQLObjectType({
                         return err;
                     }
                 });
+            },
+        },
+        chatByRoomId: {
+            type: ChatType,
+            args: {
+                roomId: { type: new GraphQLNonNull(GraphQLString) },
+            },
+            async resolve(_, args) {
+                try {
+                    const chat = await Chat.findOne({ roomId: args.roomId });
+                    return chat;
+                } catch (err) {
+                    console.error("Error fetching chat messages:", err);
+                }
             },
         },
     },
@@ -979,6 +1021,38 @@ const mutation = new GraphQLObjectType({
                     { new: true },
                 );
                 return post;
+            },
+        },
+        messageFriend: {
+            type: ChatType,
+            args: {
+                roomId: { type: new GraphQLNonNull(GraphQLID) },
+                senderUsername: { type: new GraphQLNonNull(GraphQLString) },
+                receiverUsername: { type: new GraphQLNonNull(GraphQLString) },
+                content: { type: new GraphQLNonNull(GraphQLString) },
+                time: { type: new GraphQLNonNull(GraphQLFloat) },
+                avatarKey: { type: new GraphQLNonNull(GraphQLString) },
+            },
+            async resolve(_, args) {
+                await Promise.all([
+                    Chat.findOneAndUpdate(
+                        { roomId: args.roomId },
+                        {
+                            $push: {
+                                messages: {
+                                    id: new mongoose.Types.ObjectId(),
+                                    sender: args.senderUsername,
+                                    receiver: args.receiverUsername,
+                                    content: args.content,
+                                    time: args.time,
+                                    avatarKey: args.avatarKey,
+                                    createdAt: new Date(),
+                                },
+                            },
+                        },
+                        { upsert: true, new: true },
+                    ),
+                ]);
             },
         },
     },
