@@ -6,6 +6,7 @@ import socket from "./Socket";
 import { MESSAGE_FRIEND } from "@/graphql/mutations/messageFriend";
 import { useMutation, useQuery } from "@apollo/client";
 import { CHAT_BY_ROOM_ID } from "@/graphql/queries/chatByRoomId";
+import Link from "next/link";
 
 interface Props {
     setSelectedChat: React.Dispatch<
@@ -74,7 +75,6 @@ const ChatList: FunctionComponent<Props> = ({
         ref.current!.value = "";
     };
     useEffect(() => {
-        console.log("ChatByRoomId data: ", data);
         if (data?.chatByRoomId) {
             setMessageBoxes(data.chatByRoomId.messages);
         }
@@ -99,6 +99,12 @@ const ChatList: FunctionComponent<Props> = ({
             };
         }
     }, [selectedChat.username]);
+
+    const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messageBoxes]); // runs whenever messages update
 
     return (
         <div className="fixed h-1/2 bottom-0 left-0 w-1/4 bg-black border-2 z-10 p-2">
@@ -132,12 +138,12 @@ const ChatList: FunctionComponent<Props> = ({
                         }
                     />
                 </div>
-                <div className="flex-1 w-full bg-gray-900 overflow-y-auto p-2 mt-2">
+                <div className="flex-1 w-full bg-gray-900 overflow-y-auto hide-scrollbar overflow-x-hidden p-2 mt-2">
                     {messageBoxes.map((message, key) => {
                         return (
                             <div
                                 key={key}
-                                className="flex items-center justify-start bg-gray-700 text-white p-2 rounded-md mb-2"
+                                className="flex relative items-center justify-start bg-gray-700 text-white p-2 rounded-md mb-2"
                             >
                                 <Image
                                     height={50}
@@ -153,9 +159,18 @@ const ChatList: FunctionComponent<Props> = ({
                                     alt="user photo"
                                 />
                                 <p>
-                                    {message.sender}: {message.content}
+                                    <Link
+                                        href={{
+                                            pathname: `/user/${message.sender}`,
+                                        }}
+                                    >
+                                        <span className="text-yellow-600 hover:underline hover:cursor-pointer">
+                                            {message.sender}
+                                        </span>
+                                    </Link>
+                                    : {message.content}
                                 </p>
-                                <span className="text-xs text-gray-400 ml-2">
+                                <span className="absolute right-1 bottom-1 text-xs text-gray-400 ml-2">
                                     {new Date(message.time).toLocaleTimeString(
                                         [],
                                         {
@@ -167,6 +182,7 @@ const ChatList: FunctionComponent<Props> = ({
                             </div>
                         );
                     })}
+                    <div ref={messagesEndRef} />
                 </div>
 
                 <form

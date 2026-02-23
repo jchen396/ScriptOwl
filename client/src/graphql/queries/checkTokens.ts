@@ -7,29 +7,20 @@ export const CHECK_TOKENS = gql`
             username
             email
             points
-            followers {
-                id
-            }
-            following {
-                id
-            }
-            friends {
-                id
-            }
             avatarKey
             likedCommentsIds
             dislikedCommentsIds
             likedPostsIds
             dislikedPostsIds
             uploadedPostIds
-            isVerified
-            verificationCode
             watchHistory {
                 postId
                 createdAt {
                     date
                 }
             }
+            isVerified
+            verificationCode
         }
     }
 `;
