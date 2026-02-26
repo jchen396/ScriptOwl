@@ -13,6 +13,15 @@ export const CHECK_TOKENS = gql`
             likedPostsIds
             dislikedPostsIds
             uploadedPostIds
+            following {
+                id
+            }
+            followers {
+                id
+            }
+            friends {
+                id
+            }
             watchHistory {
                 postId
                 createdAt {

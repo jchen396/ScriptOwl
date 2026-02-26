@@ -13,6 +13,15 @@ export const LOG_IN_USER = gql`
             likedPostsIds
             dislikedPostsIds
             uploadedPostIds
+            following {
+                id
+            }
+            followers {
+                id
+            }
+            friends {
+                id
+            }
             watchHistory {
                 postId
                 createdAt {
