@@ -44,14 +44,19 @@ const WatchedPostType = new GraphQLObjectType({
         },
     }),
 });
-
-const FollowPayloadData = new GraphQLObjectType({
-    name: "FollowPayloadData",
-    fields: {
-        userId: { type: GraphQLID },
-        username: { type: GraphQLString },
-    },
-});
+const resolveUserList = (parent: any, field: string) => {
+    return parent[field]?.map((item: any) => {
+        // If it's already a populated object
+        if (item && typeof item === "object" && (item._id || item.username)) {
+            return {
+                ...(item.toObject ? item.toObject() : item),
+                id: item._id?.toString() || item.id?.toString(),
+            };
+        }
+        // Raw ID, convert to string
+        return { id: item.toString() };
+    });
+};
 // User Type
 const UserType = new GraphQLObjectType({
     name: "User",
@@ -63,9 +68,18 @@ const UserType = new GraphQLObjectType({
         email: { type: GraphQLID },
         emailLower: { type: GraphQLString },
         points: { type: GraphQLInt },
-        followers: { type: new GraphQLList(UserType) },
-        following: { type: new GraphQLList(UserType) },
-        friends: { type: new GraphQLList(UserType) },
+        followers: {
+            type: new GraphQLList(UserType),
+            resolve: (parent) => resolveUserList(parent, "followers"),
+        },
+        following: {
+            type: new GraphQLList(UserType),
+            resolve: (parent) => resolveUserList(parent, "following"),
+        },
+        friends: {
+            type: new GraphQLList(UserType),
+            resolve: (parent) => resolveUserList(parent, "friends"),
+        },
         avatarKey: { type: GraphQLString },
         likedCommentsIds: { type: new GraphQLList(GraphQLID) },
         dislikedCommentsIds: { type: new GraphQLList(GraphQLID) },
@@ -152,15 +166,6 @@ const ChatType = new GraphQLObjectType({
         roomId: { type: GraphQLString },
         messages: { type: new GraphQLList(ChatMessageType) },
     }),
-});
-// Follow Data Type
-const FollowDataType = new GraphQLObjectType({
-    name: "FollowData",
-    fields: {
-        following: { type: new GraphQLList(FollowPayloadData) },
-        followers: { type: new GraphQLList(FollowPayloadData) },
-        friends: { type: new GraphQLList(FollowPayloadData) },
-    },
 });
 // Queries
 const RootQuery = new GraphQLObjectType({
@@ -877,12 +882,14 @@ const mutation = new GraphQLObjectType({
                 const [userFollowsPublisher, publisherFollowsUser] =
                     await Promise.all([
                         User.exists({
-                            _id: args.userId,
-                            following: args.publisherId,
+                            _id: new mongoose.Types.ObjectId(args.userId),
+                            following: new mongoose.Types.ObjectId(
+                                args.publisherId,
+                            ),
                         }),
                         User.exists({
-                            _id: args.publisherId,
-                            followers: args.userId,
+                            _id: new mongoose.Types.ObjectId(args.publisherId),
+                            followers: new mongoose.Types.ObjectId(args.userId),
                         }),
                     ]);
 
@@ -935,12 +942,14 @@ const mutation = new GraphQLObjectType({
                 const [userFollowsPublisher, publisherFollowsUser] =
                     await Promise.all([
                         User.exists({
-                            _id: args.userId,
-                            following: args.publisherId,
+                            _id: new mongoose.Types.ObjectId(args.userId),
+                            following: new mongoose.Types.ObjectId(
+                                args.publisherId,
+                            ),
                         }),
                         User.exists({
-                            _id: args.publisherId,
-                            followers: args.userId,
+                            _id: new mongoose.Types.ObjectId(args.publisherId),
+                            followers: new mongoose.Types.ObjectId(args.userId),
                         }),
                     ]);
 
