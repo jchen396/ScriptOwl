@@ -1,21 +1,21 @@
 FROM node:18-slim
 
-COPY ./server /server
+WORKDIR /server
 
+COPY ./server .
 COPY ./types /types
 
-WORKDIR server
+RUN apt-get update && apt-get install -y \
+ffmpeg \
+python3-pip \
+python-is-python3 \
+portaudio19-dev \
+&& rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update 
-
-RUN apt-get install -y ffmpeg
-
-RUN apt-get install -y python3-pip 
 
 RUN pip install -r requirements.txt --upgrade --break-system-packages
 
-RUN apt-get install -y python-is-python3 \
-    && npm install
+RUN npm install
 
 EXPOSE 5000
 

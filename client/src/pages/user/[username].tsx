@@ -78,7 +78,6 @@ const Profile: FunctionComponent<Props> = () => {
             setVideosLoading(false);
         }
     }, [targetUser, showUpload]);
-    console.log(targetUser?.avatarKey);
     return (
         <>
             <div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
@@ -98,7 +97,7 @@ const Profile: FunctionComponent<Props> = () => {
                                         className="w-32 h-32 rounded"
                                         src={
                                             targetUser.avatarKey.startsWith(
-                                                "https://lh3.googleusercontent.com"
+                                                "https://lh3.googleusercontent.com",
                                             )
                                                 ? targetUser.avatarKey
                                                 : `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${targetUser.avatarKey}`
@@ -109,6 +108,7 @@ const Profile: FunctionComponent<Props> = () => {
                                         <FollowButton
                                             publisherId={targetUser.id}
                                             currentUser={currentUser}
+                                            publisherName={targetUser.username}
                                         />
                                     ) : (
                                         <></>

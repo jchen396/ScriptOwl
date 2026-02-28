@@ -19,10 +19,10 @@ const FollowButton: React.FunctionComponent<Props> = ({
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const router = useRouter();
     const [isFollowing, setIsFollowing] = useState<boolean>(
-        currentUser?.following?.some((u) => u.userId === publisherId),
+        currentUser?.following?.some((u) => u.id === publisherId),
     );
     const [followStatus, setFollowStatus] = useState<string>(
-        currentUser?.following?.some((u) => u.userId === publisherId)
+        currentUser?.following?.some((u) => u.id === publisherId)
             ? "✔ Following"
             : "Follow",
     );
