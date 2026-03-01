@@ -8,5 +8,12 @@
         "outDir": "./dist",
         "moduleDetection": "force",
         "esModuleInterop": true
-    }
+    },
+    "include": [
+        "src/**/*",
+        "models/**/*",
+        "config/**/*",
+        "schema/**/*",
+        "../types/**/*"
+    ]
 }
