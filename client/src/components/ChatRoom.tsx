@@ -107,7 +107,7 @@ const ChatList: FunctionComponent<Props> = ({
     }, [messageBoxes]); // runs whenever messages update
 
     return (
-        <div className="fixed h-1/2 bottom-0 left-0 w-1/4 bg-black border-2 z-10 p-2">
+        <div className="fixed h-2/3 lg:h-1/2 bottom-0 left-0 w-full lg:w-1/4 bg-black border-2 z-10 p-2">
             <div className="flex flex-col h-full w-full justify-between items-center">
                 <div className="flex h-12 w-full justify-center items-center space-x-2 border-b-2 border-gray-400 bg-black p-2">
                     <Image
