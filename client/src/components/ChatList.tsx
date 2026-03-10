@@ -44,6 +44,7 @@ const ChatList: FunctionComponent<Props> = ({
                 status === "online"
                     ? updated.add(userId)
                     : updated.delete(userId);
+                console.log(updated);
                 return updated;
             });
         });
@@ -88,19 +89,26 @@ const ChatList: FunctionComponent<Props> = ({
                                               });
                                     }}
                                 >
-                                    <Image
-                                        height={50}
-                                        width={50}
-                                        className="w-10 h-10 rounded-full"
-                                        src={
-                                            friendData?.avatarKey.startsWith(
-                                                "https://lh3.googleusercontent.com",
-                                            )
-                                                ? friendData?.avatarKey
-                                                : `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${friendData?.avatarKey}`
-                                        }
-                                        alt="user photo"
-                                    />
+                                    <div className="relative w-10 h-10 rounded-full">
+                                        <Image
+                                            className="rounded-full"
+                                            height={50}
+                                            width={50}
+                                            src={
+                                                friendData?.avatarKey.startsWith(
+                                                    "https://lh3.googleusercontent.com",
+                                                )
+                                                    ? friendData?.avatarKey
+                                                    : `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${friendData?.avatarKey}`
+                                            }
+                                            alt="user photo"
+                                        />
+
+                                        <div
+                                            className={`absolute border-2 border-black rounded-full w-4 h-4 ${onlineUsers.has(friendData.id) ? "bg-green-400" : "bg-gray-400"} right-0 bottom-0`}
+                                        ></div>
+                                    </div>
+
                                     <p className="text-white text-md">
                                         {friendData.username}
                                     </p>
