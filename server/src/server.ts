@@ -224,11 +224,25 @@ const io = socketIo(server, {
         methods: ["GET", "POST"],
     },
 });
+
+const onlineUsers = new Map(); // userId -> socketId
 io.on("connection", (socket) => {
+    socket.on("user:online", (userId) => {
+        onlineUsers.set(userId, socket.id);
+        io.emit("user:status", { userId, status: "online" });
+    });
     socket.on("join", (room, username) => {
         socket.join(room);
     });
-    socket.on("disconnect", () => {});
+    socket.on("disconnect", () => {
+        for (const [userId, socketId] of onlineUsers.entries()) {
+            if (socketId === socket.id) {
+                onlineUsers.delete(userId);
+                io.emit("user:status", { userId, status: "offline" });
+                break;
+            }
+        }
+    });
     socket.on("message", (messageObj, room) => {
         try {
             socket.broadcast.to(room).emit("message", messageObj);

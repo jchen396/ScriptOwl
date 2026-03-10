@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FunctionComponent } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Image from "next/image";
@@ -88,13 +88,11 @@ const ChatList: FunctionComponent<Props> = ({
             let roomNumber = [currentUser.id, selectedChat.id].sort().join("");
             setRoom(roomNumber);
             socket.on("connect", () => {});
-            socket.on("disconnect", () => {});
             socket.on("message", (msg) => {
                 setMessageBoxes((prevState) => [...prevState, msg]);
             });
             return () => {
                 socket.off("connect");
-                socket.off("disconnect");
                 socket.off("message");
             };
         }

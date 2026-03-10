@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IUser } from "./../../../types/types";
 import { FunctionComponent } from "react";
 import { useQuery } from "@apollo/client";
 import { GET_AVATAR_KEYS_BY_ID } from "@/graphql/queries/getAvatarKeysById";
 import Image from "next/image";
+import socket from "./Socket";
 
 interface Props {
     userData?: IUser;
@@ -28,9 +29,29 @@ const ChatList: FunctionComponent<Props> = ({
     setSelectedChat,
     selectedChat,
 }) => {
+    const [onlineUsers, setOnlineUsers] = useState(new Set());
     const { data, error } = useQuery(GET_AVATAR_KEYS_BY_ID, {
         variables: { id: userData?.id },
     });
+    useEffect(() => {
+        // Announce self as online
+        socket.emit("user:online", userData?.id);
+        socket.on("disconnect", () => {});
+        // Listen for status updates
+        socket.on("user:status", ({ userId, status }) => {
+            setOnlineUsers((prev) => {
+                const updated = new Set(prev);
+                status === "online"
+                    ? updated.add(userId)
+                    : updated.delete(userId);
+                return updated;
+            });
+        });
+        return () => {
+            socket.off("user:status");
+            socket.off("disconnect");
+        };
+    }, []);
     return (
         <>
             <div className="h-20 border-t-2 border-white z-10 bg-black w-full">
