@@ -8,6 +8,7 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import Footer from "./Footer";
 import ChatList from "./ChatList";
 import ChatRoom from "./ChatRoom";
+import socket from "./Socket";
 
 interface LayoutProps {}
 
@@ -22,6 +23,26 @@ const Layout = ({ children }: PropsWithChildren) => {
         avatarKey: string;
         time: number;
     }>({ id: "", username: "", avatarKey: "", time: 0 });
+    const [onlineUsers, setOnlineUsers] = useState(new Set<string | null>());
+    useEffect(() => {
+        // Announce self as online
+        socket.emit("user:online", userData?.id);
+        socket.on("disconnect", () => {});
+        // Listen for status updates
+        socket.on("user:status", ({ userId, status }) => {
+            setOnlineUsers((prev) => {
+                const updated = new Set(prev);
+                status === "online"
+                    ? updated.add(userId)
+                    : updated.delete(userId);
+                return updated;
+            });
+        });
+        return () => {
+            socket.off("user:status");
+            socket.off("disconnect");
+        };
+    }, []);
     useEffect(() => {
         authenticate(dispatch);
     }, [dispatch]);
@@ -56,6 +77,7 @@ const Layout = ({ children }: PropsWithChildren) => {
                                         userData={userData}
                                         setSelectedChat={setSelectedChat}
                                         selectedChat={selectedChat}
+                                        onlineUsers={onlineUsers}
                                     />
                                 ) : (
                                     <></>
