@@ -44,7 +44,7 @@ const Post: FunctionComponent<Props> = () => {
                 return;
             }
             const videoData = JSON.parse(
-                result.result.replace(/(\r\n|\n|\r)/gm, "")
+                result.result.replace(/(\r\n|\n|\r)/gm, ""),
             );
             const { data } = await addPost({
                 variables: {
@@ -77,6 +77,7 @@ const Post: FunctionComponent<Props> = () => {
             console.log(youtubeURL);
             axios.post(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}youtube`, {
                 youtubeURL,
+                downloadVideo: true,
             });
         } catch (e) {
             setErrorMessage(e);

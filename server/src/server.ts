@@ -199,6 +199,10 @@ app.post("/sendgrid", async (req, res) => {
 app.post("/youtube", async (req, res) => {
     try {
         let youtubeURL = req.body.youtubeURL;
+        const downloadVideo = req.body.downloadVideo ?? false;
+        if (downloadVideo) {
+            // spawn python script for downloading youtube video through url
+        }
         let result;
         const scriptPath = `${__dirname}/uploads/get_transcript_by_url.py`;
         const pythonScript = spawn("python", [scriptPath, youtubeURL]);
