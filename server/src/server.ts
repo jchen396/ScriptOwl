@@ -201,7 +201,21 @@ app.post("/youtube", async (req, res) => {
         let youtubeURL = req.body.youtubeURL;
         const downloadVideo = req.body.downloadVideo ?? false;
         if (downloadVideo) {
-            // spawn python script for downloading youtube video through url
+            const downloadPath = `${__dirname}/uploads/download_yt_video.py`;
+            const pythonYTDownload = spawn("python", [
+                downloadPath,
+                youtubeURL,
+            ]);
+            pythonYTDownload.stdout.on("data", (data) => {
+                result = data.toString("utf-8");
+            });
+            pythonYTDownload.on("close", async () => {
+                // upload the rest of the content to s3
+                res.send({ result }).status(200);
+            });
+            pythonYTDownload.on("error", (err) => {
+                console.log("Error: ", err);
+            });
         }
         let result;
         const scriptPath = `${__dirname}/uploads/get_transcript_by_url.py`;
