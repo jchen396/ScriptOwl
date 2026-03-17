@@ -73,6 +73,57 @@ const PostForm: React.FC<Props> = ({
                             className="w-full text-black"
                         />
                     </div>
+                    <div>
+                        <label
+                            htmlFor="title"
+                            className="block mb-2 text-sm text-gray-900 dark:text-white"
+                        >
+                            Title
+                        </label>
+                        <input
+                            type="text"
+                            id="title"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label
+                            htmlFor="description"
+                            className="block mb-2 text-sm text-gray-900 dark:text-white"
+                        >
+                            Description
+                        </label>
+                        <textarea
+                            id="description"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label
+                            htmlFor="categories"
+                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                            Category
+                        </label>
+                        <select
+                            id="categories"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            onChange={(e) => setCategory(e.target.value)}
+                            defaultValue="DEFAULT"
+                        >
+                            <option value="DEFAULT" disabled>
+                                Choose a category...
+                            </option>
+                            <option value="entertainment">Entertainment</option>
+                            <option value="music">Music</option>
+                            <option value="education">Education</option>
+                            <option value="sports">Sports</option>
+                            <option value="comedy">Comedy</option>
+                        </select>
+                    </div>
                     <button
                         type="button"
                         className={`text-white bg-blue-700 hover:bg-black border-blue-700 border-2 hover:text-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-md w-full sm:w-auto px-5 py-2.5 text-center 
