@@ -7,6 +7,7 @@ import { postVideo } from "@/functions/s3_functions/postVideo";
 import PostForm from "@/components/Post/PostForm";
 import { updateUser } from "@/redux/apiCalls";
 import axios from "axios";
+import { postYoutube } from "@/functions/s3_functions/postYoutube";
 
 type Props = {};
 
@@ -74,11 +75,32 @@ const Post: FunctionComponent<Props> = () => {
             setErrorMessage("");
             e.preventDefault();
             setPosted(true);
-            console.log(youtubeURL);
-            axios.post(`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}youtube`, {
-                youtubeURL,
-                downloadVideo: true,
+            let result;
+            if (title === undefined || title === "") {
+                setPosted(false);
+                setErrorMessage("Please provide a title for the post.");
+                return;
+            }
+            result = await postYoutube(youtubeURL, title);
+            const videoData = JSON.parse(
+                result.result.replace(/(\r\n|\n|\r)/gm, ""),
+            );
+            const { data } = await addPost({
+                variables: {
+                    videoKey: result.key,
+                    title,
+                    description,
+                    category,
+                    publisher: currentUser.id,
+                    transcript: videoData.text,
+                    duration: videoData.duration,
+                    thumbnail: result.thumbnailKey,
+                },
             });
+            setSuccessMessage("Uploaded successfully!");
+            updateUser(dispatch, data.addPost);
+            setErrorMessage("");
+            setPosted(false);
         } catch (e) {
             setErrorMessage(e);
             setSuccessMessage("");

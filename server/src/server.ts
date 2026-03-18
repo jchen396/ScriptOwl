@@ -196,40 +196,55 @@ app.post("/sendgrid", async (req, res) => {
     }
 });
 
-app.post("/youtube", async (req, res) => {
+app.post("/youtube", upload.single("video"), async (req, res) => {
     try {
         let youtubeURL = req.body.youtubeURL;
         const downloadVideo = req.body.downloadVideo ?? false;
+        let result;
         if (downloadVideo) {
+            let filename = req.body.title;
             const downloadPath = `${__dirname}/uploads/download_yt_video.py`;
             const pythonYTDownload = spawn("python", [
                 downloadPath,
                 youtubeURL,
+                filename,
             ]);
             pythonYTDownload.stdout.on("data", (data) => {
-                result = data.toString("utf-8");
+                result = data.toString();
             });
+            pythonYTDownload.stderr.on("data", (data) => {
+                console.error(`stderr: ${data}`);
+            });
+            const file = {
+                path: `${__dirname}/uploads/${filename}.mp4`,
+                filename: `${filename}.mp4`,
+            };
             pythonYTDownload.on("close", async () => {
                 // upload the rest of the content to s3
-                res.send({ result }).status(200);
+                const key = await uploadVideo(file);
+                const thumbnailKey = await uploadThumbnail(`${filename}.jpg`);
+                await unlinkFile(file.path);
+                const thumbnailPath = `${__dirname}/uploads/${filename}.jpg`;
+                await unlinkFile(thumbnailPath);
+                res.send({ key, result, thumbnailKey }).status(200);
             });
             pythonYTDownload.on("error", (err) => {
                 console.log("Error: ", err);
             });
+        } else {
+            const scriptPath = `${__dirname}/uploads/get_transcript_by_url.py`;
+            const pythonScript = spawn("python", [scriptPath, youtubeURL]);
+            pythonScript.stdout.on("data", (data) => {
+                result = data.toString("utf-8");
+            });
+            pythonScript.on("close", async () => {
+                // upload the rest of the content to s3
+                res.send({ result }).status(200);
+            });
+            pythonScript.on("error", (err) => {
+                console.log("Error: ", err);
+            });
         }
-        let result;
-        const scriptPath = `${__dirname}/uploads/get_transcript_by_url.py`;
-        const pythonScript = spawn("python", [scriptPath, youtubeURL]);
-        pythonScript.stdout.on("data", (data) => {
-            result = data.toString("utf-8");
-        });
-        pythonScript.on("close", async () => {
-            // upload the rest of the content to s3
-            res.send({ result }).status(200);
-        });
-        pythonScript.on("error", (err) => {
-            console.log("Error: ", err);
-        });
     } catch (e) {}
 });
 
