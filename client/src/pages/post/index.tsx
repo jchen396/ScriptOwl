@@ -32,12 +32,12 @@ const Post: FunctionComponent<Props> = () => {
             e.preventDefault();
             setPosted(true);
             let result;
-            if (title === undefined || title === "") {
-                setPosted(false);
-                setErrorMessage("Please provide a title for the post.");
-                return;
-            }
             if (videoFile) {
+                if (title === undefined || title === "") {
+                    setPosted(false);
+                    setErrorMessage("Please provide a title for the post.");
+                    return;
+                }
                 result = await postVideo({ videoFile });
             } else {
                 setPosted(false);
@@ -76,12 +76,29 @@ const Post: FunctionComponent<Props> = () => {
             e.preventDefault();
             setPosted(true);
             let result;
+            const isValidYouTubeURL = (url: string): boolean => {
+                const regex =
+                    /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]{11}(&.*)?$/;
+                return regex.test(url);
+            };
+
+            if (youtubeURL !== "" && isValidYouTubeURL(youtubeURL)) {
+                if (title === undefined || title === "") {
+                    setPosted(false);
+                    setErrorMessage("Please provide a title for the post.");
+                    return;
+                }
+                result = await postYoutube(youtubeURL, title);
+            } else {
+                setPosted(false);
+                setErrorMessage("Please enter a valid youtube video link.");
+                return;
+            }
             if (title === undefined || title === "") {
                 setPosted(false);
                 setErrorMessage("Please provide a title for the post.");
                 return;
             }
-            result = await postYoutube(youtubeURL, title);
             const videoData = JSON.parse(
                 result.result.replace(/(\r\n|\n|\r)/gm, ""),
             );

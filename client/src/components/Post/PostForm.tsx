@@ -58,6 +58,28 @@ const PostForm: React.FC<Props> = ({
             </button>
             {youtubeOption ? (
                 <form className="flex flex-col space-y-4 border-2 rounded border-slate-100 bg-transparent text-slate-100 w-100 p-10 w-3/4 lg:w-1/3 md:p-16">
+                    {successMessage && (
+                        <div className="bg-green-500 p-4 rounded flex flex-row justify-between items-center space-x-2">
+                            <CheckCircleIcon className="text-green-900" />
+                            <span className="text-black ">
+                                Uploaded successfully!
+                            </span>
+                            <CloseIcon
+                                className="hover:cursor-pointer text-green-900"
+                                onClick={() => setSuccessMessage("")}
+                            />
+                        </div>
+                    )}
+                    {errorMessage && (
+                        <div className="w-full flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4 space-x-2">
+                            <ErrorIcon />
+                            <p>{errorMessage}</p>
+                            <CloseIcon
+                                className="hover:cursor-pointer"
+                                onClick={() => setErrorMessage("")}
+                            />
+                        </div>
+                    )}
                     <div>
                         <label
                             htmlFor="video"
