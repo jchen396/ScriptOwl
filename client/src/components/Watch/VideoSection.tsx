@@ -167,6 +167,8 @@ const VideoSection: React.FunctionComponent<Props> = ({
                     height="auto"
                     controls={true}
                 />
+                <p className="text-4xl text-white">{post.title}</p>
+                <p className="text-gray-500">{post.description}</p>
 
                 <div className="w-[90%] flex flex-row justify-between items-center text-white text-2xl">
                     <div className="flex flex-col items-start">
