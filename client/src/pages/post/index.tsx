@@ -33,6 +33,21 @@ const Post: FunctionComponent<Props> = () => {
             setPosted(true);
             let result;
             if (videoFile) {
+                const ACCEPTED_TYPES = [
+                    "video/mp4",
+                    "video/quicktime", // .mov
+                    "video/x-msvideo", // .avi
+                    "video/x-matroska", // .mkv
+                    "video/webm",
+                    "video/mp2t", // .mts
+                ];
+                if (!ACCEPTED_TYPES.includes(videoFile.type)) {
+                    setPosted(false);
+                    setErrorMessage(
+                        `Unsupported format. Please upload: MP4, MOV, AVI, MKV, WebM, or MTS.`,
+                    );
+                    return;
+                }
                 if (title === undefined || title === "") {
                     setPosted(false);
                     setErrorMessage("Please provide a title for the post.");

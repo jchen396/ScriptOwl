@@ -210,8 +210,9 @@ const PostForm: React.FC<Props> = ({
                             />
                         </div>
                     )}
-                    <p className="text-gray-700 self-center">
-                        Make sure the video file is in .mp4 format
+                    <p className="text-gray-500 self-center">
+                        Make sure the video file is in MP4, MOV, AVI, MKV, WebM,
+                        or MTS format.
                     </p>
                     <div>
                         <label
@@ -225,6 +226,7 @@ const PostForm: React.FC<Props> = ({
                                 if (!e.target.files) return;
                                 setVideoFile(e.target.files[0]);
                             }}
+                            accept="video/mp4,video/quicktime,video/x-msvideo,video/x-matroska,video/webm,video/mov"
                             type="file"
                             className="w-full"
                         />
