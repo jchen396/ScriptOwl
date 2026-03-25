@@ -27,7 +27,7 @@ const Pricing = (props: Props) => {
                 <link rel="icon" href="/img/ScriptOwl_logo_transparent.png" />
             </Head>
             <h1 className="text-4xl font-medium text-slate-100">Pricing</h1>
-            <div className="flex flex-col space-y-4 lg:flex-row space-x-4 justify-center items-center">
+            <div className="flex flex-col space-y-4 lg:flex-row space-x-4 justify-around items-center">
                 <div className="w-80 h-160 flex flex-col border-2 border-white rounded text-white p-4 space-x-6">
                     <h2 className="self-center text-2xl py-4">Free Tier</h2>
                     <hr className="border-gray-500 border-1 opacity-50" />

@@ -160,14 +160,19 @@ const VideoSection: React.FunctionComponent<Props> = ({
 
     return (
         <div className="basis-2/3 w-full h-full flex justify-center items-center">
-            <div className="flex flex-col justify-center items-center space-y-2">
-                <ReactPlayer
-                    url={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}
-                    width="90%"
-                    height="auto"
-                    controls={true}
+            <div className="w-[80%] flex flex-col justify-center items-center space-y-2">
+                <video
+                    src={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}
+                    width="1080"
+                    height="720"
+                    style={{
+                        aspectRatio: "16/9",
+                        objectFit: "contain",
+                        backgroundColor: "#000",
+                    }}
+                    controls
                 />
-                <p className="text-4xl text-white">{post.title}</p>
+                <p className="truncate text-4xl text-white">{post.title}</p>
                 <p className="text-gray-500">{post.description}</p>
 
                 <div className="w-[90%] flex flex-row justify-between items-center text-white text-2xl">
