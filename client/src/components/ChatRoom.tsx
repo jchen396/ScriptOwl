@@ -7,6 +7,7 @@ import { MESSAGE_FRIEND } from "@/graphql/mutations/messageFriend";
 import { useMutation, useQuery } from "@apollo/client";
 import { CHAT_BY_ROOM_ID } from "@/graphql/queries/chatByRoomId";
 import Link from "next/link";
+import { MARK_CHAT_AS_READ } from "@/graphql/mutations/markChatAsRead";
 
 interface Props {
     setSelectedChat: React.Dispatch<
@@ -31,6 +32,7 @@ const ChatList: FunctionComponent<Props> = ({
     selectedChat,
     currentUser,
 }) => {
+    const [markChatAsRead] = useMutation(MARK_CHAT_AS_READ);
     const [messageFriend] = useMutation(MESSAGE_FRIEND);
     const [message, setMessage] = React.useState<string>("");
     const [messageBoxes, setMessageBoxes] = React.useState<
@@ -82,8 +84,18 @@ const ChatList: FunctionComponent<Props> = ({
 
     useEffect(() => {
         if (room !== "") socket.emit("join", room);
+        const readChat = async () => {
+            await markChatAsRead({
+                variables: {
+                    roomId: room,
+                    userId: currentUser.id,
+                },
+            });
+        };
+        readChat();
     }, [room]);
     useEffect(() => {
+        // UPON OPENING A CHAT ROOM
         if (selectedChat.username !== "") {
             let roomNumber = [currentUser.id, selectedChat.id].sort().join("");
             setRoom(roomNumber);

@@ -16,6 +16,7 @@ import {
     GraphQLError,
     GraphQLBoolean,
     GraphQLFloat,
+    GraphQLScalarType,
 } from "graphql";
 import { createTokens } from "../src/modules/auth";
 
@@ -160,12 +161,31 @@ const ChatMessageType = new GraphQLObjectType({
         readBy: { type: new GraphQLList(GraphQLID) },
     }),
 });
+const LastReadAtType = new GraphQLObjectType({
+    name: "LastReadAt",
+    fields: () => ({
+        userId: { type: GraphQLString },
+        readAt: { type: GraphQLString },
+    }),
+});
 const ChatType = new GraphQLObjectType({
     name: "Chat",
     fields: () => ({
         id: { type: GraphQLID },
         roomId: { type: GraphQLString },
         messages: { type: new GraphQLList(ChatMessageType) },
+        lastReadAt: {
+            type: new GraphQLList(LastReadAtType),
+            resolve: (chat) => {
+                // Convert the Map into an array GraphQL can understand
+                return Array.from(chat.lastReadAt.entries()).map(
+                    ([userId, readAt]) => ({
+                        userId,
+                        readAt,
+                    }),
+                );
+            },
+        },
     }),
 });
 // Queries
@@ -1057,13 +1077,27 @@ const mutation = new GraphQLObjectType({
                                     time: args.time,
                                     avatarKey: args.avatarKey,
                                     createdAt: new Date(),
-                                    readBy: [],
                                 },
                             },
                         },
                         { upsert: true, new: true },
                     ),
                 ]);
+            },
+        },
+        markChatAsRead: {
+            type: ChatType,
+            args: {
+                roomId: { type: GraphQLID },
+                userId: { type: GraphQLID },
+            },
+            resolve: async (_, args) => {
+                const chat = await Chat.findOneAndUpdate(
+                    { roomId: args.roomId },
+                    { $set: { [`lastReadAt.${args.userId}`]: new Date() } },
+                    { new: true }, // return updated document
+                );
+                return chat;
             },
         },
     },

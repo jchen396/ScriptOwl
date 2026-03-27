@@ -8,6 +8,11 @@ const chatSchema = new Schema<IChat>(
     {
         roomId: { type: String, required: true, unique: true },
         messages: { type: [Object] },
+        lastReadAt: {
+            type: Map,
+            of: Date, // userId -> timestamp
+            default: {},
+        },
     },
     {
         timestamps: true,

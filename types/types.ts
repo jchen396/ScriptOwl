@@ -76,10 +76,11 @@ export interface IChatMessage {
     content: string;
     time: number;
     avatarKey: string;
+    readBy: string[];
 }
-
 export interface IChat {
     readonly id: string;
     roomId: string;
     messages: IChatMessage[];
+    lastReadAt: Map<string, Date>;
 }
