@@ -25,29 +25,37 @@ const Layout = ({ children }: PropsWithChildren) => {
     }>({ id: "", username: "", avatarKey: "", time: 0 });
     const [onlineUsers, setOnlineUsers] = useState(new Set<string | null>());
     useEffect(() => {
-        // Announce self as online
-        socket.emit("user:online", userData?.id);
+        if (!userData?.id) return;
+
         socket.on("disconnect", () => {});
-        // Listen for status updates
-        socket.on("user:status", ({ userId, status }) => {
-            setOnlineUsers((prev) => {
-                const updated = new Set(prev);
-                status === "online"
-                    ? updated.add(userId)
-                    : updated.delete(userId);
-                return updated;
-            });
-        });
         return () => {
-            socket.off("user:status");
             socket.off("disconnect");
         };
-    }, []);
+    }, [userData]);
     useEffect(() => {
         authenticate(dispatch);
     }, [dispatch]);
     useEffect(() => {
-        setUserData(currentUser);
+        if (currentUser != null) {
+            setUserData(currentUser);
+            socket.emit("user:online", currentUser.id);
+            socket.on("users:snapshot", (userIds: string[]) => {
+                // populate your local state with everyone already online
+                setOnlineUsers(new Set(userIds));
+            });
+            socket.on("user:status", ({ userId, status }) => {
+                setOnlineUsers((prev) => {
+                    const updated = new Set(prev);
+                    status === "online"
+                        ? updated.add(userId)
+                        : updated.delete(userId);
+                    return updated;
+                });
+            });
+        }
+        return () => {
+            socket.off("user:status");
+        };
     }, [currentUser]);
     return (
         <>

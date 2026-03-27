@@ -157,6 +157,7 @@ const ChatMessageType = new GraphQLObjectType({
         createdAt: {
             type: DateType,
         },
+        readBy: { type: new GraphQLList(GraphQLID) },
     }),
 });
 const ChatType = new GraphQLObjectType({
@@ -1056,6 +1057,7 @@ const mutation = new GraphQLObjectType({
                                     time: args.time,
                                     avatarKey: args.avatarKey,
                                     createdAt: new Date(),
+                                    readBy: [],
                                 },
                             },
                         },

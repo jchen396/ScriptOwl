@@ -262,7 +262,10 @@ const onlineUsers = new Map(); // userId -> socketId
 io.on("connection", (socket) => {
     socket.on("user:online", (userId) => {
         onlineUsers.set(userId, socket.id);
-        io.emit("user:status", { userId, status: "online" });
+        socket.broadcast.emit("user:status", { userId, status: "online" });
+        // send the NEW user a snapshot of everyone already online
+        const currentOnlineUsers = Array.from(onlineUsers.keys());
+        socket.emit("users:snapshot", currentOnlineUsers);
     });
     socket.on("join", (room, username) => {
         socket.join(room);
@@ -271,7 +274,10 @@ io.on("connection", (socket) => {
         for (const [userId, socketId] of onlineUsers.entries()) {
             if (socketId === socket.id) {
                 onlineUsers.delete(userId);
-                io.emit("user:status", { userId, status: "offline" });
+                socket.broadcast.emit("user:status", {
+                    userId,
+                    status: "offline",
+                });
                 break;
             }
         }

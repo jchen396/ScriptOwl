@@ -161,17 +161,13 @@ const VideoSection: React.FunctionComponent<Props> = ({
     return (
         <div className="basis-2/3 w-full h-full flex justify-center items-center">
             <div className="w-[80%] flex flex-col justify-center items-center space-y-2">
-                <video
-                    src={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}
-                    width="1080"
-                    height="720"
-                    style={{
-                        aspectRatio: "16/9",
-                        objectFit: "contain",
-                        backgroundColor: "#000",
-                    }}
-                    controls
-                />
+                <div className="w-full max-w-4xl mx-auto">
+                    <video
+                        src={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}
+                        controls
+                        className="w-full aspect-video object-contain bg-black"
+                    />
+                </div>
                 <p className="truncate text-4xl text-white">{post.title}</p>
                 <p className="text-gray-500">{post.description}</p>
 
