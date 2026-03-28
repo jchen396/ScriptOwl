@@ -69,7 +69,9 @@ const ChatList: FunctionComponent<Props> = ({
             variables: {
                 roomId: room,
                 senderUsername: currentUser.username,
+                senderId: currentUser.id,
                 receiverUsername: selectedChat.username,
+                receiverId: selectedChat.id,
                 content: message,
                 time: newMessageObj.time,
                 avatarKey: currentUser.avatarKey,

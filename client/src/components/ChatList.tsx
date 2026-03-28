@@ -51,8 +51,7 @@ const ChatList: FunctionComponent<Props> = ({
                             return (
                                 <div
                                     key={key}
-                                    className="flex justify-center items-center space-x-2 hover:border-2 border-gray-400 rounded-md py-2 px-4
-                                hover:bg-gray-700 hover:cursor-pointer"
+                                    className="flex justify-center items-center space-x-2 hover:border-1 border-gray-400 rounded-md py-2 px-4 hover:bg-gray-700  hover:cursor-pointer"
                                     onClick={() => {
                                         selectedChat.username === ""
                                             ? setSelectedChat({

@@ -32,6 +32,7 @@ export interface IUser {
     watchHistory: Array<WatchedPost>;
     isVerified: boolean;
     verificationCode: number;
+    rooms: Array<string>;
 }
 
 export interface IPublisher {
@@ -72,7 +73,9 @@ export interface IPost {
 
 export interface IChatMessage {
     sender: string;
+    senderId: string;
     receiver: string;
+    receiverId: string;
     content: string;
     time: number;
     avatarKey: string;

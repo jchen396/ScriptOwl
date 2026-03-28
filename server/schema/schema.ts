@@ -90,6 +90,7 @@ const UserType = new GraphQLObjectType({
         watchHistory: { type: new GraphQLList(WatchedPostType) },
         isVerified: { type: GraphQLBoolean },
         verificationCode: { type: GraphQLInt },
+        rooms: { type: new GraphQLList(GraphQLID) },
         createdAt: {
             type: DateType,
         },
@@ -149,8 +150,14 @@ const ChatMessageType = new GraphQLObjectType({
         sender: {
             type: GraphQLString,
         },
+        senderId: {
+            type: GraphQLID,
+        },
         receiver: {
             type: GraphQLString,
+        },
+        receiverId: {
+            type: GraphQLID,
         },
         content: { type: GraphQLString },
         time: { type: GraphQLFloat },
@@ -413,6 +420,7 @@ const mutation = new GraphQLObjectType({
                                 watchHistory: [],
                                 isVerified: args.emailVerified,
                                 verificationCode,
+                                rooms: [],
                             });
                             await sendgrid.send({
                                 to: `${args.email}`, // Your email where you'll receive emails
@@ -1058,7 +1066,9 @@ const mutation = new GraphQLObjectType({
             args: {
                 roomId: { type: new GraphQLNonNull(GraphQLID) },
                 senderUsername: { type: new GraphQLNonNull(GraphQLString) },
+                senderId: { type: new GraphQLNonNull(GraphQLID) },
                 receiverUsername: { type: new GraphQLNonNull(GraphQLString) },
+                receiverId: { type: new GraphQLNonNull(GraphQLID) },
                 content: { type: new GraphQLNonNull(GraphQLString) },
                 time: { type: new GraphQLNonNull(GraphQLFloat) },
                 avatarKey: { type: new GraphQLNonNull(GraphQLString) },
@@ -1072,7 +1082,9 @@ const mutation = new GraphQLObjectType({
                                 messages: {
                                     id: new mongoose.Types.ObjectId(),
                                     sender: args.senderUsername,
+                                    senderId: args.senderId,
                                     receiver: args.receiverUsername,
+                                    receiverId: args.receiverId,
                                     content: args.content,
                                     time: args.time,
                                     avatarKey: args.avatarKey,
@@ -1081,6 +1093,17 @@ const mutation = new GraphQLObjectType({
                             },
                         },
                         { upsert: true, new: true },
+                    ),
+                    // Add roomId to sender's rooms array
+                    User.updateOne(
+                        { _id: args.senderId },
+                        { $addToSet: { rooms: args.roomId } },
+                    ),
+
+                    // Add roomId to receiver's rooms array
+                    User.updateOne(
+                        { _id: args.receiverId },
+                        { $addToSet: { rooms: args.roomId } },
                     ),
                 ]);
             },

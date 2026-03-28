@@ -37,6 +37,7 @@ const userSchema = new Schema<IUser>(
         watchHistory: { type: [Object] },
         verificationCode: { type: Number },
         isVerified: { type: Boolean },
+        rooms: { type: [String] },
     },
     {
         timestamps: true,
