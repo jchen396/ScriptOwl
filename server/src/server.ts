@@ -289,6 +289,9 @@ io.on("connection", (socket) => {
             console.log("Error broadcasting message: ", e);
         }
     });
+    socket.on("chat:read", ({ roomId, userId, readAt }) => {
+        socket.to(roomId).emit("chat:read:update", { roomId, userId, readAt });
+    });
 });
 
 const authRouter = require("./modules/oauth");

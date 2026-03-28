@@ -34,8 +34,8 @@ const ChatList: FunctionComponent<Props> = ({
 }) => {
     const [markChatAsRead] = useMutation(MARK_CHAT_AS_READ);
     const [messageFriend] = useMutation(MESSAGE_FRIEND);
-    const [message, setMessage] = React.useState<string>("");
-    const [messageBoxes, setMessageBoxes] = React.useState<
+    const [message, setMessage] = useState<string>("");
+    const [messageBoxes, setMessageBoxes] = useState<
         {
             avatarKey: string;
             sender: string;
@@ -43,6 +43,7 @@ const ChatList: FunctionComponent<Props> = ({
             time: number;
         }[]
     >([]);
+    const [lastReadAt, setLastReadAt] = useState<Map<string, Date>>(new Map());
     const [room, setRoom] = React.useState<string>("");
     const ref = useRef<HTMLInputElement | null>(null);
 
@@ -91,6 +92,11 @@ const ChatList: FunctionComponent<Props> = ({
                     userId: currentUser.id,
                 },
             });
+            socket.emit("chat:read", {
+                roomId: room,
+                userId: currentUser.id,
+                readAt: new Date().toISOString(),
+            });
         };
         readChat();
     }, [room]);
@@ -99,6 +105,9 @@ const ChatList: FunctionComponent<Props> = ({
         if (selectedChat.username !== "") {
             let roomNumber = [currentUser.id, selectedChat.id].sort().join("");
             setRoom(roomNumber);
+            socket.on("chat:read:update", ({ roomId, userId, readAt }) => {
+                setLastReadAt((prev) => ({ ...prev, [userId]: readAt }));
+            });
             socket.on("connect", () => {});
             socket.on("message", (msg) => {
                 setMessageBoxes((prevState) => [...prevState, msg]);
@@ -106,10 +115,12 @@ const ChatList: FunctionComponent<Props> = ({
             return () => {
                 socket.off("connect");
                 socket.off("message");
+                socket.off("chat:read:update");
             };
         }
     }, [selectedChat.username]);
 
+    useEffect(() => {}, [lastReadAt]);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
