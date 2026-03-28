@@ -195,6 +195,13 @@ const ChatType = new GraphQLObjectType({
         },
     }),
 });
+const UnreadRoomType = new GraphQLObjectType({
+    name: "UnreadRoom",
+    fields: () => ({
+        roomId: { type: GraphQLString },
+        unreadCount: { type: GraphQLInt },
+    }),
+});
 // Queries
 const RootQuery = new GraphQLObjectType({
     name: "RootQueryType",
@@ -357,6 +364,43 @@ const RootQuery = new GraphQLObjectType({
                 } catch (err) {
                     console.error("Error fetching chat messages:", err);
                 }
+            },
+        },
+        getUnreadRooms: {
+            type: new GraphQLList(UnreadRoomType),
+            args: {
+                userId: { type: GraphQLID },
+            },
+            resolve: async (_, { userId }) => {
+                // Get user's rooms directly from their profile
+                const user = await User.findById(userId);
+                if (!user || user.rooms.length === 0) return [];
+
+                // Fetch all chats in those rooms with messages
+                const chats = await Chat.find({
+                    roomId: { $in: user.rooms },
+                }).populate("messages");
+
+                const unreadRooms = [];
+
+                chats.forEach((chat) => {
+                    // Get this user's last read timestamp, default to epoch if never read
+                    const myLastReadAt =
+                        chat.lastReadAt.get(userId) || new Date(0);
+
+                    // Count messages sent after lastReadAt and not by current user
+                    const unreadCount = chat.messages.filter(
+                        (msg) =>
+                            msg.createdAt > myLastReadAt &&
+                            msg.senderId.toString() !== userId,
+                    ).length;
+
+                    if (unreadCount > 0) {
+                        unreadRooms.push({ roomId: chat.roomId, unreadCount });
+                    }
+                });
+
+                return unreadRooms;
             },
         },
     },

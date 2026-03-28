@@ -9,6 +9,9 @@ import Footer from "./Footer";
 import ChatList from "./ChatList";
 import ChatRoom from "./ChatRoom";
 import socket from "./Socket";
+import { useQuery } from "@apollo/client";
+import { GET_UNREAD_ROOMS } from "@/graphql/queries/getUnreadRooms";
+import client from "../../apollo-client";
 
 interface LayoutProps {}
 
@@ -24,9 +27,33 @@ const Layout = ({ children }: PropsWithChildren) => {
         time: number;
     }>({ id: "", username: "", avatarKey: "", time: 0 });
     const [onlineUsers, setOnlineUsers] = useState(new Set<string | null>());
+    const [unreadRoomsData, setUnreadRoomsData] = useState<Map<string, number>>(
+        new Map(),
+    );
+    useEffect(() => {
+        console.log(unreadRoomsData);
+    }, [unreadRoomsData]);
+
     useEffect(() => {
         if (!userData?.id) return;
-
+        const getUnreadMessages = async () => {
+            const { data } = await client.query({
+                query: GET_UNREAD_ROOMS,
+                variables: {
+                    userId: userData.id,
+                },
+            });
+            data.getUnreadRooms?.forEach(
+                (room: { roomId: string; unreadCount: number }) => {
+                    setUnreadRoomsData((prev) => {
+                        const newMap = new Map(prev);
+                        newMap.set(room.roomId, room.unreadCount);
+                        return newMap;
+                    });
+                },
+            );
+        };
+        getUnreadMessages();
         socket.on("disconnect", () => {});
         return () => {
             socket.off("disconnect");
@@ -86,6 +113,7 @@ const Layout = ({ children }: PropsWithChildren) => {
                                         setSelectedChat={setSelectedChat}
                                         selectedChat={selectedChat}
                                         onlineUsers={onlineUsers}
+                                        unreadRoomsData={unreadRoomsData}
                                     />
                                 ) : (
                                     <></>

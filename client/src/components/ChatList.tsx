@@ -23,6 +23,7 @@ interface Props {
         time: number;
     };
     onlineUsers: Set<string | null>;
+    unreadRoomsData: Map<string, number>;
 }
 
 const ChatList: FunctionComponent<Props> = ({
@@ -30,6 +31,7 @@ const ChatList: FunctionComponent<Props> = ({
     setSelectedChat,
     selectedChat,
     onlineUsers,
+    unreadRoomsData,
 }) => {
     const { data, error } = useQuery(GET_AVATAR_KEYS_BY_ID, {
         variables: { id: userData?.id },
@@ -48,10 +50,17 @@ const ChatList: FunctionComponent<Props> = ({
                             },
                             key: number,
                         ) => {
+                            const roomNumber = [userData?.id, friendData.id]
+                                .sort()
+                                .join("");
                             return (
                                 <div
                                     key={key}
-                                    className="flex justify-center items-center space-x-2 hover:border-1 border-gray-400 rounded-md py-2 px-4 hover:bg-gray-700  hover:cursor-pointer"
+                                    className={`${
+                                        unreadRoomsData.get(roomNumber)
+                                            ? "bg-orange-900"
+                                            : ""
+                                    } flex justify-center items-center space-x-2 hover:border-1 border-gray-400 rounded-md py-2 px-4 hover:bg-gray-700  hover:cursor-pointer`}
                                     onClick={() => {
                                         selectedChat.username === ""
                                             ? setSelectedChat({

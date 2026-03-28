@@ -1,10 +1,6 @@
-export interface IDate {
-    date: string;
-}
-
 export type WatchedPost = {
     postId: string;
-    createdAt: IDate;
+    createdAt: Date;
 };
 
 export interface IUser {
@@ -51,7 +47,7 @@ export interface IComment {
     timestamp: string;
     likes: number;
     dislikes: number;
-    createdAt: IDate;
+    createdAt: Date;
 }
 
 export interface IPost {
@@ -65,7 +61,7 @@ export interface IPost {
     dislikes: number;
     views: number;
     transcript: string;
-    createdAt: IDate;
+    createdAt: Date;
     comments: IComment[];
     duration: number;
     thumbnail: string;
@@ -80,6 +76,7 @@ export interface IChatMessage {
     time: number;
     avatarKey: string;
     readBy: string[];
+    createdAt: Date;
 }
 export interface IChat {
     readonly id: string;
