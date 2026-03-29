@@ -282,9 +282,10 @@ io.on("connection", (socket) => {
             }
         }
     });
-    socket.on("message", (messageObj, room) => {
+    socket.on("message", (receiverId, messageObj, room) => {
         try {
             socket.broadcast.to(room).emit("message", messageObj);
+            io.to(onlineUsers.get(receiverId)).emit("notifyUnread", room);
         } catch (e) {
             console.log("Error broadcasting message: ", e);
         }

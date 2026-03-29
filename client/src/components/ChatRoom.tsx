@@ -25,12 +25,16 @@ interface Props {
         time: number;
     };
     currentUser: any;
+    setUnreadRoomsData: React.Dispatch<
+        React.SetStateAction<Map<string, number>>
+    >;
 }
 
 const ChatList: FunctionComponent<Props> = ({
     setSelectedChat,
     selectedChat,
     currentUser,
+    setUnreadRoomsData,
 }) => {
     const [markChatAsRead] = useMutation(MARK_CHAT_AS_READ);
     const [messageFriend] = useMutation(MESSAGE_FRIEND);
@@ -63,7 +67,7 @@ const ChatList: FunctionComponent<Props> = ({
             content: message,
             time: new Date().getTime(),
         };
-        socket.emit("message", newMessageObj, room);
+        socket.emit("message", selectedChat.id, newMessageObj, room);
         setMessageBoxes((prevState) => [...prevState, newMessageObj]);
         await messageFriend({
             variables: {
@@ -98,6 +102,11 @@ const ChatList: FunctionComponent<Props> = ({
                 roomId: room,
                 userId: currentUser.id,
                 readAt: new Date().toISOString(),
+            });
+            setUnreadRoomsData((prev) => {
+                const newMap = new Map(prev);
+                newMap.delete(room);
+                return newMap;
             });
         };
         readChat();

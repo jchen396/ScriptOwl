@@ -79,6 +79,19 @@ const Layout = ({ children }: PropsWithChildren) => {
                     return updated;
                 });
             });
+            socket.on("notifyUnread", (roomId: string) => {
+                setUnreadRoomsData((prev) => {
+                    const newMap = new Map(prev);
+                    //check if there are any
+                    const currentUnreadMessages = newMap.get(roomId);
+                    if (currentUnreadMessages) {
+                        newMap.set(roomId, currentUnreadMessages + 1);
+                    } else {
+                        newMap.set(roomId, 1);
+                    }
+                    return newMap;
+                });
+            });
         }
         return () => {
             socket.off("user:status");
@@ -124,6 +137,7 @@ const Layout = ({ children }: PropsWithChildren) => {
                                     setSelectedChat={setSelectedChat}
                                     selectedChat={selectedChat}
                                     currentUser={currentUser}
+                                    setUnreadRoomsData={setUnreadRoomsData}
                                 />
                             )}
                         </>
