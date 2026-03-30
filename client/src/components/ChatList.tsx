@@ -96,6 +96,20 @@ const ChatList: FunctionComponent<Props> = ({
                                         <div
                                             className={`absolute border-2 border-black rounded-full w-4 h-4 ${onlineUsers.has(friendData.id) ? "bg-green-400" : "bg-gray-400"} right-0 bottom-0`}
                                         ></div>
+                                        {unreadRoomsData.get(roomNumber) !=
+                                        undefined ? (
+                                            <div
+                                                className={`absolute flex items-center justify-center border-2 border-black rounded-full w-5 h-5 ${unreadRoomsData.get(roomNumber) ? "bg-red-600" : ""} left-0 bottom-0`}
+                                            >
+                                                <p className="text-xs fold-bold left-0 bottom-2 text-white">
+                                                    {unreadRoomsData.get(
+                                                        roomNumber,
+                                                    )}
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            <></>
+                                        )}
                                     </div>
 
                                     <p className="text-white text-md">
