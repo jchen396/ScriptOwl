@@ -1,6 +1,10 @@
+export interface IDate {
+    date: string;
+}
+
 export type WatchedPost = {
     postId: string;
-    createdAt: Date;
+    createdAt: IDate;
 };
 
 export interface IUser {
@@ -47,7 +51,7 @@ export interface IComment {
     timestamp: string;
     likes: number;
     dislikes: number;
-    createdAt: Date;
+    createdAt: IDate;
 }
 
 export interface IPost {
@@ -61,7 +65,7 @@ export interface IPost {
     dislikes: number;
     views: number;
     transcript: string;
-    createdAt: Date;
+    createdAt: IDate;
     comments: IComment[];
     duration: number;
     thumbnail: string;
@@ -76,11 +80,11 @@ export interface IChatMessage {
     time: number;
     avatarKey: string;
     readBy: string[];
-    createdAt: Date;
+    createdAt: IDate;
 }
 export interface IChat {
     readonly id: string;
     roomId: string;
     messages: IChatMessage[];
-    lastReadAt: Map<string, Date>;
+    lastReadAt: Map<string, IDate>;
 }

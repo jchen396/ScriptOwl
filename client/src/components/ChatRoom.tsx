@@ -8,6 +8,7 @@ import { useMutation, useQuery } from "@apollo/client";
 import { CHAT_BY_ROOM_ID } from "@/graphql/queries/chatByRoomId";
 import Link from "next/link";
 import { MARK_CHAT_AS_READ } from "@/graphql/mutations/markChatAsRead";
+import { getTimeDiff } from "@/functions/getTimeDiff";
 
 interface Props {
     setSelectedChat: React.Dispatch<
@@ -172,6 +173,9 @@ const ChatList: FunctionComponent<Props> = ({
                 </div>
                 <div className="flex-1 w-full bg-gray-900 overflow-y-auto hide-scrollbar overflow-x-hidden p-2 mt-2">
                     {messageBoxes.map((message, key) => {
+                        const { timeNumber, timeWord } = getTimeDiff(
+                            message.time,
+                        );
                         return (
                             <div
                                 key={key}
@@ -203,13 +207,10 @@ const ChatList: FunctionComponent<Props> = ({
                                     : {message.content}
                                 </p>
                                 <span className="absolute right-1 bottom-1 text-xs text-gray-400 ml-2">
-                                    {new Date(message.time).toLocaleTimeString(
-                                        [],
-                                        {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                        },
-                                    )}
+                                    {message.time === undefined ||
+                                    Date.now() - message.time <= 10000
+                                        ? "just now"
+                                        : `${timeNumber} ${timeWord} ago`}
                                 </span>
                             </div>
                         );
