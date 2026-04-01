@@ -132,7 +132,7 @@ const Layout = ({ children }: PropsWithChildren) => {
                                     <></>
                                 )}
                             </div>
-                            {selectedChat.username !== "" && (
+                            {selectedChat.username !== "" && showChatList && (
                                 <ChatRoom
                                     setSelectedChat={setSelectedChat}
                                     selectedChat={selectedChat}
