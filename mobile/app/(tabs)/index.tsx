@@ -21,11 +21,14 @@ export default function HomeScreen() {
                         Log In
                     </Text>
                 </Pressable>
-                <View className="w-[90%] flex-1 justify-center items-center m-4 p-4 bg-black border-2 border-blue-500 rounded-lg">
+                <Pressable
+                    className="w-[90%] flex-1 justify-center items-center m-4 p-4 bg-black border-2 border-blue-500 rounded-lg"
+                    onPress={() => router.push("/signup")}
+                >
                     <Text className="text-xl font-bold text-blue-500">
                         Sign Up
                     </Text>
-                </View>
+                </Pressable>
             </ScrollView>
         </View>
     );
