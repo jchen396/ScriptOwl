@@ -10,6 +10,7 @@ const unlinkFile = util.promisify(fs.unlink);
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const socketIo = require("socket.io");
+import { Request, Response } from "express";
 
 // MongoDB configurations
 import { Post } from "../models/Post";
@@ -18,10 +19,10 @@ import { Post } from "../models/Post";
 const multer = require("multer");
 const path = require("path");
 const storage = multer.diskStorage({
-    destination: (req, res, cb) => {
+    destination: (req: Request, res: Response, cb: Function) => {
         cb(null, "src/uploads");
     },
-    filename: function (req, file, cb) {
+    filename: function (req: Request, file: any, cb: Function) {
         const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
         cb(
             null,
@@ -71,7 +72,7 @@ connectDB();
 
 app.use(cookieParser());
 // authenticate tokens
-app.use(async (req, res, next) => {
+app.use(async (req: Request, res: Response, next: Function) => {
     authenticateTokens(req, res, next);
 });
 // use GraphQL api
@@ -79,14 +80,14 @@ app.use(
     "/graphql",
     createHandler({
         schema,
-        context: async (req) => {
+        context: async (req: any) => {
             return req.context;
         },
     }),
 );
 
 // posting and fetching files to s3 via rest API
-app.get("/images/:key", async (req, res) => {
+app.get("/images/:key", async (req: Request, res: Response) => {
     try {
         const key = req.params.key;
         const { Body } = await getImageFileStream(key);
@@ -97,7 +98,7 @@ app.get("/images/:key", async (req, res) => {
 });
 
 // Post image to AWS S3 Bucket
-app.post("/images", upload.single("image"), async (req, res) => {
+app.post("/images", upload.single("image"), async (req: any, res: Response) => {
     try {
         const key = await uploadImage(req.file);
         await unlinkFile(req.file.path);
@@ -108,17 +109,17 @@ app.post("/images", upload.single("image"), async (req, res) => {
 });
 
 // Post video to AWS S3 Bucket
-app.post("/videos", upload.single("video"), async (req, res) => {
+app.post("/videos", upload.single("video"), async (req: any, res: Response) => {
     try {
         const filename = req.file.filename.split(".")[0];
         // Get video data from python script
-        let result;
+        let result: string;
         const scriptPath = `${__dirname}/uploads/extract_video_data.py`;
         const pythonScript = spawn("python", [scriptPath, filename, "upload"]);
-        pythonScript.stdout.on("data", (data) => {
+        pythonScript.stdout.on("data", (data: Buffer) => {
             result = data.toString();
         });
-        pythonScript.stderr.on("data", (data) => {
+        pythonScript.stderr.on("data", (data: Buffer) => {
             console.error(`stderr: ${data}`);
         });
         pythonScript.on("close", async () => {
@@ -130,7 +131,7 @@ app.post("/videos", upload.single("video"), async (req, res) => {
             await unlinkFile(thumbnailPath);
             res.send({ key, result, thumbnailKey }).status(200);
         });
-        pythonScript.on("error", (err) => {
+        pythonScript.on("error", (err: string) => {
             console.log("Error: ", err);
         });
     } catch (e) {
@@ -138,7 +139,7 @@ app.post("/videos", upload.single("video"), async (req, res) => {
     }
 });
 
-app.get("/thumbnails/:key", async (req, res) => {
+app.get("/thumbnails/:key", async (req: Request, res: Response) => {
     try {
         const key = req.params.key;
         const { Body } = await getThumbnailFileStream(key);
@@ -149,7 +150,7 @@ app.get("/thumbnails/:key", async (req, res) => {
 });
 
 // Ask ChatGPT to define a word from transcript
-app.post("/chatgpt/define", async (req, res) => {
+app.post("/chatgpt/define", async (req: Request, res: Response) => {
     try {
         const reply = await generateDefintion(req.body.word);
         return res.json(reply).status(200);
@@ -158,7 +159,7 @@ app.post("/chatgpt/define", async (req, res) => {
     }
 });
 
-app.post("/chatgpt/services", async (req, res) => {
+app.post("/chatgpt/services", async (req: Request, res: Response) => {
     try {
         let reply;
         if (req.body.option === "translate") {
@@ -177,7 +178,7 @@ app.post("/chatgpt/services", async (req, res) => {
     }
 });
 
-app.get("/postCount", async (req, res) => {
+app.get("/postCount", async (req: Request, res: Response) => {
     try {
         const count = await Post.find().countDocuments();
         res.json(count).status(200);
@@ -188,7 +189,7 @@ app.get("/postCount", async (req, res) => {
 
 const { sendEmail } = require("./modules/sendgrid");
 
-app.post("/sendgrid", async (req, res) => {
+app.post("/sendgrid", async (req: Request, res: Response) => {
     try {
         const response = await sendEmail(req, res);
     } catch (e) {
@@ -197,57 +198,63 @@ app.post("/sendgrid", async (req, res) => {
     }
 });
 
-app.post("/youtube", upload.single("video"), async (req, res) => {
-    try {
-        let youtubeURL = req.body.youtubeURL;
-        const downloadVideo = req.body.downloadVideo ?? false;
-        let result;
-        if (downloadVideo) {
-            let filename = req.body.title;
-            const downloadPath = `${__dirname}/uploads/download_yt_video.py`;
-            const pythonYTDownload = spawn("python", [
-                downloadPath,
-                youtubeURL,
-                filename,
-            ]);
-            pythonYTDownload.stdout.on("data", (data) => {
-                result = data.toString();
-            });
-            pythonYTDownload.stderr.on("data", (data) => {
-                console.error(`stderr: ${data}`);
-            });
-            const file = {
-                path: `${__dirname}/uploads/${filename}.mp4`,
-                filename: `${filename}.mp4`,
-            };
-            pythonYTDownload.on("close", async () => {
-                // upload the rest of the content to s3
-                const key = await uploadVideo(file);
-                const thumbnailKey = await uploadThumbnail(`${filename}.jpg`);
-                await unlinkFile(file.path);
-                const thumbnailPath = `${__dirname}/uploads/${filename}.jpg`;
-                await unlinkFile(thumbnailPath);
-                res.send({ key, result, thumbnailKey }).status(200);
-            });
-            pythonYTDownload.on("error", (err) => {
-                console.log("Error: ", err);
-            });
-        } else {
-            const scriptPath = `${__dirname}/uploads/get_transcript_by_url.py`;
-            const pythonScript = spawn("python", [scriptPath, youtubeURL]);
-            pythonScript.stdout.on("data", (data) => {
-                result = data.toString("utf-8");
-            });
-            pythonScript.on("close", async () => {
-                // upload the rest of the content to s3
-                res.send({ result }).status(200);
-            });
-            pythonScript.on("error", (err) => {
-                console.log("Error: ", err);
-            });
-        }
-    } catch (e) {}
-});
+app.post(
+    "/youtube",
+    upload.single("video"),
+    async (req: Request, res: Response) => {
+        try {
+            let youtubeURL = req.body.youtubeURL;
+            const downloadVideo = req.body.downloadVideo ?? false;
+            let result: string;
+            if (downloadVideo) {
+                let filename = req.body.title;
+                const downloadPath = `${__dirname}/uploads/download_yt_video.py`;
+                const pythonYTDownload = spawn("python", [
+                    downloadPath,
+                    youtubeURL,
+                    filename,
+                ]);
+                pythonYTDownload.stdout.on("data", (data: Buffer) => {
+                    result = data.toString();
+                });
+                pythonYTDownload.stderr.on("data", (data: Buffer) => {
+                    console.error(`stderr: ${data}`);
+                });
+                const file = {
+                    path: `${__dirname}/uploads/${filename}.mp4`,
+                    filename: `${filename}.mp4`,
+                };
+                pythonYTDownload.on("close", async () => {
+                    // upload the rest of the content to s3
+                    const key = await uploadVideo(file);
+                    const thumbnailKey = await uploadThumbnail(
+                        `${filename}.jpg`,
+                    );
+                    await unlinkFile(file.path);
+                    const thumbnailPath = `${__dirname}/uploads/${filename}.jpg`;
+                    await unlinkFile(thumbnailPath);
+                    res.send({ key, result, thumbnailKey }).status(200);
+                });
+                pythonYTDownload.on("error", (err: string) => {
+                    console.log("Error: ", err);
+                });
+            } else {
+                const scriptPath = `${__dirname}/uploads/get_transcript_by_url.py`;
+                const pythonScript = spawn("python", [scriptPath, youtubeURL]);
+                pythonScript.stdout.on("data", (data: Buffer) => {
+                    result = data.toString("utf-8");
+                });
+                pythonScript.on("close", async () => {
+                    // upload the rest of the content to s3
+                    res.send({ result }).status(200);
+                });
+                pythonScript.on("error", (err: string) => {
+                    console.log("Error: ", err);
+                });
+            }
+        } catch (e) {}
+    },
+);
 
 const http = require("http");
 const server = http.createServer(app);
@@ -260,15 +267,15 @@ const io = socketIo(server, {
 });
 
 const onlineUsers = new Map(); // userId -> socketId
-io.on("connection", (socket) => {
-    socket.on("user:online", (userId) => {
+io.on("connection", (socket: any) => {
+    socket.on("user:online", (userId: number) => {
         onlineUsers.set(userId, socket.id);
         socket.broadcast.emit("user:status", { userId, status: "online" });
         // send the NEW user a snapshot of everyone already online
         const currentOnlineUsers = Array.from(onlineUsers.keys());
         socket.emit("users:snapshot", currentOnlineUsers);
     });
-    socket.on("join", (room, username) => {
+    socket.on("join", (room: string, username: string) => {
         socket.join(room);
     });
     socket.on("disconnect", () => {
@@ -283,17 +290,33 @@ io.on("connection", (socket) => {
             }
         }
     });
-    socket.on("message", (receiverId, messageObj, room) => {
-        try {
-            socket.broadcast.to(room).emit("message", messageObj);
-            io.to(onlineUsers.get(receiverId)).emit("notifyUnread", room);
-        } catch (e) {
-            console.log("Error broadcasting message: ", e);
-        }
-    });
-    socket.on("chat:read", ({ roomId, userId, readAt }) => {
-        socket.to(roomId).emit("chat:read:update", { roomId, userId, readAt });
-    });
+    socket.on(
+        "message",
+        (receiverId: string, messageObj: string, room: string) => {
+            try {
+                socket.broadcast.to(room).emit("message", messageObj);
+                io.to(onlineUsers.get(receiverId)).emit("notifyUnread", room);
+            } catch (e) {
+                console.log("Error broadcasting message: ", e);
+            }
+        },
+    );
+    socket.on(
+        "chat:read",
+        ({
+            roomId,
+            userId,
+            readAt,
+        }: {
+            roomId: string;
+            userId: string;
+            readAt: Date;
+        }) => {
+            socket
+                .to(roomId)
+                .emit("chat:read:update", { roomId, userId, readAt });
+        },
+    );
 });
 
 const authRouter = require("./modules/oauth");
