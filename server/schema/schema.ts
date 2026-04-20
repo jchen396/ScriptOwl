@@ -22,7 +22,7 @@ import { createTokens } from "../src/modules/auth";
 
 // set up sendgrid for e-mail verifications
 import sendgrid from "@sendgrid/mail";
-sendgrid.setApiKey(process.env.SENDGRID_API_KEY);
+sendgrid.setApiKey(process.env.SENDGRID_API_KEY || "");
 
 const DateType = new GraphQLObjectType({
     name: "Date",
@@ -59,7 +59,7 @@ const resolveUserList = (parent: any, field: string) => {
     });
 };
 // User Type
-const UserType = new GraphQLObjectType({
+const UserType: GraphQLObjectType = new GraphQLObjectType({
     name: "User",
     fields: () => ({
         id: { type: GraphQLID },
@@ -185,12 +185,12 @@ const ChatType = new GraphQLObjectType({
             type: new GraphQLList(LastReadAtType),
             resolve: (chat) => {
                 // Convert the Map into an array GraphQL can understand
-                return Array.from(chat.lastReadAt.entries()).map(
-                    ([userId, readAt]) => ({
-                        userId,
-                        readAt,
-                    }),
-                );
+                return Array.from(
+                    chat.lastReadAt.entries() as [string, string][],
+                ).map(([userId, readAt]) => ({
+                    userId,
+                    readAt,
+                }));
             },
         },
     }),
@@ -245,7 +245,7 @@ const RootQuery = new GraphQLObjectType({
             type: new GraphQLList(PostType),
             args: { postIds: { type: new GraphQLList(GraphQLString) } },
             async resolve(_, args) {
-                const postObjIds = args.postIds?.map((postId) => {
+                const postObjIds = args.postIds?.map((postId: string) => {
                     return new mongoose.Types.ObjectId(postId);
                 });
                 const post = await Post.find({ _id: { $in: postObjIds } });
@@ -320,7 +320,7 @@ const RootQuery = new GraphQLObjectType({
                         }
                         const hashedPassword = CryptoJS.AES.decrypt(
                             user.password,
-                            process.env.PASS_SEC,
+                            process.env.PASS_SEC || "",
                         );
                         const originalPassword = hashedPassword.toString(
                             CryptoJS.enc.Utf8,
@@ -381,7 +381,8 @@ const RootQuery = new GraphQLObjectType({
                     roomId: { $in: user.rooms },
                 }).populate("messages");
 
-                const unreadRooms = [];
+                const unreadRooms: { roomId: string; unreadCount: number }[] =
+                    [];
 
                 chats.forEach((chat) => {
                     // Get this user's last read timestamp, default to epoch if never read
@@ -437,7 +438,7 @@ const mutation = new GraphQLObjectType({
                         } else {
                             const encryptedPassword = CryptoJS.AES.encrypt(
                                 args.password,
-                                process.env.PASS_SEC,
+                                process.env.PASS_SEC || "",
                             ).toString();
                             const verificationCode = Math.floor(
                                 100000 + Math.random() * 900000,
@@ -1064,7 +1065,7 @@ const mutation = new GraphQLObjectType({
                 if (args.password) {
                     encryptedPassword = CryptoJS.AES.encrypt(
                         args.password,
-                        process.env.PASS_SEC,
+                        process.env.PASS_SEC || "",
                     ).toString();
                 }
                 return await User.findByIdAndUpdate(

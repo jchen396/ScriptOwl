@@ -5,7 +5,7 @@ dotenv.config(); // Load environment variables from .env file
 
 const { OAuth2Client } = require("google-auth-library");
 
-async function getUserData(access_token) {
+async function getUserData(access_token: string) {
     const response = await fetch(
         `https://www.googleapis.com/oauth2/v3/userinfo?access_token=${access_token}`,
     );
@@ -15,49 +15,55 @@ async function getUserData(access_token) {
 }
 
 /* GET home page. */
-router.get("/", async function (req, res, next) {
-    const code = req.query.code;
-    let query;
+router.get(
+    "/",
+    async function (
+        req: { query: { code: string } },
+        res: { redirect: (statusCode: number, url: string) => void },
+    ) {
+        const code = req.query.code;
+        let query;
 
-    try {
-        const redirectURL = `${
-            process.env.NODE_ENV === "development"
-                ? "http://localhost:5000/oauth"
-                : "https://script-owl-server.onrender.com/oauth"
-        }`;
-        const oAuth2Client = new OAuth2Client(
-            process.env.GCP_OAUTH_CLIENT_ID,
-            process.env.GCP_OAUTH_CLIENT_SECRET,
-            redirectURL,
-        );
-        const r = await oAuth2Client.getToken(code);
-        // Make sure to set the credentials on the OAuth2 client.
-        await oAuth2Client.setCredentials(r.tokens);
-        const user = oAuth2Client.credentials;
-        const queryData = (await getUserData(user.access_token)) as Record<
-            string,
-            string
-        >;
-        // Convert object to URL query params
-        const params = new URLSearchParams(queryData).toString();
-
-        const baseURL =
-            process.env.NODE_ENV === "development"
-                ? "http://localhost:3000/register"
-                : "https://scriptowl.vercel.app/register";
-
-        res.redirect(303, `${baseURL}?${params}`);
-    } catch (err) {
-        console.log("Error logging in with OAuth2 user", err);
-        res.redirect(
-            303,
-            `${
+        try {
+            const redirectURL = `${
                 process.env.NODE_ENV === "development"
-                    ? "http://localhost:3000/register?error=oauth_failed"
-                    : "https://scriptowl.vercel.app/register?error=oauth_failed"
-            }`,
-        );
-    }
-});
+                    ? "http://localhost:5000/oauth"
+                    : "https://script-owl-server.onrender.com/oauth"
+            }`;
+            const oAuth2Client = new OAuth2Client(
+                process.env.GCP_OAUTH_CLIENT_ID,
+                process.env.GCP_OAUTH_CLIENT_SECRET,
+                redirectURL,
+            );
+            const r = await oAuth2Client.getToken(code);
+            // Make sure to set the credentials on the OAuth2 client.
+            await oAuth2Client.setCredentials(r.tokens);
+            const user = oAuth2Client.credentials;
+            const queryData = (await getUserData(user.access_token)) as Record<
+                string,
+                string
+            >;
+            // Convert object to URL query params
+            const params = new URLSearchParams(queryData).toString();
+
+            const baseURL =
+                process.env.NODE_ENV === "development"
+                    ? "http://localhost:3000/register"
+                    : "https://scriptowl.vercel.app/register";
+
+            res.redirect(303, `${baseURL}?${params}`);
+        } catch (err) {
+            console.log("Error logging in with OAuth2 user", err);
+            res.redirect(
+                303,
+                `${
+                    process.env.NODE_ENV === "development"
+                        ? "http://localhost:3000/register?error=oauth_failed"
+                        : "https://scriptowl.vercel.app/register?error=oauth_failed"
+                }`,
+            );
+        }
+    },
+);
 
 module.exports = router;

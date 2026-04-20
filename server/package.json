@@ -33,6 +33,7 @@
         "swr": "^2.2.5"
     },
     "devDependencies": {
+        "@types/crypto-js": "^4.2.2",
         "@types/express": "^4.17.21",
         "@types/node": "^22.7.4",
         "ts-node": "^10.9.2",
