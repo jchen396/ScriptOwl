@@ -10,7 +10,7 @@ interface Props {
     service: string;
     transcript: string;
 }
-const ChatGPTSection: React.FC<Props> = ({
+const AISection: React.FC<Props> = ({
     wordSelected,
     chatReply,
     setChatReply,
@@ -26,7 +26,7 @@ const ChatGPTSection: React.FC<Props> = ({
         const reply = await getTranscriptServices(
             transcript.replace(/(\r\n|\n|\r)/gm, ""),
             service,
-            e.currentTarget.language.value
+            e.currentTarget.language.value,
         );
         setChatReply(reply);
         setChatLoading(false);
@@ -113,4 +113,4 @@ const ChatGPTSection: React.FC<Props> = ({
     );
 };
 
-export default ChatGPTSection;
+export default AISection;

@@ -15,7 +15,7 @@ import { useMutation } from "@apollo/client";
 import { InferGetServerSidePropsType, NextPage } from "next";
 import TranscriptSection from "@/components/Watch/TranscriptSection";
 import SectionTabs from "@/components/Watch/SectionTabs";
-import ChatGPTSection from "@/components/Watch/ChatGPTSection";
+import ChatGPTSection from "@/components/Watch/AISection";
 
 interface Props {
     post: IPost;

@@ -4,7 +4,7 @@ import Info from "@/components/Home/Info";
 import Head from "next/head";
 import URLInput from "@/components/Home/URLInput";
 import TranscriptSection from "@/components/Watch/TranscriptSection";
-import ChatGPTSection from "@/components/Watch/ChatGPTSection";
+import AISection from "@/components/Watch/AISection";
 import SectionTabs from "@/components/Watch/SectionTabs";
 
 interface Props {}
@@ -44,9 +44,9 @@ const Home: React.FunctionComponent<Props> = ({}) => {
                 />
             );
         }
-        if (section === "ChatGPT") {
+        if (section === "AI") {
             return (
-                <ChatGPTSection
+                <AISection
                     transcript={youtubeTranscript}
                     wordSelected={wordSelected}
                     chatReply={chatReply}
@@ -68,12 +68,12 @@ const Home: React.FunctionComponent<Props> = ({}) => {
             <Head>
                 <title>
                     ScriptOwl | Revolutionizing Learning Through Video:
-                    Real-Time Translation, Summarization, and Quizzes with GPT
-                    3.5
+                    Real-Time Translation, Summarization, and Quizzes with
+                    Artificial Intelligence
                 </title>
                 <meta
                     name="description"
-                    content="ScriptOwl is a video streaming site is dedicated to revolutionizing the way people learn and consume media content. By harnessing the power of GPT 3.5, we provide users with real-time translation of video transcripts, as well as a summarization feature that saves time and makes information more digestible. In addition, our quiz creation feature allows users to test their knowledge and reinforce what they've learned. Our goal is to break down language barriers and make learning more accessible to everyone, and we're constantly striving to innovate and improve the user experience. Join us on our mission to bring the world closer together through the power of video."
+                    content="ScriptOwl is a video streaming site is dedicated to revolutionizing the way people learn and consume media content. By harnessing the power of modern AI technology, we provide users with real-time translation of video transcripts, as well as a summarization feature that saves time and makes information more digestible. In addition, our quiz creation feature allows users to test their knowledge and reinforce what they've learned. Our goal is to break down language barriers and make learning more accessible to everyone, and we're constantly striving to innovate and improve the user experience. Join us on our mission to bring the world closer together through the power of video."
                 />
                 <meta
                     name="viewport"
@@ -83,8 +83,7 @@ const Home: React.FunctionComponent<Props> = ({}) => {
                     property="og:title"
                     content="
 					ScriptOwl | Revolutionizing Learning Through Video:
-					Real-Time Translation, Summarization, and Quizzes with GPT
-					3.5
+					Real-Time Translation, Summarization, and Quizzes with Artificial Intelligence
 				"
                     key="title"
                 />
