@@ -299,8 +299,16 @@ const RootQuery = new GraphQLObjectType({
         signOutUser: {
             type: UserType,
             async resolve(_, __, { res }) {
-                res.clearCookie("accessToken");
-                res.clearCookie("refreshToken");
+                res.clearCookie("accessToken", {
+                    httpOnly: true,
+                    sameSite: "none",
+                    secure: true,
+                });
+                res.clearCookie("refreshToken", {
+                    httpOnly: true,
+                    sameSite: "none",
+                    secure: true,
+                });
             },
         },
         // Log in by username

@@ -30,29 +30,29 @@ const URLInput: React.FunctionComponent<Props> = ({
 	return (
 		<form
 			action="submit"
-			className="flex flex-row justify-center items-center text-slate-100 p-2 lg:w-1/3 md:2/3 w-3/4"
+			className="flex flex-row justify-center items-center p-4 lg:w-1/2 md:w-2/3 w-11/12 max-w-4xl mx-auto relative z-20 group"
 			onSubmit={(e) => submitYoutubeURL(e)}
 		>
-			<div className="relative flex-1">
-				<input
-					type="text"
-					id="url"
-					className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-					placeholder=""
-					onChange={(e) => setYoutubeURL(e.target.value)}
-					required
-				/>
-				<label
-					htmlFor="url"
-					className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-black px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+			<div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+			<div className="relative flex flex-1 items-center bg-gray-900/60 backdrop-blur-xl border border-gray-700/50 hover:border-gray-500 focus-within:border-blue-500 rounded-2xl shadow-2xl transition-all duration-300 p-2 pl-6">
+				<div className="flex-1">
+					<input
+						type="url"
+						id="url"
+						className="w-full bg-transparent text-lg text-white placeholder-gray-400 focus:outline-none focus:ring-0 py-3"
+						placeholder="Paste a YouTube URL here..."
+						onChange={(e) => setYoutubeURL(e.target.value)}
+						required
+					/>
+				</div>
+				<button
+					type="submit"
+					className="flex-none bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl p-3 ml-2 shadow-lg shadow-blue-500/25 transition-all duration-300 hover:scale-105 active:scale-95"
+					onClick={(e) => submitYoutubeURL(e)}
 				>
-					Enter Youtube URL
-				</label>
+					<ArrowForwardIcon className="h-6 w-6" />
+				</button>
 			</div>
-			<ArrowForwardIcon
-				className="flex-none border-2 border-gray-500 rounded-lg hover:bg-blue-600 hover:cursor-pointer m-2 h-12 w-12"
-				onClick={(e) => submitYoutubeURL(e)}
-			/>
 		</form>
 	);
 };

@@ -92,9 +92,13 @@ const Layout = ({ children }: PropsWithChildren) => {
                     return newMap;
                 });
             });
+        } else {
+            setUserData(undefined);
         }
         return () => {
             socket.off("user:status");
+            socket.off("users:snapshot");
+            socket.off("notifyUnread");
         };
     }, [currentUser]);
     return (

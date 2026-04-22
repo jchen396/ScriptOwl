@@ -64,7 +64,7 @@ const Home: React.FunctionComponent<Props> = ({}) => {
         }
     }, [youtubeURL]);
     return (
-        <div className="flex flex-wrap items-center justify-center text-white space-y-10 font-mono ">
+        <div className="flex flex-col items-center justify-start text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black pb-20">
             <Head>
                 <title>
                     ScriptOwl | Revolutionizing Learning Through Video:
