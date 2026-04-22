@@ -3,7 +3,7 @@ import { useMutation } from "@apollo/client";
 import { FormEvent, useState } from "react";
 import { FunctionComponent } from "react";
 import { useSelector } from "react-redux";
-import { ADD_USER } from "../../../../packages/graphql/mutations/addUser";
+import { ADD_USER } from "@/graphql/mutations/addUser";
 import { useRouter } from "next/router";
 import {
     validateEmail,
