@@ -73,7 +73,7 @@ const Watch: NextPage<
                 />
             );
         }
-        if (section === "ChatGPT") {
+        if (section === "AI") {
             return (
                 <ChatGPTSection
                     transcript={post.transcript}

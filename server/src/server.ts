@@ -43,7 +43,7 @@ import {
     generateDefintion,
     generateTranslation,
     generateSummary,
-} from "./modules/openai";
+} from "./modules/gemini";
 const {
     uploadImage,
     getImageFileStream,
@@ -52,8 +52,8 @@ const {
     getThumbnailFileStream,
 } = require("./modules/s3");
 const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+app.use(bodyParser.json({ limit: "50mb" }));
 
 app.use(
     cors({
@@ -172,9 +172,11 @@ app.post("/chatgpt/services", async (req: Request, res: Response) => {
         } else if (req.body.option === "assess") {
             reply = await generateAssessment(req.body.transcript);
         }
-        return res.json(reply).status(200);
+        console.log("REPLY TO SEND:", reply);
+        return res.status(200).json(reply);
     } catch (e) {
-        res.json(e).status(400);
+        console.log("Error in /chatgpt/services:", e);
+        res.status(400).json(e);
     }
 });
 
