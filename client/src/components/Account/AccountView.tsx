@@ -63,8 +63,8 @@ const AccountView: React.FunctionComponent<Props> = ({
 }) => {
     return (
         <>
-            <h1 className="text-4xl font-medium text-slate-100">Account</h1>
-            <div className="flex flex-col space-y-4 border-2 border-slate-100 bg-transparent text-slate-100 w-2/3 h-2/3 md:px-0">
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-lg mb-6">Account</h1>
+            <div className="flex flex-col space-y-6 bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 shadow-2xl rounded-2xl text-slate-100 w-11/12 lg:w-2/3 p-8">
                 {errorMessage && (
                     <div className="m-2 flex flex-row items-center justify-between text-sm text-red-700 bg-red-300 rounded-md p-4">
                         <ErrorIcon />
@@ -105,17 +105,12 @@ const AccountView: React.FunctionComponent<Props> = ({
             {(newPassword || imageKey || newUsername) && (
                 <div>
                     <button
-                        className={`text-2xl text-black p-2 px-4 rounded-lg text-bold items-center justify-center
-						 ${
+                        className={`text-xl font-semibold py-3 px-8 rounded-xl flex items-center justify-center transition-all duration-300 shadow-lg ${
                              currentUser.isVerified
-                                 ? `
-							${
-                                loading
-                                    ? "hover:cursor-not-allowed bg-gray-300"
-                                    : "bg-white hover:bg-gray-300 hover:cursor-pointer"
-                            }
-						`
-                                 : "border-gray-600 bg-gray-600 text-white hover:cursor-not-allowed"
+                                 ? loading
+                                    ? "opacity-70 cursor-not-allowed bg-gradient-to-r from-blue-600 to-indigo-600 text-white"
+                                    : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 cursor-pointer"
+                                 : "bg-gray-600 text-gray-300 cursor-not-allowed"
                          }`}
                         onClick={onSaveChanges}
                         disabled={!currentUser.isVerified}

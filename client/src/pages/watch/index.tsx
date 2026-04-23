@@ -93,7 +93,7 @@ const Watch: NextPage<
     return (
         <>
             {!isSSR && (
-                <div className="h-full w-full flex flex-row flex-wrap items-center justify-center space-y-10 font-mono p-10">
+                <div className="flex flex-row flex-wrap items-center justify-center space-y-10 p-10 text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black">
                     <VideoSection
                         currentUser={currentUser}
                         post={post}

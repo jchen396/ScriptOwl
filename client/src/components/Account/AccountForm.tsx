@@ -34,7 +34,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
                         action="submit"
                     >
                         <button
-                            className="self-start border-2 p-2 border-white hover:bg-white text-white hover:text-black rounded-lg "
+                            className="self-start p-2 rounded-xl bg-gray-800/80 hover:bg-gray-700/80 backdrop-blur border border-gray-700 text-white transition-all hover:-translate-y-0.5"
                             onClick={() => setChangePassword(false)}
                         >
                             <ArrowBackIcon />
@@ -46,7 +46,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
                             onChange={(e) => setNewPassword(e.target.value)}
                             placeholder="Type in new password..."
                             type="password"
-                            className="mb-6 bg-gray-100 border-gray-300 text-gray-900 text-sm rounded-sm block w-1/2 p-2.5 dark:bg-gray-600 dark:border-gray-900 dark:placeholder-gray-400 dark:text-gray-400 "
+                            className="mb-6 bg-gray-900/50 border border-gray-600 text-white text-sm rounded-xl focus:ring-cyan-400 focus:border-cyan-400 block w-1/2 p-3 transition-colors appearance-none"
                         ></input>
                         <label className="text-white" htmlFor="username">
                             Confirm Password
@@ -57,7 +57,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
                             }
                             type="password"
                             placeholder="Re-enter new password..."
-                            className="mb-6 bg-gray-100 border-gray-300 text-gray-900 text-sm rounded-sm block w-1/2 p-2.5 dark:bg-gray-600 dark:border-gray-900 dark:placeholder-gray-400 dark:text-gray-400 "
+                            className="mb-6 bg-gray-900/50 border border-gray-600 text-white text-sm rounded-xl focus:ring-cyan-400 focus:border-cyan-400 block w-1/2 p-3 transition-colors appearance-none"
                         ></input>
                     </form>
                 ) : (
@@ -76,7 +76,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
                                 <div className="flex w-full justify-center items-center">
                                     <button
                                         onClick={() => setChangeUsername(false)}
-                                        className="flex flex-row items-center p-2 border-2 border-white rounded-lg hover:bg-white hover:text-black"
+                                        className="flex flex-row items-center p-3 mr-2 rounded-xl bg-gray-800/80 hover:bg-gray-700/80 backdrop-blur border border-gray-700 text-white transition-all hover:-translate-y-0.5"
                                     >
                                         <ArrowBackIcon />
                                     </button>
@@ -89,9 +89,9 @@ const AccountForm: React.FunctionComponent<Props> = ({
                                         type="text"
                                         id="disabled-input"
                                         aria-label="disabled input"
-                                        className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 dark:bg-slate-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        className="bg-gray-900/50 border border-gray-600 text-white text-sm rounded-xl focus:ring-cyan-400 focus:border-cyan-400 block w-1/2 p-3 transition-colors appearance-none"
                                     ></input>
-                                    <button className="flex flex-row items-center p-2 border-2 border-white rounded-lg hover:bg-white hover:text-black">
+                                    <button className="flex flex-row items-center p-3 ml-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:-translate-y-0.5">
                                         Confirm
                                     </button>
                                 </div>
@@ -99,7 +99,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
                         ) : (
                             <button
                                 onClick={() => setChangeUsername(true)}
-                                className="flex flex-row justify-center w-1/2 items-center p-2 m-2 border-2 border-white rounded-lg hover:bg-white hover:text-black"
+                                className="flex flex-row justify-center w-1/2 items-center p-3 m-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:-translate-y-0.5"
                             >
                                 <span className="px-2">Change Username</span>
                                 <ArrowForwardIcon />
@@ -116,7 +116,7 @@ const AccountForm: React.FunctionComponent<Props> = ({
                                 type="text"
                                 id="disabled-input"
                                 aria-label="disabled input"
-                                className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-slate-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                className="mb-6 bg-gray-900/30 border border-gray-700 text-gray-400 text-sm rounded-xl block w-1/2 p-3 cursor-not-allowed"
                                 value={`${currentUser.username}`}
                                 disabled
                             ></input>
@@ -127,12 +127,12 @@ const AccountForm: React.FunctionComponent<Props> = ({
                                 type="text"
                                 id="disabled-input"
                                 aria-label="disabled input"
-                                className="mb-6 bg-gray-100 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-1/2 p-2.5 cursor-not-allowed dark:bg-gray-900 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                className="mb-6 bg-gray-900/30 border border-gray-700 text-gray-400 text-sm rounded-xl block w-1/2 p-3 cursor-not-allowed"
                                 value={`${currentUser.email}`}
                                 disabled
                             ></input>
                             <button
-                                className="flex flex-row items-center p-2 border-2 border-white rounded-lg hover:bg-white hover:text-black"
+                                className="flex flex-row justify-center w-1/2 items-center p-3 m-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all hover:-translate-y-0.5"
                                 onClick={() => setChangePassword(true)}
                             >
                                 <span className="px-2">Change password</span>

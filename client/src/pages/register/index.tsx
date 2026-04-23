@@ -88,7 +88,7 @@ const Register: FunctionComponent<Props> = () => {
                 />
                 <link rel="icon" href="/img/ScriptOwl_logo_transparent.png" />
             </Head>
-            <div className="w-full h-full flex flex-col justify-center items-center space-y-5 font-mono py-10">
+            <div className="flex flex-col justify-center items-center space-y-5 py-10 text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black">
                 <RegisterForm
                     loading={loading}
                     errorMessage={errorMessage}

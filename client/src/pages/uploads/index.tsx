@@ -177,10 +177,10 @@ const Uploads: NextPage<
                         </div>
                     </div>
                 )}
-                <h1 className="text-4xl font-medium text-slate-100">Uploads</h1>
+                <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-lg mb-6">Uploads</h1>
                 <div className="w-3/4 h-3/5 rounded ">
                     {data.userPosts.length !== 0 ? (
-                        <div className="h-full w-full flex items-center justify-start font-mono p-4 overflow-y-auto">
+                        <div className="flex items-center justify-start p-4 overflow-y-auto text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black">
                             <VideoGrid
                                 posts={data.userPosts}
                                 options={["delete", "edit"]}

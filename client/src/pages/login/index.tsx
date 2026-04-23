@@ -61,7 +61,7 @@ const Login: FunctionComponent<Props> = () => {
                 />
                 <link rel="icon" href="/img/ScriptOwl_logo_transparent.png" />
             </Head>
-            <div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
+            <div className="flex flex-col items-center justify-center space-y-10 py-10 text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black">
                 <LoginForm
                     validateForm={validateForm}
                     isFetching={isFetching}

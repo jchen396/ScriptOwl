@@ -28,7 +28,7 @@ const History: FunctionComponent<Props> = () => {
 	return (
 		<>
 			<div className="w-full h-full bg-black flex flex-col justify-center items-center text-white space-y-10 py-10">
-				<h1 className="text-4xl font-medium text-slate-100">
+				<h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-lg mb-6">
 					Watch History
 				</h1>
 				{loading ? (
@@ -40,10 +40,12 @@ const History: FunctionComponent<Props> = () => {
 				)}
 				<div className="w-3/4 h-3/5 rounded ">
 					{currentUser?.watchHistory?.length !== 0 ? (
-						<div className="h-full w-full flex items-center justify-start font-mono p-4 overflow-y-auto"></div>
+						<div className="flex items-center justify-start p-4 overflow-y-auto text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black"></div>
 					) : (
 						<div className="w-full h-full flex justify-center items-center py-10">
-							<p className="text-gray-700">No watch history</p>
+							<div className="bg-gray-800/40 backdrop-blur-md border border-gray-700/50 rounded-2xl p-8 shadow-xl">
+								<p className="text-gray-300 text-lg font-light">No watch history</p>
+							</div>
 						</div>
 					)}
 				</div>

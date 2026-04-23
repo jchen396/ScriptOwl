@@ -78,7 +78,7 @@ const Contact = (props: Props) => {
 		}
 	};
 	return (
-		<div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
+		<div className="flex flex-col items-center justify-center space-y-10 py-10 text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black">
 			<Head>
 				<title>ScriptOwl | Contact</title>
 				<meta
@@ -98,24 +98,24 @@ const Contact = (props: Props) => {
 				/>
 				<link rel="icon" href="/img/ScriptOwl_logo_transparent.png" />
 			</Head>
-			<h1 className="text-4xl font-medium text-slate-100">Contact</h1>
+			<h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-lg mb-6">Contact</h1>
 			<form
 				action="submit"
-				className="flex flex-col space-y-4 border-2 rounded border-slate-100 bg-transparent text-slate-100 w-100 p-10 w-3/4 lg:w-1/3 md:p-16"
+				className="flex flex-col space-y-6 bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 shadow-2xl rounded-2xl text-slate-100 w-11/12 sm:w-3/4 lg:w-1/3 p-8 md:p-12"
 				onSubmit={(e) => handleFormSubmit(e)}
 			>
 				<div className="relative">
 					<input
 						type="email"
 						id="email"
-						className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+						className="block px-4 pb-3 pt-5 w-full text-sm text-white bg-gray-900/50 rounded-xl border border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-cyan-400 peer transition-colors"
 						placeholder=" "
 						onChange={(e) => setEmail(e.target.value)}
 						required
 					/>
 					<label
 						htmlFor="email"
-						className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-black px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+						className="absolute text-sm text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[#1e2532] px-2 peer-focus:px-2 peer-focus:text-cyan-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-2 rounded"
 					>
 						E-mail
 					</label>
@@ -124,14 +124,14 @@ const Contact = (props: Props) => {
 					<input
 						type="text"
 						id="name"
-						className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+						className="block px-4 pb-3 pt-5 w-full text-sm text-white bg-gray-900/50 rounded-xl border border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-cyan-400 peer transition-colors"
 						placeholder=" "
 						onChange={(e) => setName(e.target.value)}
 						required
 					/>
 					<label
 						htmlFor="name"
-						className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-black px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+						className="absolute text-sm text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[#1e2532] px-2 peer-focus:px-2 peer-focus:text-cyan-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-2 rounded"
 					>
 						Name
 					</label>
@@ -140,14 +140,14 @@ const Contact = (props: Props) => {
 					<input
 						type="text"
 						id="subject"
-						className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+						className="block px-4 pb-3 pt-5 w-full text-sm text-white bg-gray-900/50 rounded-xl border border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-cyan-400 peer transition-colors"
 						placeholder=" "
 						onChange={(e) => setSubject(e.target.value)}
 						required
 					/>
 					<label
 						htmlFor="email"
-						className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-black px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+						className="absolute text-sm text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[#1e2532] px-2 peer-focus:px-2 peer-focus:text-cyan-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-2 rounded"
 					>
 						Subject
 					</label>
@@ -155,13 +155,13 @@ const Contact = (props: Props) => {
 				<div className="relative">
 					<label
 						htmlFor="message"
-						className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-black px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+						className="absolute text-sm text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-[#1e2532] px-2 peer-focus:px-2 peer-focus:text-cyan-400 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-2 rounded"
 					>
 						Message
 					</label>
 					<textarea
 						id="message"
-						className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+						className="block px-4 pb-3 pt-5 w-full text-sm text-white bg-gray-900/50 rounded-xl border border-gray-600 appearance-none focus:outline-none focus:ring-0 focus:border-cyan-400 peer transition-colors"
 						placeholder="Leave a comment..."
 						onChange={(e) => setMessage(e.target.value)}
 						required
@@ -169,7 +169,7 @@ const Contact = (props: Props) => {
 				</div>
 				<button
 					onClick={(e) => handleFormSubmit(e)}
-					className="text-white bg-black hover:bg-white focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center hover:text-black border-2 border-white "
+					className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-semibold py-3 transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 cursor-pointer"
 				>
 					{buttonText}
 				</button>

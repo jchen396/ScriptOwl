@@ -109,7 +109,7 @@ const Account: FunctionComponent<Props> = () => {
                 />
                 <link rel="icon" href="/img/ScriptOwl_logo_transparent.png" />
             </Head>
-            <div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
+            <div className="flex flex-col items-center justify-center space-y-10 py-10 text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black">
                 {showDeleteMsg && (
                     <div className="absolute rounded-lg flex flex-col justify-center items-center p-4 border-2 bg-black text-white">
                         <p>Are you sure you want to delete this account? </p>

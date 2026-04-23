@@ -6,7 +6,7 @@ type Props = {};
 
 const Pricing = (props: Props) => {
     return (
-        <div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
+        <div className="flex flex-col items-center justify-center space-y-10 py-10 text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black">
             <Head>
                 <title>ScriptOwl | Pricing</title>
                 <meta
@@ -26,10 +26,10 @@ const Pricing = (props: Props) => {
                 />
                 <link rel="icon" href="/img/ScriptOwl_logo_transparent.png" />
             </Head>
-            <h1 className="text-4xl font-medium text-slate-100">Pricing</h1>
+            <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-lg mb-6">Pricing</h1>
             <div className="flex flex-col space-y-4 lg:flex-row space-x-4 justify-around items-center">
-                <div className="w-80 h-160 flex flex-col border-2 border-white rounded text-white p-4 space-x-6">
-                    <h2 className="self-center text-2xl py-4">Free Tier</h2>
+                <div className="w-80 flex flex-col bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 shadow-2xl rounded-3xl text-white p-8 transition-all hover:-translate-y-2 hover:shadow-blue-500/20">
+                    <h2 className="self-center text-3xl font-bold py-4 text-transparent bg-clip-text bg-gradient-to-r from-gray-400 to-gray-200">Free Tier</h2>
                     <hr className="border-gray-500 border-1 opacity-50" />
                     <div className="flex justify-between py-4">
                         <p>Video Upload</p>
@@ -54,12 +54,12 @@ const Pricing = (props: Props) => {
                         <p>Live User Chats</p>
                         <CheckIcon className="text-blue-500" />
                     </div>
-                    <button className="bg-blue-600 text-white rounded-lg m-2 p-2 hover:bg-white hover:text-blue-600 hover:border-blue-600">
+                    <button className="w-full mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-semibold py-3 transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5">
                         Select Plan
                     </button>
                 </div>
-                <div className="w-80 h-160 flex flex-col border-2 border-white rounded text-white p-4 space-x-6">
-                    <h2 className="self-center text-2xl py-4">Standard Tier</h2>
+                <div className="w-80 flex flex-col bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 shadow-2xl rounded-3xl text-white p-8 transition-all hover:-translate-y-2 hover:shadow-blue-500/20">
+                    <h2 className="self-center text-3xl font-bold py-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Standard Tier</h2>
                     <hr className="border-gray-500 border-1 opacity-50" />
                     <div className="flex justify-between py-4">
                         <p>Video Upload</p>
@@ -84,12 +84,12 @@ const Pricing = (props: Props) => {
                         <p>Live User Chats</p>
                         <CheckIcon className="text-blue-500" />
                     </div>
-                    <button className="bg-blue-600 text-white rounded-lg m-2 p-2 hover:bg-white hover:text-blue-600 hover:border-blue-600">
+                    <button className="w-full mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-semibold py-3 transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5">
                         Select Plan
                     </button>
                 </div>
-                <div className="w-80 h-160 flex flex-col border-2 border-white rounded text-white p-4 space-x-6">
-                    <h2 className="self-center text-2xl py-4">Premium Tier</h2>
+                <div className="w-80 flex flex-col bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 shadow-2xl rounded-3xl text-white p-8 transition-all hover:-translate-y-2 hover:shadow-blue-500/20">
+                    <h2 className="self-center text-3xl font-bold py-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Premium Tier</h2>
                     <hr className="border-gray-500 border-1 opacity-50" />
                     <div className="flex justify-between py-4">
                         <p>Video Upload</p>
@@ -114,7 +114,7 @@ const Pricing = (props: Props) => {
                         <p>Live User Chats</p>
                         <CheckIcon className="text-blue-500" />
                     </div>
-                    <button className="bg-blue-600 text-white rounded-lg m-2 p-2 hover:bg-white hover:text-blue-600 hover:border-blue-600">
+                    <button className="w-full mt-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-semibold py-3 transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5">
                         Select Plan
                     </button>
                 </div>

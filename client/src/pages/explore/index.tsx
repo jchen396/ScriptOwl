@@ -40,8 +40,8 @@ const Home: FunctionComponent<Props> = ({ posts, pageCount, currentPage }) => {
 				<link rel="icon" href="/img/ScriptOwl_logo_transparent.png" />
 			</Head>
 			{!isSSR && (
-				<div className="h-full w-full flex flex-col items-center justify-start space-y-10 font-mono py-10">
-					<h1 className="text-4xl font-medium text-slate-100 self-center">
+				<div className="flex flex-col items-center justify-start space-y-10 py-10 text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black">
+					<h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-lg mb-6 self-center">
 						Explore
 					</h1>
 					<VideoGrid posts={posts} />
@@ -54,13 +54,15 @@ const Home: FunctionComponent<Props> = ({ posts, pageCount, currentPage }) => {
 		</>
 	) : (
 		<>
-			<div className="h-full w-full flex flex-col items-center justify-start space-y-10 font-mono py-10 text-white ">
-				<h1 className="text-4xl font-medium text-slate-100 self-center">
+			<div className="flex flex-col items-center justify-start space-y-10 py-10 text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black">
+				<h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-lg mb-6 self-center">
 					Explore
 				</h1>
-				<p className="h-full flex justify-center items-center text-gray-700">
-					No videos found
-				</p>
+				<div className="h-full flex justify-center items-center">
+					<div className="bg-gray-800/40 backdrop-blur-md border border-gray-700/50 rounded-2xl p-8 shadow-xl">
+						<p className="text-gray-300 text-lg font-light">No videos found</p>
+					</div>
+				</div>
 			</div>
 		</>
 	);

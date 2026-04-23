@@ -80,7 +80,7 @@ const Profile: FunctionComponent<Props> = () => {
     }, [targetUser, showUpload]);
     return (
         <>
-            <div className="h-full w-full flex flex-col items-center justify-center space-y-10 font-mono py-10">
+            <div className="flex flex-col items-center justify-center space-y-10 py-10 text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black">
                 {profileLoading ? (
                     <h1 className="text-white">Loading profile...</h1>
                 ) : (
@@ -88,13 +88,13 @@ const Profile: FunctionComponent<Props> = () => {
                         {targetUser !== null ? (
                             <div className="p-10 w-full h-screen flex flex-col justify-start items-center md:flex-row space-y-10">
                                 <div className="h-full flex flex-col justify-center items-center basis-1/2 space-y-10 md:py-20">
-                                    <h1 className="text-white text-4xl">
+                                    <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-lg mb-4">
                                         {targetUser?.username}
                                     </h1>
                                     <Image
                                         height={100}
                                         width={100}
-                                        className="w-32 h-32 rounded"
+                                        className="w-40 h-40 rounded-full border-4 border-gray-700/50 shadow-2xl"
                                         src={
                                             targetUser.avatarKey.startsWith(
                                                 "https://lh3.googleusercontent.com",
@@ -113,7 +113,7 @@ const Profile: FunctionComponent<Props> = () => {
                                     ) : (
                                         <></>
                                     )}
-                                    <h2 className="text-slate-500 text-xl">
+                                    <h2 className="text-gray-400 text-xl font-medium mt-4">
                                         Points: {targetUser?.points}
                                     </h2>
                                 </div>
@@ -123,14 +123,14 @@ const Profile: FunctionComponent<Props> = () => {
                                         onClick={() =>
                                             setShowUpload(!showUpload)
                                         }
-                                        className="text-white border rounded p-2"
+                                        className="w-48 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-xl font-semibold py-3 transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5"
                                     >
                                         Show{" "}
                                         {showUpload
                                             ? "Liked videos"
                                             : "Uploads"}
                                     </button>
-                                    <h1 className="h-full text-slate-500 text-2xl">
+                                    <h1 className="text-gray-400 text-3xl font-semibold mt-4">
                                         {showUpload
                                             ? "Uploads"
                                             : "Liked Videos"}
@@ -146,14 +146,14 @@ const Profile: FunctionComponent<Props> = () => {
                                             <>
                                                 {targetUser?.uploadedPostIds
                                                     .length > 0 ? (
-                                                    <div className="w-full h-full flex flex-col items-center justify-start font-mono ">
+                                                    <div className="flex flex-col items-center justify-start w-full">
                                                         <VideoRow
                                                             posts={videosData}
                                                         />
                                                     </div>
                                                 ) : (
                                                     <>
-                                                        <h2 className="flex justify-center items-center text-xl text-slate-500">
+                                                        <h2 className="flex justify-center items-center text-xl text-gray-400 font-light bg-gray-800/40 backdrop-blur-xl border border-gray-700/50 shadow-2xl rounded-2xl p-8">
                                                             This user has no
                                                             {showUpload
                                                                 ? " uploads"
