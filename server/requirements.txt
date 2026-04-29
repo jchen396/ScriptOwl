@@ -16,4 +16,5 @@ SpeechRecognition==3.8.1
 toml==0.10.2
 typing_extensions==4.5.0
 urllib3==1.26.14
-youtube-transcript-api==0.6.2
+youtube-transcript-api
+yt-dlp

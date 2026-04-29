@@ -3,6 +3,7 @@ FROM node:20-slim
 WORKDIR /server
 
 COPY ./server/package*.json ./
+COPY ./server/requirements.txt ./
 
 RUN apt-get update && apt-get install -y \
     ffmpeg \
@@ -12,11 +13,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 RUN npm install
+RUN pip install -r requirements.txt --upgrade --break-system-packages
 
 COPY ./server .
 COPY ./types /types
-
-RUN pip install -r requirements.txt --upgrade --break-system-packages
 
 RUN npm run build
 

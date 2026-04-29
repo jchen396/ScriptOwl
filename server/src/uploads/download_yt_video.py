@@ -19,7 +19,7 @@ def main():
                 'preferedformat': 'mp4',
             }],
             'postprocessor_args': ['-c:a', 'aac', '-c:v', 'copy'],
-            'extractor_args': {'youtube': {'js_runtimes': ['nodejs:C:\\Program Files\\nodejs\\node.exe']}},
+            'extractor_args': {'youtube': {'js_runtimes': ['nodejs:node']}},
         }
         
 

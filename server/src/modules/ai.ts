@@ -4,9 +4,10 @@ config(); // load .env
 
 
 const client = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
+  apiKey: process.env.GROQ_API_KEY || "missing",
   baseURL: "https://api.groq.com/openai/v1",
 });
+
 
 export const generateDefintion = async (word: string) => {
     try {
