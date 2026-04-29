@@ -43,7 +43,7 @@ import {
     generateDefintion,
     generateTranslation,
     generateSummary,
-} from "./modules/gemini";
+} from "./modules/ai";
 const {
     uploadImage,
     getImageFileStream,
