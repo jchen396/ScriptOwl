@@ -1,5 +1,6 @@
 import { getTranscriptServices } from "@/functions/openai_function/getReply";
 import React, { useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 interface Props {
     wordSelected: string | null;
@@ -101,11 +102,9 @@ const AISection: React.FC<Props> = ({
                 ) : (
                     <div className="h-full w-full flex flex-col space-y-4 p-4 text-gray-400 break-words overflow-y-auto">
                         {getChatQuery()}
-                        {service === "assess" ? (
-                            <p className="whitespace-pre-line">{chatReply}</p>
-                        ) : (
-                            <p>{chatReply}</p>
-                        )}
+                        <div className="flex flex-col space-y-2 [&>h1]:text-2xl [&>h1]:font-bold [&>h1]:text-white [&>h2]:text-xl [&>h2]:font-bold [&>h2]:text-white [&>h3]:text-lg [&>h3]:font-semibold [&>h3]:text-white [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 [&>p]:mb-2 [&_strong]:text-white">
+                            <ReactMarkdown>{chatReply || ""}</ReactMarkdown>
+                        </div>
                     </div>
                 )}
             </div>
