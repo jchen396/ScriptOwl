@@ -18,20 +18,13 @@ const URLInput: React.FunctionComponent<Props> = ({
 	const submitYoutubeURL = async (e: any) => {
 		e.preventDefault();
 		setIsLoading(true);
-		try {
-			// Try Vercel API route first (uses Vercel's distributed IPs)
-			const res = await axios.post("/api/youtube-transcript", {
+		const res = await axios.post(
+			`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}youtube`,
+			{
 				youtubeURL,
-			});
-			setYoutubeTranscript(res.data.result);
-		} catch {
-			// Fallback to Render server
-			const res = await axios.post(
-				`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}youtube`,
-				{ youtubeURL }
-			);
-			setYoutubeTranscript(res.data.result);
-		}
+			}
+		);
+		setYoutubeTranscript(res.data.result);
 		setIsLoading(false);
 	};
 	return (
