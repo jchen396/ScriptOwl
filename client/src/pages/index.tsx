@@ -91,38 +91,57 @@ const Home: React.FunctionComponent<Props> = ({}) => {
             </Head>
             <HeroSection />
             {isLoading ? (
-                <div className="w-full flex flex-row justify-center items-center space-x-4">
-                    <div role="status">
-                        <div
-                            className="inline-block h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-neutral-100 motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                            role="status"
-                        >
-                            <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-                                Loading...
-                            </span>
+                <div className="p-6 w-11/12 max-w-[1400px] mx-auto flex flex-col xl:flex-row justify-center items-start gap-8 my-12">
+                    <div className="w-full xl:basis-2/3 flex flex-col items-center bg-gray-900/40 p-4 rounded-3xl border border-gray-800/60 shadow-2xl backdrop-blur-xl">
+                        <div className="w-full relative pt-[56.25%] rounded-2xl overflow-hidden bg-gray-800/50 animate-pulse border border-gray-700/30">
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                            </div>
                         </div>
-                        <span className="sr-only">Loading...</span>
+                    </div>
+                    <div className="w-full xl:basis-1/3 min-h-[500px] xl:h-[65vh] flex flex-col p-4 bg-gray-900/40 rounded-3xl border border-gray-800/60 shadow-2xl backdrop-blur-xl">
+                        <div className="w-full h-12 bg-gray-800/50 rounded-lg mb-4 animate-pulse"></div>
+                        <div className="flex-1 w-full bg-gray-800/30 rounded-2xl p-6 flex flex-col gap-3">
+                            <div className="w-full h-4 bg-gray-700/50 rounded animate-pulse"></div>
+                            <div className="w-11/12 h-4 bg-gray-700/50 rounded animate-pulse delay-75"></div>
+                            <div className="w-4/5 h-4 bg-gray-700/50 rounded animate-pulse delay-150"></div>
+                            <div className="w-full h-4 bg-gray-700/50 rounded animate-pulse delay-200 mt-2"></div>
+                            <div className="w-3/4 h-4 bg-gray-700/50 rounded animate-pulse delay-300"></div>
+                            <div className="w-5/6 h-4 bg-gray-700/50 rounded animate-pulse delay-500"></div>
+                        </div>
+                        <div className="w-full mt-4 flex justify-center gap-4">
+                            <div className="w-24 h-10 bg-gray-800/80 rounded-full animate-pulse"></div>
+                            <div className="w-28 h-10 bg-gray-800/80 rounded-full animate-pulse delay-100"></div>
+                            <div className="w-24 h-10 bg-gray-800/80 rounded-full animate-pulse delay-200"></div>
+                        </div>
                     </div>
                 </div>
             ) : youtubeTranscript ? (
-                <div className="p-4 w-3/4 flex flex-col md:flex-row justify-center items-center space-x-4">
-                    <iframe
-                        width="720"
-                        height="360"
-                        src={`https://www.youtube.com/embed/${youtubeID}`}
-                        frameBorder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                    ></iframe>
-                    <div className="basis-1/3 h-screen w-full flex flex-col justify-center items-center text-white ">
-                        <SectionTabs
-                            post={null}
-                            section={section}
-                            setSection={setSection}
-                            service={service}
-                            requireUser={false}
-                        />
-                        {getSectionComponent()}
+                <div className="p-6 w-11/12 max-w-[1400px] mx-auto flex flex-col xl:flex-row justify-center items-start gap-8 animate-fade-in my-12">
+                    <div className="w-full xl:basis-2/3 flex flex-col items-center bg-gray-900/40 p-4 rounded-3xl border border-gray-800/60 shadow-2xl backdrop-blur-xl hover:border-gray-700/60 transition-colors duration-300">
+                        <div className="w-full relative pt-[56.25%] rounded-2xl overflow-hidden shadow-2xl shadow-black/50 border border-gray-700/30">
+                            <iframe
+                                className="absolute top-0 left-0 w-full h-full"
+                                src={`https://www.youtube.com/embed/${youtubeID}`}
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    </div>
+                    <div className="w-full xl:basis-1/3 min-h-[500px] xl:h-[65vh] flex flex-col justify-start items-center text-white bg-gray-900/40 rounded-3xl border border-gray-800/60 shadow-2xl backdrop-blur-xl overflow-hidden hover:border-gray-700/60 transition-colors duration-300">
+                        <div className="w-full bg-gray-800/50 border-b border-gray-700/50">
+                            <SectionTabs
+                                post={null}
+                                section={section}
+                                setSection={setSection}
+                                service={service}
+                                requireUser={false}
+                            />
+                        </div>
+                        <div className="w-full flex-1 overflow-y-auto hide-scrollbar">
+                            {getSectionComponent()}
+                        </div>
                     </div>
                 </div>
             ) : (

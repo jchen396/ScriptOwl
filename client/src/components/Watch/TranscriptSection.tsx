@@ -70,64 +70,58 @@ const TranscriptSection: React.FC<Props> = ({
         setChatLoading(false);
     };
     return (
-        <div className="h-4/5 w-full flex flex-col space-y-4">
-            <div className="basis-4/5 text-gray-600 flex flex-wrap border-2 bg-transparent border-gray-800 rounded-lg overflow-y-scroll p-4 ">
+        <div className="h-full w-full flex flex-col p-4 gap-4">
+            <div className="flex-1 text-gray-400 flex flex-wrap bg-gray-900/50 border border-gray-700/50 rounded-2xl overflow-y-auto hide-scrollbar p-6 shadow-inner text-lg leading-relaxed">
                 {transcript.replace(/(\r\n|\n|\r)/gm, "") ? (
                     transcript.split(" ").map((word, key) => {
                         return (
                             <span
-                                className={`flex items-center justify-center ${
+                                className={`inline-block mr-1 mb-1 transition-colors duration-200 ${
                                     (currentUser && currentUser.isVerified) ||
                                     !requireUser
-                                        ? "hover:text-white hover:cursor-default"
+                                        ? "hover:text-blue-400 hover:cursor-pointer"
                                         : ""
                                 }`}
                                 key={key}
                                 onClick={(e) => handleWordSelect(e)}
                             >
-                                {word}&nbsp;
+                                {word}
                             </span>
                         );
                     })
                 ) : (
-                    <div className="w-full h-full flex justify-center items-center text-gray-600">
+                    <div className="w-full h-full flex justify-center items-center text-gray-500">
                         <p>No transcript available</p>
                     </div>
                 )}
             </div>
-            {transcript.replace(/(\r\n|\n|\r)/gm, "") ? (
-                <>
-                    <p className="text-white self-center">
-                        Click on word to search with AI.{" "}
+            {transcript.replace(/(\r\n|\n|\r)/gm, "") && (
+                <div className="flex flex-col items-center gap-3 mt-2 shrink-0">
+                    <p className="text-gray-400 text-sm font-medium">
+                        Click on any word to search with AI, or choose an action below:
                     </p>
 
-                    <div className="flex flex-row justify-center items-center space-x-4">
+                    <div className="flex flex-wrap justify-center items-center gap-4">
                         <button
-                            className={`text-xl p-2 px-4 border border-white rounded-full opacity-75
-									border-gray-600 text-gray-400 hover:cursor-pointer hover:opacity-100`}
+                            className="px-6 py-2.5 bg-gray-800/80 hover:bg-blue-600/20 border border-gray-600 hover:border-blue-500 text-gray-300 hover:text-blue-400 rounded-full font-medium transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
                             onClick={() => handleOptionSelect("translate")}
                         >
                             Translate
                         </button>
                         <button
-                            className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 
-									border-gray-600 text-gray-400 hover:cursor-pointer hover:opacity-100
-							`}
+                            className="px-6 py-2.5 bg-gray-800/80 hover:bg-purple-600/20 border border-gray-600 hover:border-purple-500 text-gray-300 hover:text-purple-400 rounded-full font-medium transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
                             onClick={() => handleOptionSelect("summarize")}
                         >
                             Summarize
                         </button>
                         <button
-                            className={`text-xl p-2 px-4 border border-white rounded-full opacity-75 
-									border-gray-600 text-gray-400 hover:cursor-pointer hover:opacity-100`}
+                            className="px-6 py-2.5 bg-gray-800/80 hover:bg-emerald-600/20 border border-gray-600 hover:border-emerald-500 text-gray-300 hover:text-emerald-400 rounded-full font-medium transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg"
                             onClick={() => handleOptionSelect("assess")}
                         >
                             Assess
                         </button>
                     </div>
-                </>
-            ) : (
-                <></>
+                </div>
             )}
         </div>
     );

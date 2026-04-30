@@ -83,30 +83,24 @@ const AISection: React.FC<Props> = ({
         }
     };
     return (
-        <div className="h-4/5 w-full flex flex-col space-y-4">
-            <div className="basis-4/5 text-gray-600 flex justify-center items-center border-2 bg-transparent border-gray-800 rounded-lg overflow-auto p-4 hover:cursor-default ">
+        <div className="h-full w-full flex flex-col p-4 gap-4">
+            <div className="flex-1 flex justify-center items-start bg-gray-900/50 border border-gray-700/50 rounded-2xl overflow-hidden shadow-inner hover:cursor-default relative">
                 {chatLoading ? (
-                    <div className="w-full flex flex-row justify-center items-center space-x-4">
-                        <div role="status">
-                            <div
-                                className="inline-block h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] text-neutral-100 motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                                role="status"
-                            >
-                                <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-                                    Loading...
-                                </span>
-                            </div>
-                            <span className="sr-only">Loading...</span>
+                    <div className="absolute inset-0 flex flex-col justify-center items-center bg-gray-900/80 backdrop-blur-sm z-10">
+                        <div className="relative w-16 h-16">
+                            <div className="absolute inset-0 rounded-full border-4 border-blue-500/30"></div>
+                            <div className="absolute inset-0 rounded-full border-4 border-blue-500 border-t-transparent animate-spin"></div>
                         </div>
+                        <p className="mt-4 text-blue-400 font-medium animate-pulse">AI is thinking...</p>
                     </div>
-                ) : (
-                    <div className="h-full w-full flex flex-col space-y-4 p-4 text-gray-400 break-words overflow-y-auto">
-                        {getChatQuery()}
-                        <div className="flex flex-col space-y-2 [&>h1]:text-2xl [&>h1]:font-bold [&>h1]:text-white [&>h2]:text-xl [&>h2]:font-bold [&>h2]:text-white [&>h3]:text-lg [&>h3]:font-semibold [&>h3]:text-white [&>ul]:list-disc [&>ul]:pl-5 [&>ol]:list-decimal [&>ol]:pl-5 [&>p]:mb-2 [&_strong]:text-white">
-                            <ReactMarkdown>{chatReply || ""}</ReactMarkdown>
-                        </div>
+                ) : null}
+                
+                <div className={`h-full w-full flex flex-col p-6 text-gray-300 break-words overflow-y-auto hide-scrollbar ${chatLoading ? 'opacity-30' : 'opacity-100'} transition-opacity duration-300`}>
+                    {getChatQuery()}
+                    <div className="flex flex-col space-y-4 mt-2 [&>h1]:text-3xl [&>h1]:font-bold [&>h1]:text-white [&>h1]:mt-4 [&>h2]:text-2xl [&>h2]:font-semibold [&>h2]:text-blue-400 [&>h2]:mt-3 [&>h3]:text-xl [&>h3]:font-medium [&>h3]:text-white [&>ul]:list-disc [&>ul]:pl-6 [&>ul]:space-y-1 [&>ol]:list-decimal [&>ol]:pl-6 [&>ol]:space-y-1 [&>p]:leading-relaxed [&_strong]:text-white [&_strong]:font-semibold">
+                        <ReactMarkdown>{chatReply || ""}</ReactMarkdown>
                     </div>
-                )}
+                </div>
             </div>
         </div>
     );
