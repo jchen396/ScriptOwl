@@ -47,16 +47,24 @@ async function tryInnertube(videoId: string): Promise<string | null> {
         // you can route the request through their proxy network here to bypass the block.
         const USE_PROXY = process.env.SCRAPER_API_KEY ? true : false;
         
+        console.log(`[Innertube] Proxy enabled: ${USE_PROXY}`);
+        if (!USE_PROXY) {
+            console.log(`[Innertube] SCRAPER_API_KEY is not set. Falling back to direct Vercel fetch (likely to be blocked).`);
+        }
+        
         let targetUrl = `https://www.youtube.com/youtubei/v1/player?key=${INNERTUBE_API_KEY}&prettyPrint=false`;
         
         if (USE_PROXY) {
-            // Example using ScraperAPI
             targetUrl = `http://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(targetUrl)}`;
         }
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
 
         const response = await fetch(
             targetUrl,
             {
+                signal: controller.signal,
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -76,6 +84,8 @@ async function tryInnertube(videoId: string): Promise<string | null> {
                 }),
             }
         );
+        
+        clearTimeout(timeout);
 
         if (!response.ok) return null;
         const data = await response.json();
@@ -105,7 +115,16 @@ async function tryInnertube(videoId: string): Promise<string | null> {
             captionUrl = `http://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(captionUrl)}`;
         }
 
-        const captionRes = await fetch(captionUrl, { headers: { Cookie: CONSENT_COOKIE } });
+        const controller2 = new AbortController();
+        const timeout2 = setTimeout(() => controller2.abort(), 10000);
+
+        const captionRes = await fetch(captionUrl, { 
+            headers: { Cookie: CONSENT_COOKIE },
+            signal: controller2.signal 
+        });
+        
+        clearTimeout(timeout2);
+        
         if (!captionRes.ok) return null;
 
         const xml = await captionRes.text();
