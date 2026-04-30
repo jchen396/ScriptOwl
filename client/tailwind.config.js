@@ -13,6 +13,7 @@ module.exports = {
 			animation: {
 				'gradient-x': 'gradient-x 5s ease infinite',
 				'fade-in': 'fade-in 0.5s ease-out forwards',
+				'shimmer-slide': 'shimmer-slide 1.5s ease-in-out infinite',
 			},
 			keyframes: {
 				'gradient-x': {
@@ -28,6 +29,10 @@ module.exports = {
 				'fade-in': {
 					'0%': { opacity: '0', transform: 'translateY(10px)' },
 					'100%': { opacity: '1', transform: 'translateY(0)' },
+				},
+				'shimmer-slide': {
+					'0%': { transform: 'translateX(-100%)' },
+					'100%': { transform: 'translateX(100%)' },
 				}
 			}
 		},

@@ -164,68 +164,72 @@ const Comment: React.FunctionComponent<Props> = ({
 	};
 
 	return (
-		<>
-			<div className="flex flex-row justify-between items-center p-2 space-x-4">
-				<div className="flex flex-row justify-start items-center p-2 space-x-4">
-					<Image
-						height={32}
-						width={32}
-						className="w-10 h-10 rounded-full"
-						src={`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${comment.commenter.avatarKey}`}
-						alt="commenter photo"
-					/>
-					<div className="flex flex-col text-gray-400">
-						<div className="flex flex-row items-center space-x-2">
-							<h2 className="text-xl hover:underline hover:text-white hover:cursor-pointer">
-								{comment.commenter.username}
-							</h2>
-							{timeNumber && timeWord ? (
-								<p className="text-gray-600">
-									{timeNumber} {timeWord} ago
-								</p>
-							) : (
-								<p className="text-gray-600">Just now</p>
-							)}
-						</div>
+		<div className="group flex items-start gap-3 px-4 py-3 hover:bg-gray-800/20 transition-colors duration-150">
+			{/* Avatar */}
+			<Image
+				height={32}
+				width={32}
+				className="w-8 h-8 rounded-full object-cover shrink-0 mt-0.5"
+				src={`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${comment.commenter.avatarKey}`}
+				alt="commenter photo"
+			/>
 
-						<p className="break-all">{comment.comment}</p>
-						<div className="text-sm flex flex-row items-center space-x-2">
-							<div
-								className={`hover:cursor-pointer ${
-									commentLiked
-										? "hover:text-blue-400 text-blue-600 "
-										: "hover:text-white text-gray-400"
-								}`}
-								onClick={onLikeComment}
-							>
-								<ThumbUpOffAltIcon />
-							</div>
-
-							<p>{commentLikes}</p>
-							<div
-								className={`hover:cursor-pointer ${
-									commentDisliked
-										? "hover:text-red-400 text-red-600 "
-										: "hover:text-white text-gray-400"
-								}`}
-								onClick={onDislikeComment}
-							>
-								<ThumbDownOffAltIcon />
-							</div>
-
-							<p>{commentDislikes}</p>
-						</div>
-					</div>
+			{/* Content */}
+			<div className="flex-1 min-w-0">
+				{/* Username + time */}
+				<div className="flex items-center gap-2 mb-0.5">
+					<span className="text-xs font-medium text-gray-300 hover:text-blue-400 cursor-pointer transition-colors duration-200">
+						{comment.commenter.username}
+					</span>
+					<span className="text-[10px] text-gray-600">
+						{timeNumber && timeWord
+							? `${timeNumber} ${timeWord} ago`
+							: "Just now"}
+					</span>
 				</div>
-				{comment.commenter.id === currentUser?.id && (
-					<DeleteIcon
-						onClick={() => onDeleteComment()}
-						className="hover:text-red-400 text-red-600 hover:cursor-pointer"
-					/>
-				)}
+
+				{/* Comment text */}
+				<p className="text-sm text-gray-400 break-words leading-relaxed">
+					{comment.comment}
+				</p>
+
+				{/* Actions */}
+				<div className="flex items-center gap-3 mt-1.5">
+					<button
+						className={`flex items-center gap-1 text-xs transition-colors duration-200 ${
+							commentLiked
+								? "text-blue-400"
+								: "text-gray-600 hover:text-gray-300"
+						}`}
+						onClick={onLikeComment}
+					>
+						<ThumbUpOffAltIcon sx={{ fontSize: 14 }} />
+						{commentLikes > 0 && <span>{commentLikes}</span>}
+					</button>
+
+					<button
+						className={`flex items-center gap-1 text-xs transition-colors duration-200 ${
+							commentDisliked
+								? "text-red-400"
+								: "text-gray-600 hover:text-gray-300"
+						}`}
+						onClick={onDislikeComment}
+					>
+						<ThumbDownOffAltIcon sx={{ fontSize: 14 }} />
+						{commentDislikes > 0 && <span>{commentDislikes}</span>}
+					</button>
+
+					{comment.commenter.id === currentUser?.id && (
+						<button
+							onClick={() => onDeleteComment()}
+							className="flex items-center text-xs text-gray-600 hover:text-red-400 transition-colors duration-200 opacity-0 group-hover:opacity-100 ml-auto"
+						>
+							<DeleteIcon sx={{ fontSize: 14 }} />
+						</button>
+					)}
+				</div>
 			</div>
-			<hr className="border-gray-800 opacity-75" />
-		</>
+		</div>
 	);
 };
 

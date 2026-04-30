@@ -159,110 +159,130 @@ const VideoSection: React.FunctionComponent<Props> = ({
     }, [postLikes, postDislikes]);
 
     return (
-        <div className="basis-2/3 w-full h-full flex justify-center items-center">
-            <div className="w-[80%] flex flex-col justify-center items-center space-y-2">
-                <div className="w-full max-w-4xl mx-auto">
-                    <video
-                        src={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}
-                        controls
-                        className="w-full aspect-video object-contain bg-black"
-                    />
-                </div>
-                <p className="truncate text-4xl text-white">{post.title}</p>
-                <p className="text-gray-500">{post.description}</p>
+        <div className="w-full h-full flex flex-col">
+            {/* Video player */}
+            <div className="w-full bg-black">
+                <video
+                    src={`https://${process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN}${post.videoKey}`}
+                    controls
+                    className="w-full aspect-video object-contain"
+                />
+            </div>
 
-                <div className="w-[90%] flex flex-row justify-between items-center text-white text-2xl">
-                    <div className="flex flex-col items-start">
-                        <div className="flex flex-row space-x-4">
-                            <p>{post.views} views</p>
-                            <span>&middot;</span>
-                            <p>
-                                {timeNumber} {timeWord} ago
-                            </p>
-                        </div>
+            {/* Video info area */}
+            <div className="flex flex-col gap-4 p-5 lg:p-6">
+                {/* Title */}
+                <h1 className="text-xl lg:text-2xl font-semibold text-white leading-tight line-clamp-2">
+                    {post.title}
+                </h1>
+
+                {/* Description */}
+                {post.description && (
+                    <p className="text-sm text-gray-400 leading-relaxed">
+                        {post.description}
+                    </p>
+                )}
+
+                {/* Meta row: views + time + like/dislike */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <span>{post.views} views</span>
+                        <span className="text-gray-700">•</span>
+                        <span>
+                            {timeNumber} {timeWord} ago
+                        </span>
                     </div>
 
-                    <div className="flex flex-col space-y-2">
-                        <div className="flex flex-row space-x-4 text-4xl">
-                            <div
-                                className={`hover:cursor-pointer ${
-                                    postLiked
-                                        ? "hover:text-blue-400 text-blue-600 "
-                                        : "hover:text-white text-gray-400"
-                                }`}
-                                onClick={onLikePost}
-                            >
-                                <ThumbUpOffAltIcon sx={{ fontSize: 40 }} />
-                            </div>
+                    <div className="flex items-center gap-1">
+                        {/* Like button */}
+                        <button
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-l-full text-sm font-medium transition-all duration-200 ${
+                                postLiked
+                                    ? "bg-blue-500/15 text-blue-400"
+                                    : "bg-gray-800/60 text-gray-400 hover:bg-gray-700/60 hover:text-white"
+                            }`}
+                            onClick={onLikePost}
+                        >
+                            <ThumbUpOffAltIcon sx={{ fontSize: 18 }} />
+                            <span>{postLikes}</span>
+                        </button>
 
-                            <p>{postLikes}</p>
-                            <div
-                                className={`hover:cursor-pointer ${
-                                    postDisliked
-                                        ? "hover:text-red-400 text-red-600 "
-                                        : "hover:text-white text-gray-400"
-                                }`}
-                                onClick={onDislikePost}
-                            >
-                                <ThumbDownOffAltIcon sx={{ fontSize: 40 }} />
-                            </div>
+                        {/* Divider */}
+                        <div className="w-px h-7 bg-gray-700/50" />
 
-                            <p>{postDislikes}</p>
-                        </div>
-                        <div className="w-full flex flex-row justify-center items-center">
-                            <div
-                                className={`
-									 ${
-                                         likeDislikeBar[
-                                             Math.trunc(postLikePercentage)
-                                         ][0]
-                                     } py-1 bg-blue-600 rounded-l-full`}
-                            ></div>
-                            <div
-                                className={`
-									 ${
-                                         likeDislikeBar[
-                                             Math.trunc(postLikePercentage)
-                                         ][1]
-                                     } py-1 bg-red-600 rounded-r-full`}
-                            ></div>
-                        </div>
+                        {/* Dislike button */}
+                        <button
+                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-r-full text-sm font-medium transition-all duration-200 ${
+                                postDisliked
+                                    ? "bg-red-500/15 text-red-400"
+                                    : "bg-gray-800/60 text-gray-400 hover:bg-gray-700/60 hover:text-white"
+                            }`}
+                            onClick={onDislikePost}
+                        >
+                            <ThumbDownOffAltIcon sx={{ fontSize: 18 }} />
+                            <span>{postDislikes}</span>
+                        </button>
                     </div>
                 </div>
-                <div className="w-[90%] flex flex-row items-center text-white text-2xl space-x-2">
-                    <Image
-                        height={50}
-                        width={50}
-                        className="w-10 h-10 rounded-full"
-                        src={
-                            post.publisher.avatarKey.startsWith(
-                                "https://lh3.googleusercontent.com",
-                            )
-                                ? post.publisher.avatarKey
-                                : `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${post.publisher.avatarKey}`
-                        }
-                        alt="user photo"
+
+                {/* Like/dislike bar */}
+                <div className="w-full flex items-center h-1 rounded-full overflow-hidden bg-gray-800/50">
+                    <div
+                        className={`${
+                            likeDislikeBar[Math.trunc(postLikePercentage)][0]
+                        } h-full bg-blue-500 rounded-l-full transition-all duration-500`}
                     />
-                    <div className="flex flex-col justify-center items-start">
+                    <div
+                        className={`${
+                            likeDislikeBar[Math.trunc(postLikePercentage)][1]
+                        } h-full bg-red-500/60 rounded-r-full transition-all duration-500`}
+                    />
+                </div>
+
+                {/* Divider */}
+                <div className="w-full h-px bg-gray-800/60" />
+
+                {/* Publisher info */}
+                <div className="flex items-center gap-3">
+                    <Link
+                        href={{ pathname: `/user/${post.publisher.username}` }}
+                        className="shrink-0"
+                    >
+                        <Image
+                            height={40}
+                            width={40}
+                            className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-800 hover:ring-blue-500/50 transition-all duration-200"
+                            src={
+                                post.publisher.avatarKey.startsWith(
+                                    "https://lh3.googleusercontent.com",
+                                )
+                                    ? post.publisher.avatarKey
+                                    : `${process.env.NEXT_PUBLIC_SERVER_DOMAIN}images/${post.publisher.avatarKey}`
+                            }
+                            alt="user photo"
+                        />
+                    </Link>
+                    <div className="flex flex-col min-w-0">
                         <Link
                             href={{
                                 pathname: `/user/${post.publisher.username}`,
                             }}
+                            className="text-white text-sm font-medium hover:text-blue-400 transition-colors duration-200 truncate"
                         >
-                            <span>{post.publisher.username}</span>
+                            {post.publisher.username}
                         </Link>
-                        <span className="text-sm text-slate-400">
+                        <span className="text-xs text-gray-500">
                             {followerCount} followers
                         </span>
                     </div>
-                    {currentUser?.id !== post.publisher.id ? (
-                        <FollowButton
-                            publisherId={post.publisher.id}
-                            publisherName={post.publisher.username}
-                            currentUser={currentUser}
-                        />
-                    ) : (
-                        <></>
+                    {currentUser?.id !== post.publisher.id && (
+                        <div className="ml-auto">
+                            <FollowButton
+                                publisherId={post.publisher.id}
+                                publisherName={post.publisher.username}
+                                currentUser={currentUser}
+                            />
+                        </div>
                     )}
                 </div>
             </div>

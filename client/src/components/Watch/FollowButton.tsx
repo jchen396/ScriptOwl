@@ -21,11 +21,6 @@ const FollowButton: React.FunctionComponent<Props> = ({
     const [isFollowing, setIsFollowing] = useState<boolean>(
         currentUser?.following?.some((u) => u.id === publisherId),
     );
-    const [followStatus, setFollowStatus] = useState<string>(
-        currentUser?.following?.some((u) => u.id === publisherId)
-            ? "✔ Following"
-            : "Follow",
-    );
     const [followUser] = useMutation(FOLLOW_USER);
     const [unfollowUser] = useMutation(UNFOLLOW_USER);
     const onFollow = async () => {
@@ -43,7 +38,6 @@ const FollowButton: React.FunctionComponent<Props> = ({
                 },
             });
             setIsFollowing(true);
-            setFollowStatus("✔ Following");
         }
         setButtonDisabled(false);
     };
@@ -62,19 +56,20 @@ const FollowButton: React.FunctionComponent<Props> = ({
                 },
             });
             setIsFollowing(false);
-            setFollowStatus("Follow");
         }
         setButtonDisabled(false);
     };
     return (
-        <>
-            <button
-                onClick={() => (isFollowing ? onUnfollow() : onFollow())}
-                className="p-2 px-4 bold text-white text-xl rounded-lg bg-blue-500 hover:opacity-80"
-            >
-                {followStatus}
-            </button>
-        </>
+        <button
+            onClick={() => (isFollowing ? onUnfollow() : onFollow())}
+            className={`px-4 py-1.5 text-xs font-medium rounded-full transition-all duration-200 ${
+                isFollowing
+                    ? "bg-gray-800/60 text-gray-400 border border-gray-700/50 hover:border-red-500/30 hover:text-red-400 hover:bg-red-500/10"
+                    : "bg-blue-500 text-white hover:bg-blue-400 shadow-lg shadow-blue-500/20"
+            }`}
+        >
+            {isFollowing ? "Following" : "Follow"}
+        </button>
     );
 };
 

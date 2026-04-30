@@ -16,6 +16,7 @@ import { InferGetServerSidePropsType, NextPage } from "next";
 import TranscriptSection from "@/components/Watch/TranscriptSection";
 import SectionTabs from "@/components/Watch/SectionTabs";
 import ChatGPTSection from "@/components/Watch/AISection";
+import Image from "next/image";
 
 interface Props {
     post: IPost;
@@ -29,6 +30,7 @@ const Watch: NextPage<
     const [section, setSection] = useState<string>("comment");
     const [updateUserMutate] = useMutation(UPDATE_USER);
     const [isSSR, setIsSSR] = useState(true);
+    const [isLoaded, setIsLoaded] = useState(false);
     const { currentUser } = useSelector((state: any) => state.user);
     const { timeNumber, timeWord } = getTimeDiff(parseInt(post.createdAt.date));
     const [wordSelected, setWordSelected] = useState<string | null>("");
@@ -89,29 +91,86 @@ const Watch: NextPage<
     };
     useEffect(() => {
         setIsSSR(false);
+        const timer = setTimeout(() => setIsLoaded(true), 100);
+        return () => clearTimeout(timer);
     }, []);
     return (
         <>
             {!isSSR && (
-                <div className="flex flex-row flex-wrap items-center justify-center space-y-10 p-10 text-white font-sans w-full min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black">
-                    <VideoSection
-                        currentUser={currentUser}
-                        post={post}
-                        timeNumber={timeNumber}
-                        timeWord={timeWord}
-                        refreshUserData={refreshUserData}
-                    />
-                    <div className="basis-1/3 h-screen w-full flex flex-col justify-center items-center text-white ">
-                        <SectionTabs
-                            post={post}
-                            section={section}
-                            setSection={setSection}
-                            service={service}
-                            requireUser={true}
-                        />
-                        {getSectionComponent()}
+                <>
+                    {/* Loading overlay */}
+                    <div
+                        className={`fixed inset-0 z-50 flex items-center justify-center bg-gray-950 transition-all duration-700 ${
+                            isLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
+                        }`}
+                    >
+                        <div className="flex flex-col items-center gap-5">
+                            <div className="relative flex items-center justify-center">
+                                <div className="absolute w-28 h-28 rounded-full bg-blue-500/10 animate-ping" />
+                                <div className="absolute w-24 h-24 rounded-full bg-blue-500/5 animate-pulse" />
+                                <Image
+                                    src="/img/ScriptOwl_logo_transparent.png"
+                                    alt="ScriptOwl"
+                                    width={80}
+                                    height={80}
+                                    className="relative z-10 w-16 h-16 drop-shadow-[0_0_20px_rgba(59,130,246,0.4)] animate-pulse"
+                                />
+                            </div>
+                            <div className="flex flex-col items-center gap-2">
+                                <div className="h-1 w-32 rounded-full bg-gray-800 overflow-hidden">
+                                    <div className="h-full w-full bg-gradient-to-r from-transparent via-blue-500/60 to-transparent animate-shimmer-slide" />
+                                </div>
+                                <p className="text-gray-600 text-xs tracking-widest uppercase font-medium">Loading</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
+
+                    {/* Main content */}
+                    <div
+                        className={`flex flex-col lg:flex-row w-full bg-gray-950 transition-all duration-700 ease-out ${
+                            isLoaded ? "opacity-100" : "opacity-0"
+                        }`}
+                    >
+                        {/* Video section — left half */}
+                        <div
+                            className={`w-full lg:w-1/2 flex flex-col transition-all duration-700 delay-150 ease-out ${
+                                isLoaded
+                                    ? "opacity-100 translate-y-0"
+                                    : "opacity-0 translate-y-6"
+                            }`}
+                        >
+                            <VideoSection
+                                currentUser={currentUser}
+                                post={post}
+                                timeNumber={timeNumber}
+                                timeWord={timeWord}
+                                refreshUserData={refreshUserData}
+                            />
+                        </div>
+
+                        {/* Right half — transcript/comments/AI */}
+                        <div
+                            className={`w-full lg:w-1/2 lg:h-screen flex flex-col overflow-hidden bg-gray-900/40 border-l border-gray-800/40 transition-all duration-700 delay-300 ease-out ${
+                                isLoaded
+                                    ? "opacity-100 translate-y-0"
+                                    : "opacity-0 translate-y-6"
+                            }`}
+                        >
+                            <div className="shrink-0">
+                                <SectionTabs
+                                    post={post}
+                                    section={section}
+                                    setSection={setSection}
+                                    service={service}
+                                    requireUser={true}
+                                />
+                            </div>
+                            <div className="flex-1 min-h-0 overflow-y-auto hide-scrollbar">
+                                {getSectionComponent()}
+                            </div>
+                        </div>
+                    </div>
+                </>
             )}
         </>
     );

@@ -16,40 +16,38 @@ const SectionTabs: React.FC<Props> = ({
     service,
     requireUser,
 }) => {
+    const tabs = [
+        ...(requireUser
+            ? [
+                  {
+                      id: "comment",
+                      label: `${post?.comments.length ?? 0} Comments`,
+                  },
+              ]
+            : []),
+        { id: "transcript", label: "Transcript" },
+        ...(service ? [{ id: "AI", label: "AI" }] : []),
+    ];
+
     return (
-        <div className="flex flex-row justify-center items-center">
-            {requireUser && (
+        <div className="flex items-center w-full border-b border-gray-800/60 bg-gray-900/60 backdrop-blur-sm px-2">
+            {tabs.map((tab) => (
                 <button
-                    className={`text-xl border-2 p-2 px-4 rounded-t-xl ${
-                        section === "comment"
-                            ? "border-white opacity-100"
-                            : "border-gray-800 opacity-50"
-                    } hover:opacity-100`}
-                    onClick={() => setSection("comment")}
+                    key={tab.id}
+                    className={`relative px-4 py-3 text-sm font-medium transition-all duration-200 ${
+                        section === tab.id
+                            ? "text-blue-400"
+                            : "text-gray-500 hover:text-gray-300"
+                    }`}
+                    onClick={() => setSection(tab.id)}
                 >
-                    {post?.comments.length} Comments
+                    {tab.label}
+                    {/* Active indicator */}
+                    {section === tab.id && (
+                        <span className="absolute bottom-0 left-2 right-2 h-0.5 bg-blue-400 rounded-full" />
+                    )}
                 </button>
-            )}
-            <button
-                className={`text-xl border-2 p-2 px-4 rounded-t-xl ${
-                    section === "transcript"
-                        ? "border-white border-2 opacity-100"
-                        : "border-gray-800 opacity-50"
-                } hover:opacity-100`}
-                onClick={() => setSection("transcript")}
-            >
-                Transcript
-            </button>
-            <button
-                className={`text-xl border-2 p-2 px-4 rounded-t-xl ${
-                    section === "AI"
-                        ? "border-white opacity-100"
-                        : "border-gray-800 opacity-50"
-                } hover:opacity-100 ${service ? "block" : "hidden"}`}
-                onClick={() => setSection("AI")}
-            >
-                AI
-            </button>
+            ))}
         </div>
     );
 };
