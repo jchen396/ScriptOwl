@@ -4,15 +4,21 @@ export const config = {
     runtime: "edge",
 };
 
-// Piped API instances (free, open-source YouTube proxy)
-// These handle IP blocking by running their own proxy infrastructure
-const PIPED_INSTANCES = [
-    "https://pipedapi.kavin.rocks",
-    "https://pipedapi.adminforge.de",
-    "https://pipedapi.in.projectsegfau.lt",
+// Invidious API instances — more reliable than Piped
+// These are self-hosted YouTube frontends with their own proxy infrastructure
+const INVIDIOUS_INSTANCES = [
+    "https://inv.nadeko.net",
+    "https://inv.odyssey346.dev",
+    "https://inv.tux.pizza",
+    "https://invidious.perennialte.ch",
 ];
 
-// Direct innertube as a final fallback (works from non-blocked IPs / local dev)
+// Piped instances as secondary fallback
+const PIPED_INSTANCES = [
+    "https://pipedapi.kavin.rocks",
+    "https://pipedapi.smnz.de",
+];
+
 const INNERTUBE_API_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 const CONSENT_COOKIE = "SOCS=CAESEwgDEgk2ODE5MTAyNjUaAmVuIAEaBgiA_LyaBg";
 
@@ -34,44 +40,34 @@ function decodeEntities(text: string): string {
         .trim();
 }
 
-/**
- * Parse VTT (WebVTT) subtitle format into plain text lines
- */
 function parseVtt(vtt: string): string[] {
     const lines: string[] = [];
+    const seen = new Set<string>();
     const blocks = vtt.split("\n\n");
 
     for (const block of blocks) {
         const blockLines = block.trim().split("\n");
-        // Skip the WEBVTT header and timestamp lines
         const textLines = blockLines.filter(
             (line) =>
                 !line.startsWith("WEBVTT") &&
                 !line.startsWith("Kind:") &&
                 !line.startsWith("Language:") &&
                 !line.startsWith("NOTE") &&
-                !line.match(/^\d{2}:\d{2}/) && // timestamp lines
-                !line.match(/^\d+$/) && // sequence numbers
+                !line.match(/^\d{2}:\d{2}/) &&
+                !line.match(/^\d+$/) &&
                 line.trim().length > 0
         );
-
         for (const textLine of textLines) {
-            // Remove VTT tags like <c>, </c>, <00:00:01.000> etc.
-            const cleaned = textLine
-                .replace(/<[^>]*>/g, "")
-                .trim();
-            if (cleaned && !lines.includes(cleaned)) {
+            const cleaned = textLine.replace(/<[^>]*>/g, "").trim();
+            if (cleaned && !seen.has(cleaned)) {
+                seen.add(cleaned);
                 lines.push(cleaned);
             }
         }
     }
-
     return lines;
 }
 
-/**
- * Parse XML subtitle format into plain text lines
- */
 function parseXml(xml: string): string[] {
     const lines: string[] = [];
     const regex = /<text[^>]*>([\s\S]*?)<\/text>/g;
@@ -84,15 +80,128 @@ function parseXml(xml: string): string[] {
 }
 
 /**
- * Try fetching transcript via a Piped API instance
+ * Try fetching transcript via an Invidious instance.
+ * Invidious API: GET /api/v1/captions/{videoId} → list of captions
+ *                GET /api/v1/captions/{videoId}?label=LABEL → VTT content
  */
-async function tryPipedInstance(
+async function tryInvidious(
     videoId: string,
     instance: string
 ): Promise<string | null> {
     try {
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 12000);
+        const timeout = setTimeout(() => controller.abort(), 10000);
+
+        // Step 1: Get list of available captions
+        const listResponse = await fetch(
+            `${instance}/api/v1/captions/${videoId}`,
+            {
+                signal: controller.signal,
+                headers: { Accept: "application/json" },
+            }
+        );
+
+        clearTimeout(timeout);
+
+        if (!listResponse.ok) {
+            console.log(`[Invidious ${instance}] List HTTP ${listResponse.status}`);
+            return null;
+        }
+
+        const data = await listResponse.json();
+        const captions = data?.captions;
+
+        if (!captions || captions.length === 0) {
+            console.log(`[Invidious ${instance}] No captions found`);
+            return null;
+        }
+
+        // Find English captions (prefer non-auto)
+        const enCaption =
+            captions.find(
+                (c: any) =>
+                    c.language_code === "en" && c.label && !c.label.includes("auto")
+            ) ||
+            captions.find((c: any) => c.language_code === "en") ||
+            captions.find((c: any) =>
+                c.label?.toLowerCase().includes("english")
+            ) ||
+            captions[0];
+
+        if (!enCaption?.label) {
+            console.log(`[Invidious ${instance}] No English caption`);
+            return null;
+        }
+
+        console.log(
+            `[Invidious ${instance}] Found caption: "${enCaption.label}"`
+        );
+
+        // Step 2: Fetch the caption content
+        const controller2 = new AbortController();
+        const timeout2 = setTimeout(() => controller2.abort(), 10000);
+
+        const captionResponse = await fetch(
+            `${instance}/api/v1/captions/${videoId}?label=${encodeURIComponent(enCaption.label)}`,
+            {
+                signal: controller2.signal,
+            }
+        );
+
+        clearTimeout(timeout2);
+
+        if (!captionResponse.ok) {
+            console.log(
+                `[Invidious ${instance}] Caption HTTP ${captionResponse.status}`
+            );
+            return null;
+        }
+
+        const content = await captionResponse.text();
+
+        if (!content || content.length < 10) {
+            console.log(`[Invidious ${instance}] Empty caption content`);
+            return null;
+        }
+
+        // Parse the content
+        let lines: string[];
+        if (content.includes("WEBVTT")) {
+            lines = parseVtt(content);
+        } else if (content.includes("<text")) {
+            lines = parseXml(content);
+        } else {
+            lines = content
+                .split("\n")
+                .map((l) => l.trim())
+                .filter(Boolean);
+        }
+
+        if (lines.length === 0) {
+            console.log(`[Invidious ${instance}] No text extracted`);
+            return null;
+        }
+
+        console.log(
+            `[Invidious ${instance}] SUCCESS — ${lines.length} lines`
+        );
+        return lines.join("\n");
+    } catch (err: any) {
+        console.log(`[Invidious ${instance}] Error: ${err.message}`);
+        return null;
+    }
+}
+
+/**
+ * Try fetching transcript via a Piped instance
+ */
+async function tryPiped(
+    videoId: string,
+    instance: string
+): Promise<string | null> {
+    try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
 
         const response = await fetch(`${instance}/streams/${videoId}`, {
             signal: controller.signal,
@@ -109,11 +218,10 @@ async function tryPipedInstance(
         const data = await response.json();
 
         if (!data.subtitles || data.subtitles.length === 0) {
-            console.log(`[Piped ${instance}] No subtitles found`);
+            console.log(`[Piped ${instance}] No subtitles`);
             return null;
         }
 
-        // Find English subtitles
         const enSub =
             data.subtitles.find(
                 (s: any) => s.code === "en" && !s.autoGenerated
@@ -121,56 +229,29 @@ async function tryPipedInstance(
             data.subtitles.find((s: any) => s.code === "en") ||
             data.subtitles[0];
 
-        if (!enSub?.url) {
-            console.log(`[Piped ${instance}] No English subtitle URL`);
-            return null;
-        }
+        if (!enSub?.url) return null;
 
-        console.log(
-            `[Piped ${instance}] Found subtitle: ${enSub.code} (auto=${enSub.autoGenerated})`
-        );
-
-        // Fetch the subtitle content
-        const subResponse = await fetch(enSub.url, {
-            headers: { Accept: "text/vtt, application/xml, text/xml, */*" },
-        });
-
-        if (!subResponse.ok) {
-            console.log(
-                `[Piped ${instance}] Subtitle fetch HTTP ${subResponse.status}`
-            );
-            return null;
-        }
+        const subResponse = await fetch(enSub.url);
+        if (!subResponse.ok) return null;
 
         const subContent = await subResponse.text();
+        if (!subContent) return null;
 
-        if (!subContent || subContent.length === 0) {
-            console.log(`[Piped ${instance}] Empty subtitle content`);
-            return null;
-        }
-
-        // Parse based on content type
         let lines: string[];
         if (subContent.includes("WEBVTT")) {
             lines = parseVtt(subContent);
         } else if (subContent.includes("<text")) {
             lines = parseXml(subContent);
         } else {
-            // Try as plain text
             lines = subContent
                 .split("\n")
                 .map((l) => l.trim())
                 .filter(Boolean);
         }
 
-        if (lines.length === 0) {
-            console.log(`[Piped ${instance}] No text extracted`);
-            return null;
-        }
+        if (lines.length === 0) return null;
 
-        console.log(
-            `[Piped ${instance}] SUCCESS — ${lines.length} lines`
-        );
+        console.log(`[Piped ${instance}] SUCCESS — ${lines.length} lines`);
         return lines.join("\n");
     } catch (err: any) {
         console.log(`[Piped ${instance}] Error: ${err.message}`);
@@ -179,7 +260,7 @@ async function tryPipedInstance(
 }
 
 /**
- * Fallback: Try direct innertube API (works from non-cloud IPs)
+ * Fallback: Direct innertube (works from residential IPs / local dev)
  */
 async function tryInnertube(videoId: string): Promise<string | null> {
     try {
@@ -191,8 +272,6 @@ async function tryInnertube(videoId: string): Promise<string | null> {
                     "Content-Type": "application/json",
                     "User-Agent":
                         "com.google.android.youtube/20.10.38 (Linux; U; Android 11) gzip",
-                    "X-YouTube-Client-Name": "3",
-                    "X-YouTube-Client-Version": "20.10.38",
                     Cookie: CONSENT_COOKIE,
                 },
                 body: JSON.stringify({
@@ -209,18 +288,17 @@ async function tryInnertube(videoId: string): Promise<string | null> {
         );
 
         if (!response.ok) return null;
-
         const data = await response.json();
         if (data?.playabilityStatus?.status !== "OK") {
             console.log(
-                `[Innertube] status=${data?.playabilityStatus?.status}, reason=${data?.playabilityStatus?.reason}`
+                `[Innertube] ${data?.playabilityStatus?.status}: ${data?.playabilityStatus?.reason}`
             );
             return null;
         }
 
         const tracks =
             data?.captions?.playerCaptionsTracklistRenderer?.captionTracks;
-        if (!tracks || tracks.length === 0) return null;
+        if (!tracks?.length) return null;
 
         const track =
             tracks.find(
@@ -228,22 +306,17 @@ async function tryInnertube(videoId: string): Promise<string | null> {
             ) ||
             tracks.find((t: any) => t.languageCode === "en") ||
             tracks[0];
-
         if (!track?.baseUrl) return null;
 
-        const captionResponse = await fetch(
+        const captionRes = await fetch(
             track.baseUrl.replace("&fmt=srv3", ""),
-            {
-                headers: { Cookie: CONSENT_COOKIE },
-            }
+            { headers: { Cookie: CONSENT_COOKIE } }
         );
+        if (!captionRes.ok) return null;
 
-        if (!captionResponse.ok) return null;
-
-        const xml = await captionResponse.text();
+        const xml = await captionRes.text();
         const lines = parseXml(xml);
-
-        if (lines.length === 0) return null;
+        if (!lines.length) return null;
 
         console.log(`[Innertube] SUCCESS — ${lines.length} lines`);
         return lines.join("\n");
@@ -287,16 +360,23 @@ export default async function handler(req: NextRequest) {
         );
     }
 
-    // Strategy: Try Piped instances first, then direct innertube as fallback
     let transcript: string | null = null;
 
-    // Try Piped instances
-    for (const instance of PIPED_INSTANCES) {
-        transcript = await tryPipedInstance(videoId, instance);
+    // 1. Try Invidious instances (most reliable free option)
+    for (const instance of INVIDIOUS_INSTANCES) {
+        transcript = await tryInvidious(videoId, instance);
         if (transcript) break;
     }
 
-    // Fallback to direct innertube (works on non-cloud IPs / local dev)
+    // 2. Try Piped instances
+    if (!transcript) {
+        for (const instance of PIPED_INSTANCES) {
+            transcript = await tryPiped(videoId, instance);
+            if (transcript) break;
+        }
+    }
+
+    // 3. Direct innertube fallback (local dev / non-blocked IPs)
     if (!transcript) {
         transcript = await tryInnertube(videoId);
     }
@@ -306,14 +386,14 @@ export default async function handler(req: NextRequest) {
             JSON.stringify({
                 error: "Failed to fetch transcript",
                 details:
-                    "Could not retrieve transcript from any source. The video may not have captions.",
+                    "Could not retrieve transcript. The video may not have captions, or all transcript services are currently unavailable.",
             }),
             { status: 500, headers: { "Content-Type": "application/json" } }
         );
     }
 
-    return new Response(
-        JSON.stringify({ result: transcript }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-    );
+    return new Response(JSON.stringify({ result: transcript }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+    });
 }
