@@ -1,12 +1,13 @@
 import type { NextRequest } from "next/server";
 
 export const config = {
+    maxDuration: 60,
     // Standard Node.js runtime instead of edge if you use HTTP proxies
     // runtime: "edge", 
 };
 
-const INNERTUBE_API_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
-const CONSENT_COOKIE = "SOCS=CAESEwgDEgk2ODE5MTAyNjUaAmVuIAEaBgiA_LyaBg";
+const INNERTUBE_API_KEY = process.env.INNERTUBE_API_KEY || "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
+const CONSENT_COOKIE = process.env.YOUTUBE_CONSENT_COOKIE || "SOCS=CAESEwgDEgk2ODE5MTAyNjUaAmVuIAEaBgiA_LyaBg";
 
 function extractVideoId(url: string): string | null {
     const regex =

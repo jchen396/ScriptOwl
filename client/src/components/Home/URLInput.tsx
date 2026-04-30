@@ -34,9 +34,11 @@ const URLInput: React.FunctionComponent<Props> = ({
 			}
 		} catch (err: any) {
 			const serverMsg = err?.response?.data?.error || err?.response?.data?.details;
-			if (serverMsg?.includes("429") || serverMsg?.includes("Sign in") || serverMsg?.includes("bot")) {
-				setErrorMessage("YouTube is temporarily blocking requests. Please try again in a moment.");
-			} else if (err.code === "ECONNABORTED") {
+            const errorStr = typeof serverMsg === "string" ? serverMsg : JSON.stringify(serverMsg || err.message);
+            
+			if (errorStr.includes("429") || errorStr.includes("Sign in") || errorStr.includes("bot") || errorStr.includes("Vercel data center")) {
+				setErrorMessage("YouTube blocked the request. In production, a proxy API key is required to bypass data center blocks.");
+			} else if (err.code === "ECONNABORTED" || errorStr.includes("timeout") || err?.response?.status === 504) {
 				setErrorMessage("Request timed out. Please try again.");
 			} else {
 				setErrorMessage("Failed to fetch transcript. Please try a different video or try again later.");
