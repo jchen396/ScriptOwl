@@ -20,6 +20,10 @@ COPY ./types /types
 
 RUN npm run build
 
+# Copy Python scripts into the compiled output directory so they are
+# found at runtime (tsc only compiles .ts files, not .py)
+RUN cp -r src/uploads dist/server/src/uploads
+
 EXPOSE 5000
 
 CMD ["npm", "start"]

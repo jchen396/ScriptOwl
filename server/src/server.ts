@@ -243,18 +243,33 @@ app.post(
             } else {
                 const scriptPath = `${__dirname}/uploads/get_transcript_by_url.py`;
                 const pythonScript = spawn("python", [scriptPath, youtubeURL]);
+                let stderrData = "";
                 pythonScript.stdout.on("data", (data: Buffer) => {
                     result = data.toString("utf-8");
                 });
-                pythonScript.on("close", async () => {
-                    // upload the rest of the content to s3
+                pythonScript.stderr.on("data", (data: Buffer) => {
+                    stderrData += data.toString();
+                    console.error(`youtube stderr: ${data}`);
+                });
+                pythonScript.on("close", async (code: number) => {
+                    if (code !== 0 || !result) {
+                        console.error(`Python script exited with code ${code}. stderr: ${stderrData}`);
+                        return res.status(500).json({
+                            error: "Failed to fetch transcript",
+                            details: stderrData || `Process exited with code ${code}`,
+                        });
+                    }
                     res.send({ result }).status(200);
                 });
                 pythonScript.on("error", (err: string) => {
-                    console.log("Error: ", err);
+                    console.log("Error spawning python: ", err);
+                    res.status(500).json({ error: "Failed to spawn Python process" });
                 });
             }
-        } catch (e) {}
+        } catch (e) {
+            console.error("Error in /youtube endpoint:", e);
+            res.status(500).json({ error: "Internal server error" });
+        }
     },
 );
 

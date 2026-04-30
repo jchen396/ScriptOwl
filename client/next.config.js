@@ -1,11 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: true,
-};
-
-module.exports = nextConfig;
-
-module.exports = {
     images: {
         formats: ["image/avif", "image/webp"],
         remotePatterns: [
@@ -18,8 +13,10 @@ module.exports = {
             },
             {
                 protocol: "https",
-                hostname: "https://script-owl-server.onrender.com",
+                hostname: "scriptowl-image-latest.onrender.com",
             },
         ],
     },
 };
+
+module.exports = nextConfig;
