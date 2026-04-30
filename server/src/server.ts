@@ -44,6 +44,7 @@ import {
     generateTranslation,
     generateSummary,
 } from "./modules/ai";
+import { getYoutubeTranscript } from "./modules/youtubeTranscript";
 const {
     uploadImage,
     getImageFileStream,
@@ -207,7 +208,7 @@ app.post(
         try {
             let youtubeURL = req.body.youtubeURL;
             const downloadVideo = req.body.downloadVideo ?? false;
-            let result: string;
+            let result: string = "";
             if (downloadVideo) {
                 let filename = req.body.title;
                 const downloadPath = `${__dirname}/uploads/download_yt_video.py`;
@@ -241,30 +242,23 @@ app.post(
                     console.log("Error: ", err);
                 });
             } else {
-                const scriptPath = `${__dirname}/uploads/get_transcript_by_url.py`;
-                const pythonScript = spawn("python", [scriptPath, youtubeURL]);
-                let stderrData = "";
-                pythonScript.stdout.on("data", (data: Buffer) => {
-                    result = data.toString("utf-8");
-                });
-                pythonScript.stderr.on("data", (data: Buffer) => {
-                    stderrData += data.toString();
-                    console.error(`youtube stderr: ${data}`);
-                });
-                pythonScript.on("close", async (code: number) => {
-                    if (code !== 0 || !result) {
-                        console.error(`Python script exited with code ${code}. stderr: ${stderrData}`);
+                // Fetch transcript directly via Node.js (no Python needed)
+                try {
+                    result = await getYoutubeTranscript(youtubeURL);
+                    if (!result) {
                         return res.status(500).json({
                             error: "Failed to fetch transcript",
-                            details: stderrData || `Process exited with code ${code}`,
+                            details: "No transcript data returned",
                         });
                     }
-                    res.send({ result }).status(200);
-                });
-                pythonScript.on("error", (err: string) => {
-                    console.log("Error spawning python: ", err);
-                    res.status(500).json({ error: "Failed to spawn Python process" });
-                });
+                    res.status(200).json({ result });
+                } catch (transcriptErr: any) {
+                    console.error("Transcript fetch error:", transcriptErr.message);
+                    return res.status(500).json({
+                        error: "Failed to fetch transcript",
+                        details: transcriptErr.message,
+                    });
+                }
             }
         } catch (e) {
             console.error("Error in /youtube endpoint:", e);

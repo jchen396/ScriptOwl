@@ -15,17 +15,35 @@ const URLInput: React.FunctionComponent<Props> = ({
 	setYoutubeTranscript,
 	setIsLoading,
 }) => {
+	const [errorMessage, setErrorMessage] = useState<string>("");
+
 	const submitYoutubeURL = async (e: any) => {
 		e.preventDefault();
+		setErrorMessage("");
 		setIsLoading(true);
-		const res = await axios.post(
-			`${process.env.NEXT_PUBLIC_SERVER_DOMAIN}youtube`,
-			{
-				youtubeURL,
+		try {
+			const res = await axios.post(
+				`/api/youtube-transcript`,
+				{ youtubeURL },
+				{ timeout: 60000 }
+			);
+			if (res.data?.result) {
+				setYoutubeTranscript(res.data.result);
+			} else {
+				setErrorMessage("No transcript found for this video. The video may not have English captions.");
 			}
-		);
-		setYoutubeTranscript(res.data.result);
-		setIsLoading(false);
+		} catch (err: any) {
+			const serverMsg = err?.response?.data?.error || err?.response?.data?.details;
+			if (serverMsg?.includes("429") || serverMsg?.includes("Sign in") || serverMsg?.includes("bot")) {
+				setErrorMessage("YouTube is temporarily blocking requests. Please try again in a moment.");
+			} else if (err.code === "ECONNABORTED") {
+				setErrorMessage("Request timed out. Please try again.");
+			} else {
+				setErrorMessage("Failed to fetch transcript. Please try a different video or try again later.");
+			}
+		} finally {
+			setIsLoading(false);
+		}
 	};
 	return (
 		<div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto my-12 animate-fade-in px-4">
@@ -68,6 +86,12 @@ const URLInput: React.FunctionComponent<Props> = ({
 					</button>
 				</div>
 			</form>
+
+			{errorMessage && (
+				<div className="mt-4 px-5 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm text-center max-w-xl animate-fade-in">
+					{errorMessage}
+				</div>
+			)}
 		</div>
 	);
 };
