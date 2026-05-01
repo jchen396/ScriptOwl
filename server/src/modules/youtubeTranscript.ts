@@ -17,6 +17,11 @@ const INNERTUBE_CONTEXT = {
     },
 };
 
+// ── Transcript length limits ────────────────────────────────────────────
+// Keep in sync with the AI module's token budget.
+// 6,000 token limit → ~4,826 tokens for transcript → ~19,304 chars.
+const MAX_TRANSCRIPT_CHARS = 19_304;
+
 function extractVideoId(url: string): string | null {
     const regex =
         /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S+[\?\&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -169,12 +174,41 @@ function parseTranscriptXml(xml: string): string[] {
 }
 
 /**
+ * Truncate a transcript to fit within the AI token budget.
+ * Tries to break at a sentence boundary when possible.
+ */
+function truncateTranscript(text: string): { text: string; wasTruncated: boolean } {
+    if (text.length <= MAX_TRANSCRIPT_CHARS) {
+        return { text, wasTruncated: false };
+    }
+
+    let truncated = text.slice(0, MAX_TRANSCRIPT_CHARS);
+
+    // Try to end at the last sentence boundary
+    const lastSentenceEnd = Math.max(
+        truncated.lastIndexOf(". "),
+        truncated.lastIndexOf("! "),
+        truncated.lastIndexOf("? "),
+    );
+    if (lastSentenceEnd > MAX_TRANSCRIPT_CHARS * 0.5) {
+        truncated = truncated.slice(0, lastSentenceEnd + 1);
+    }
+
+    return { text: truncated, wasTruncated: true };
+}
+
+/**
  * Fetch a YouTube video's transcript.
  *
  * Goes directly to the InnerTube player API with ANDROID client context,
  * bypassing the video page entirely to avoid IP-based blocking on cloud servers.
+ *
+ * The transcript is automatically truncated to fit within the AI's 6,000-token
+ * request limit. The `wasTruncated` flag indicates if content was cut.
  */
-export async function getYoutubeTranscript(url: string): Promise<string> {
+export async function getYoutubeTranscript(
+    url: string
+): Promise<{ transcript: string; wasTruncated: boolean }> {
     const videoId = extractVideoId(url);
     if (!videoId) {
         throw new Error("Invalid YouTube URL");
@@ -214,6 +248,17 @@ export async function getYoutubeTranscript(url: string): Promise<string> {
         throw new Error("No transcript text found in caption data");
     }
 
-    return lines.join("\n");
-}
+    const fullTranscript = lines.join("\n");
 
+    // Step 5: Truncate to fit AI token budget
+    const { text, wasTruncated } = truncateTranscript(fullTranscript);
+
+    if (wasTruncated) {
+        console.log(
+            `[Transcript] Truncated from ${fullTranscript.length} to ${text.length} chars ` +
+            `(limit: ${MAX_TRANSCRIPT_CHARS}) to fit AI token budget`
+        );
+    }
+
+    return { transcript: text, wasTruncated };
+}

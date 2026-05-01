@@ -7,6 +7,7 @@ type Props = {
 	setYoutubeURL: React.Dispatch<React.SetStateAction<string>>;
 	setYoutubeTranscript: React.Dispatch<React.SetStateAction<string>>;
 	setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+	setWasTruncated: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const URLInput: React.FunctionComponent<Props> = ({
@@ -14,6 +15,7 @@ const URLInput: React.FunctionComponent<Props> = ({
 	setYoutubeURL,
 	setYoutubeTranscript,
 	setIsLoading,
+	setWasTruncated,
 }) => {
 	const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -21,6 +23,7 @@ const URLInput: React.FunctionComponent<Props> = ({
 		e.preventDefault();
 		setErrorMessage("");
 		setIsLoading(true);
+		setWasTruncated(false);
 		try {
 			const res = await axios.post(
 				`/api/youtube-transcript`,
@@ -29,6 +32,9 @@ const URLInput: React.FunctionComponent<Props> = ({
 			);
 			if (res.data?.result) {
 				setYoutubeTranscript(res.data.result);
+				if (res.data.wasTruncated) {
+					setWasTruncated(true);
+				}
 			} else {
 				setErrorMessage("No transcript found for this video. The video may not have English captions.");
 			}
@@ -58,6 +64,9 @@ const URLInput: React.FunctionComponent<Props> = ({
 				</h2>
 				<p className="text-gray-400 text-lg max-w-2xl mx-auto font-light">
 					Paste any YouTube video link below to see ScriptOwl in action. Generate transcripts, AI summaries, and quizzes instantly.
+				</p>
+				<p className="text-gray-500 text-sm max-w-xl mx-auto">
+					⏱️ For best AI results, use videos <strong className="text-gray-400">under ~15 minutes</strong>. Longer transcripts will be automatically trimmed.
 				</p>
 			</div>
 

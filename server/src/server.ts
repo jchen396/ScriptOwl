@@ -244,14 +244,15 @@ app.post(
             } else {
                 // Fetch transcript directly via Node.js (no Python needed)
                 try {
-                    result = await getYoutubeTranscript(youtubeURL);
-                    if (!result) {
+                    const { transcript, wasTruncated } = await getYoutubeTranscript(youtubeURL);
+                    if (!transcript) {
                         return res.status(500).json({
                             error: "Failed to fetch transcript",
                             details: "No transcript data returned",
                         });
                     }
-                    res.status(200).json({ result });
+                    result = transcript;
+                    res.status(200).json({ result, wasTruncated });
                 } catch (transcriptErr: any) {
                     console.error("Transcript fetch error:", transcriptErr.message);
                     return res.status(500).json({

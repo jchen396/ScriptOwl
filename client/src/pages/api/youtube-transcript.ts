@@ -4,8 +4,27 @@ export const config = {
     runtime: "edge", 
 };
 
+// Support multiple comma-separated ScraperAPI keys for round-robin rotation
+const SCRAPER_API_KEYS = (process.env.SCRAPER_API_KEY || "")
+    .split(",")
+    .map(k => k.trim())
+    .filter(Boolean);
+let scraperKeyIndex = 0;
+
+function getNextScraperKey(): string {
+    if (SCRAPER_API_KEYS.length === 0) return "";
+    const key = SCRAPER_API_KEYS[scraperKeyIndex % SCRAPER_API_KEYS.length];
+    scraperKeyIndex++;
+    return key;
+}
+
 const INNERTUBE_API_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
 const CONSENT_COOKIE = "SOCS=CAESEwgDEgk2ODE5MTAyNjUaAmVuIAEaBgiA_LyaBg";
+
+// ── Transcript length limits ────────────────────────────────────────────
+// Must stay in sync with the server-side AI module's token budget.
+// 6,000 token limit → ~4,826 tokens for transcript → ~19,304 chars.
+const MAX_TRANSCRIPT_CHARS = 19_304;
 
 function extractVideoId(url: string): string | null {
     const regex =
@@ -37,16 +56,40 @@ function parseXml(xml: string): string[] {
 }
 
 /**
+ * Truncate a transcript to fit within the AI token budget.
+ * Tries to break at a sentence boundary when possible.
+ */
+function truncateTranscript(text: string): { text: string; wasTruncated: boolean } {
+    if (text.length <= MAX_TRANSCRIPT_CHARS) {
+        return { text, wasTruncated: false };
+    }
+
+    let truncated = text.slice(0, MAX_TRANSCRIPT_CHARS);
+
+    const lastSentenceEnd = Math.max(
+        truncated.lastIndexOf(". "),
+        truncated.lastIndexOf("! "),
+        truncated.lastIndexOf("? "),
+    );
+    if (lastSentenceEnd > MAX_TRANSCRIPT_CHARS * 0.5) {
+        truncated = truncated.slice(0, lastSentenceEnd + 1);
+    }
+
+    return { text: truncated, wasTruncated: true };
+}
+
+/**
  * Fetch transcript via direct innertube API
  * On Vercel, this WILL be blocked by YouTube unless proxied.
  */
-async function tryInnertube(videoId: string): Promise<string | null> {
+async function tryInnertube(videoId: string): Promise<{ transcript: string; wasTruncated: boolean } | null> {
     try {
         // If you sign up for a free scraping API (like ScraperAPI, ZenRows, etc.),
         // you can route the request through their proxy network here to bypass the block.
-        const USE_PROXY = process.env.SCRAPER_API_KEY ? true : false;
+        const scraperKey = getNextScraperKey();
+        const USE_PROXY = scraperKey.length > 0;
         
-        console.log(`[Innertube] Proxy enabled: ${USE_PROXY}`);
+        console.log(`[Innertube] Proxy enabled: ${USE_PROXY} (${SCRAPER_API_KEYS.length} keys available)`);
         if (!USE_PROXY) {
             throw new Error("MISSING_API_KEY");
         }
@@ -54,7 +97,7 @@ async function tryInnertube(videoId: string): Promise<string | null> {
         let targetUrl = `https://www.youtube.com/youtubei/v1/player?key=${INNERTUBE_API_KEY}&prettyPrint=false`;
         
         if (USE_PROXY) {
-            targetUrl = `https://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(targetUrl)}`;
+            targetUrl = `https://api.scraperapi.com?api_key=${scraperKey}&url=${encodeURIComponent(targetUrl)}`;
         }
 
         const controller = new AbortController();
@@ -111,7 +154,7 @@ async function tryInnertube(videoId: string): Promise<string | null> {
 
         let captionUrl = track.baseUrl.replace("&fmt=srv3", "");
         if (USE_PROXY) {
-            captionUrl = `https://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(captionUrl)}`;
+            captionUrl = `https://api.scraperapi.com?api_key=${scraperKey}&url=${encodeURIComponent(captionUrl)}`;
         }
 
         const controller2 = new AbortController();
@@ -130,8 +173,17 @@ async function tryInnertube(videoId: string): Promise<string | null> {
         const lines = parseXml(xml);
         if (!lines.length) return null;
 
-        console.log(`[Innertube] SUCCESS — ${lines.length} lines`);
-        return lines.join("\n");
+        const fullTranscript = lines.join("\n");
+        const { text, wasTruncated } = truncateTranscript(fullTranscript);
+
+        if (wasTruncated) {
+            console.log(
+                `[Innertube] Truncated transcript from ${fullTranscript.length} to ${text.length} chars`
+            );
+        }
+
+        console.log(`[Innertube] SUCCESS — ${lines.length} lines, truncated: ${wasTruncated}`);
+        return { transcript: text, wasTruncated };
     } catch (err: any) {
         if (err.message === "MISSING_API_KEY") {
             throw err;
@@ -178,10 +230,10 @@ export default async function handler(req: NextRequest) {
     // Since public proxies are heavily rate-limited and Vercel IPs are blocked,
     // we fetch directly from Innertube. In production, you must use a proxy service 
     // to mask Vercel's datacenter IP.
-    let transcript: string | null = null;
+    let result: { transcript: string; wasTruncated: boolean } | null = null;
     
     try {
-        transcript = await tryInnertube(videoId);
+        result = await tryInnertube(videoId);
     } catch (err: any) {
         if (err.message === "MISSING_API_KEY") {
             return new Response(
@@ -195,7 +247,7 @@ export default async function handler(req: NextRequest) {
         }
     }
 
-    if (!transcript) {
+    if (!result) {
         return new Response(
             JSON.stringify({
                 error: "Failed to fetch transcript",
@@ -206,9 +258,14 @@ export default async function handler(req: NextRequest) {
         );
     }
 
-    return new Response(JSON.stringify({ result: transcript }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+        JSON.stringify({
+            result: result.transcript,
+            wasTruncated: result.wasTruncated,
+        }),
+        {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        }
+    );
 }
-

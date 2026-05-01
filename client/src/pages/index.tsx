@@ -19,9 +19,10 @@ const Home: React.FunctionComponent<Props> = ({}) => {
     const [chatReply, setChatReply] = useState<string | null>(null);
     const [chatLoading, setChatLoading] = useState<boolean>(false);
     const [service, setService] = useState<string>("");
+    const [wasTruncated, setWasTruncated] = useState<boolean>(false);
     const getYoutubeId = (url: string) => {
         const regExp =
-            /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S+[\?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S+[\?\&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
         const match = url.match(regExp);
 
         if (match && match[1]) {
@@ -130,6 +131,15 @@ const Home: React.FunctionComponent<Props> = ({}) => {
                         </div>
                     </div>
                     <div className="w-full xl:basis-1/3 min-h-[500px] xl:h-[65vh] flex flex-col justify-start items-center text-white bg-gray-900/40 rounded-3xl border border-gray-800/60 shadow-2xl backdrop-blur-xl overflow-hidden hover:border-gray-700/60 transition-colors duration-300">
+                        {/* Truncation warning banner */}
+                        {wasTruncated && (
+                            <div className="w-full px-4 py-2 bg-amber-500/10 border-b border-amber-500/20 flex items-center gap-2">
+                                <span className="text-amber-400 text-xs">⚠️</span>
+                                <p className="text-amber-400/90 text-[11px] leading-tight">
+                                    This video&apos;s transcript was too long and has been trimmed to fit the AI&apos;s processing limit. For best results, try shorter videos (under ~15 min).
+                                </p>
+                            </div>
+                        )}
                         <div className="w-full bg-gray-800/50 border-b border-gray-700/50">
                             <SectionTabs
                                 post={null}
@@ -150,6 +160,7 @@ const Home: React.FunctionComponent<Props> = ({}) => {
                     setYoutubeURL={setYoutubeURL}
                     setYoutubeTranscript={setYoutubeTranscript}
                     setIsLoading={setIsLoading}
+                    setWasTruncated={setWasTruncated}
                 />
             )}
             <hr className="border border-gray-700 w-3/4 " />
