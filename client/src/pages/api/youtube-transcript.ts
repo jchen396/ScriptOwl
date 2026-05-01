@@ -1,8 +1,7 @@
 import type { NextRequest } from "next/server";
 
 export const config = {
-    // Standard Node.js runtime instead of edge if you use HTTP proxies
-    // runtime: "edge", 
+    runtime: "edge", 
 };
 
 const INNERTUBE_API_KEY = "AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8";
@@ -49,7 +48,7 @@ async function tryInnertube(videoId: string): Promise<string | null> {
         
         console.log(`[Innertube] Proxy enabled: ${USE_PROXY}`);
         if (!USE_PROXY) {
-            console.log(`[Innertube] SCRAPER_API_KEY is not set. Falling back to direct Vercel fetch (likely to be blocked).`);
+            throw new Error("MISSING_API_KEY");
         }
         
         let targetUrl = `https://www.youtube.com/youtubei/v1/player?key=${INNERTUBE_API_KEY}&prettyPrint=false`;
@@ -59,7 +58,7 @@ async function tryInnertube(videoId: string): Promise<string | null> {
         }
 
         const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 10000);
+        const timeout = setTimeout(() => controller.abort(), 25000);
 
         const response = await fetch(
             targetUrl,
@@ -116,7 +115,7 @@ async function tryInnertube(videoId: string): Promise<string | null> {
         }
 
         const controller2 = new AbortController();
-        const timeout2 = setTimeout(() => controller2.abort(), 10000);
+        const timeout2 = setTimeout(() => controller2.abort(), 25000);
 
         const captionRes = await fetch(captionUrl, { 
             headers: { Cookie: CONSENT_COOKIE },
@@ -134,6 +133,9 @@ async function tryInnertube(videoId: string): Promise<string | null> {
         console.log(`[Innertube] SUCCESS — ${lines.length} lines`);
         return lines.join("\n");
     } catch (err: any) {
+        if (err.message === "MISSING_API_KEY") {
+            throw err;
+        }
         console.log(`[Innertube] Error: ${err.message}`);
         return null;
     }
@@ -176,7 +178,22 @@ export default async function handler(req: NextRequest) {
     // Since public proxies are heavily rate-limited and Vercel IPs are blocked,
     // we fetch directly from Innertube. In production, you must use a proxy service 
     // to mask Vercel's datacenter IP.
-    const transcript = await tryInnertube(videoId);
+    let transcript: string | null = null;
+    
+    try {
+        transcript = await tryInnertube(videoId);
+    } catch (err: any) {
+        if (err.message === "MISSING_API_KEY") {
+            return new Response(
+                JSON.stringify({
+                    error: "Scraper API Key Missing",
+                    details:
+                        "The SCRAPER_API_KEY environment variable is not loaded. If you added it in Vercel, you MUST trigger a new deployment for it to take effect. If you don't use a proxy, YouTube will block Vercel IPs.",
+                }),
+                { status: 500, headers: { "Content-Type": "application/json" } }
+            );
+        }
+    }
 
     if (!transcript) {
         return new Response(
