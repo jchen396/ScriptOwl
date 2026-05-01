@@ -54,7 +54,7 @@ async function tryInnertube(videoId: string): Promise<string | null> {
         let targetUrl = `https://www.youtube.com/youtubei/v1/player?key=${INNERTUBE_API_KEY}&prettyPrint=false`;
         
         if (USE_PROXY) {
-            targetUrl = `http://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(targetUrl)}`;
+            targetUrl = `https://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(targetUrl)}`;
         }
 
         const controller = new AbortController();
@@ -111,7 +111,7 @@ async function tryInnertube(videoId: string): Promise<string | null> {
 
         let captionUrl = track.baseUrl.replace("&fmt=srv3", "");
         if (USE_PROXY) {
-            captionUrl = `http://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(captionUrl)}`;
+            captionUrl = `https://api.scraperapi.com?api_key=${process.env.SCRAPER_API_KEY}&url=${encodeURIComponent(captionUrl)}`;
         }
 
         const controller2 = new AbortController();
