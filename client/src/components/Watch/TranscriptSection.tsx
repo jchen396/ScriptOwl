@@ -74,8 +74,8 @@ const TranscriptSection: React.FC<Props> = ({
             {/* Transcript text */}
             <div className="flex-1 overflow-y-auto hide-scrollbar p-5 bg-black">
                 <div className="text-gray-400 text-sm leading-7 tracking-wide">
-                    {transcript.replace(/(\r\n|\n|\r)/gm, "") ? (
-                        transcript.split(" ").map((word, key) => {
+                    {transcript.replace(/(\r\n|\n|\r)/gm, " ") ? (
+                        transcript.split(/\s+/).filter(Boolean).map((word, key) => {
                             return (
                                 <span
                                     className={`inline mr-0.5 transition-all duration-150 rounded px-0.5 ${
@@ -105,7 +105,7 @@ const TranscriptSection: React.FC<Props> = ({
             </div>
 
             {/* Action buttons — pinned to bottom */}
-            {transcript.replace(/(\r\n|\n|\r)/gm, "") && (
+            {transcript.replace(/(\r\n|\n|\r)/gm, " ").trim() && (
                 <div className="shrink-0 border-t border-gray-800/60 px-4 py-3 bg-black">
                     <p className="text-gray-600 text-[11px] text-center mb-2.5 tracking-wide uppercase font-medium">
                         Click any word to define · or choose an action

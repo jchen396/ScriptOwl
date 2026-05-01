@@ -90,7 +90,13 @@ const Home: React.FunctionComponent<Props> = ({}) => {
                 />
                 <link rel="icon" href="/img/ScriptOwl_logo_transparent.png" />
             </Head>
-            <HeroSection />
+            <HeroSection
+                youtubeURL={youtubeURL}
+                setYoutubeURL={setYoutubeURL}
+                setYoutubeTranscript={setYoutubeTranscript}
+                setIsLoading={setIsLoading}
+                setWasTruncated={setWasTruncated}
+            />
             {isLoading ? (
                 <div className="p-6 w-11/12 max-w-[1400px] mx-auto flex flex-col xl:flex-row justify-center items-start gap-8 my-12">
                     <div className="w-full xl:basis-2/3 flex flex-col items-center bg-gray-900/40 p-4 rounded-3xl border border-gray-800/60 shadow-2xl backdrop-blur-xl">
@@ -154,16 +160,8 @@ const Home: React.FunctionComponent<Props> = ({}) => {
                         </div>
                     </div>
                 </div>
-            ) : (
-                <URLInput
-                    youtubeURL={youtubeURL}
-                    setYoutubeURL={setYoutubeURL}
-                    setYoutubeTranscript={setYoutubeTranscript}
-                    setIsLoading={setIsLoading}
-                    setWasTruncated={setWasTruncated}
-                />
-            )}
-            <hr className="border border-gray-700 w-3/4 " />
+            ) : null}
+            <hr className="border border-gray-700 w-3/4 mt-8" />
             <Info />
         </div>
     );

@@ -250,15 +250,8 @@ export async function getYoutubeTranscript(
 
     const fullTranscript = lines.join("\n");
 
-    // Step 5: Truncate to fit AI token budget
-    const { text, wasTruncated } = truncateTranscript(fullTranscript);
-
-    if (wasTruncated) {
-        console.log(
-            `[Transcript] Truncated from ${fullTranscript.length} to ${text.length} chars ` +
-            `(limit: ${MAX_TRANSCRIPT_CHARS}) to fit AI token budget`
-        );
-    }
-
-    return { transcript: text, wasTruncated };
+    // Note: We return the FULL transcript so the user sees everything.
+    // AI functions (summary, quiz, etc.) handle their own truncation
+    // via truncateToTokenLimit() in ai.ts before sending to the LLM.
+    return { transcript: fullTranscript, wasTruncated: false };
 }

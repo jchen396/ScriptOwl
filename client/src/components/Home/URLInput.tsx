@@ -54,21 +54,7 @@ const URLInput: React.FunctionComponent<Props> = ({
 		}
 	};
 	return (
-		<div className="flex flex-col items-center justify-center w-full max-w-4xl mx-auto my-12 animate-fade-in px-4">
-			<div className="mb-8 text-center space-y-4">
-				<div className="inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 mb-2 backdrop-blur-md">
-					<span className="text-sm font-semibold text-blue-400 uppercase tracking-wider">Free Trial Version</span>
-				</div>
-				<h2 className="text-3xl md:text-5xl font-bold text-white drop-shadow-md">
-					Experience the Magic <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Live</span>
-				</h2>
-				<p className="text-gray-400 text-lg max-w-2xl mx-auto font-light">
-					Paste any YouTube video link below to see ScriptOwl in action. Generate transcripts, AI summaries, and quizzes instantly.
-				</p>
-				<p className="text-gray-500 text-sm max-w-xl mx-auto">
-					⏱️ For best AI results, use videos <strong className="text-gray-400">under ~15 minutes</strong>. Longer transcripts will be automatically trimmed.
-				</p>
-			</div>
+		<div className="flex flex-col items-start justify-center w-full max-w-2xl animate-fade-in mt-4">
 
 			<form
 				action="submit"

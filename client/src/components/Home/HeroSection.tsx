@@ -1,12 +1,22 @@
 import Image from "next/image";
 import React from "react";
+import URLInput from "./URLInput";
 
-type Props = {};
+type Props = {
+	youtubeURL: string;
+	setYoutubeURL: React.Dispatch<React.SetStateAction<string>>;
+	setYoutubeTranscript: React.Dispatch<React.SetStateAction<string>>;
+	setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+	setWasTruncated: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-const HeroSection: React.FunctionComponent<Props> = () => {
+const HeroSection: React.FunctionComponent<Props> = (props) => {
 	return (
 		<div className="min-h-[85vh] w-full sm:w-5/6 max-w-7xl mx-auto p-10 flex flex-col-reverse xl:flex-row items-center justify-center xl:justify-between gap-12 xl:gap-8 pt-24 xl:pt-10">
 			<div className="basis-1/2 flex flex-col items-start justify-center space-y-6 z-10">
+				<div className="inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 mb-2 backdrop-blur-md">
+					<span className="text-sm font-semibold text-blue-400 uppercase tracking-wider">Free Trial Version</span>
+				</div>
 				<h1 className="text-5xl md:text-7xl xl:text-8xl font-extrabold tracking-tight leading-tight text-white drop-shadow-lg">
 					Your Video Content <br/>
 					<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 animate-gradient-x">
@@ -14,16 +24,13 @@ const HeroSection: React.FunctionComponent<Props> = () => {
 					</span>
 				</h1>
 				<p className="text-lg md:text-2xl text-gray-300 font-light max-w-2xl leading-relaxed">
-					Experience smarter video learning powered by the state-of-the-art <span className="font-semibold text-white">Gemini 2.5 AI</span>. 
-					Generate instant translations, deep summaries, and interactive quizzes from any video transcript.
+					Experience smarter video learning powered by the state-of-the-art. Generate instant translations, deep summaries, and interactive quizzes from any video transcript.
 				</p>
-				<div className="pt-4 flex gap-4">
-					<button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-full font-semibold text-lg transition-all duration-300 shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1">
-						Get Started
-					</button>
-					<button className="px-8 py-4 bg-gray-800/80 hover:bg-gray-700/80 backdrop-blur border border-gray-700 text-white rounded-full font-semibold text-lg transition-all duration-300 hover:-translate-y-1">
-						Learn More
-					</button>
+				<p className="text-gray-500 text-sm max-w-xl">
+					⏱️ For best AI results, use videos <strong className="text-gray-400">under ~15 minutes</strong>.
+				</p>
+				<div className="pt-2 w-full">
+					<URLInput {...props} />
 				</div>
 			</div>
 			<div className="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 xl:basis-1/2 flex justify-center items-center relative group">
