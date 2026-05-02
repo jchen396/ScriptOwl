@@ -21,6 +21,20 @@ const URLInput: React.FunctionComponent<Props> = ({
 
 	const submitYoutubeURL = async (e: any) => {
 		e.preventDefault();
+
+		const today = new Date().toDateString();
+		const storedData = localStorage.getItem("youtube_generates");
+		let limitData = storedData ? JSON.parse(storedData) : { date: today, count: 0 };
+
+		if (limitData.date !== today) {
+			limitData = { date: today, count: 0 };
+		}
+
+		if (limitData.count >= 3) {
+			setErrorMessage("You have reached the daily limit of 3 YouTube generations.");
+			return;
+		}
+
 		setErrorMessage("");
 		setIsLoading(true);
 		setWasTruncated(false);
@@ -35,6 +49,9 @@ const URLInput: React.FunctionComponent<Props> = ({
 				if (res.data.wasTruncated) {
 					setWasTruncated(true);
 				}
+				
+				limitData.count += 1;
+				localStorage.setItem("youtube_generates", JSON.stringify(limitData));
 			} else {
 				setErrorMessage("No transcript found for this video. The video may not have English captions.");
 			}

@@ -14,9 +14,6 @@ const HeroSection: React.FunctionComponent<Props> = (props) => {
 	return (
 		<div className="min-h-[85vh] w-full sm:w-5/6 max-w-7xl mx-auto p-10 flex flex-col-reverse xl:flex-row items-center justify-center xl:justify-between gap-12 xl:gap-8 pt-24 xl:pt-10">
 			<div className="basis-1/2 flex flex-col items-start justify-center space-y-6 z-10">
-				<div className="inline-block px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 mb-2 backdrop-blur-md">
-					<span className="text-sm font-semibold text-blue-400 uppercase tracking-wider">Free Trial Version</span>
-				</div>
 				<h1 className="text-5xl md:text-7xl xl:text-8xl font-extrabold tracking-tight leading-tight text-white drop-shadow-lg">
 					Your Video Content <br/>
 					<span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 animate-gradient-x">
