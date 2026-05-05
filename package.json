@@ -1,3 +1,16 @@
 {
-    "dependencies": {}
+    "name": "scriptowl",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "concurrently -n client,server,mobile -c cyan,green,magenta \"npm run dev --prefix client\" \"npm run dev --prefix server\" \"npm run start --prefix mobile\"",
+        "dev:web": "concurrently -n client,server -c cyan,green \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
+        "dev:mobile": "concurrently -n server,mobile -c green,magenta \"npm run dev --prefix server\" \"npm run start --prefix mobile\"",
+        "client": "npm run dev --prefix client",
+        "server": "npm run dev --prefix server",
+        "mobile": "npm run start --prefix mobile"
+    },
+    "devDependencies": {
+        "concurrently": "^9.1.2"
+    }
 }
