@@ -23,7 +23,7 @@ export default function LoginScreen() {
             if (!currentUser.isVerified) {
                 router.replace("/verify");
             } else {
-                router.back();
+                router.replace("/(tabs)");
             }
         }
     }, [currentUser, router]);
